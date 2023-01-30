@@ -67,6 +67,10 @@ Route::namespace('Backend')->middleware('auth')->group(function () {
     Route::get('/payment/details', 'PaymentDetailController@index')->name('payment.detail.index');
     Route::put('/payment/detail/{uuid}/refund', 'PaymentDetailController@refund')->name('payment.detail.refund');
     Route::get('/payment/detail/{uuid}/invoice', 'PaymentDetailController@invoice_download')->name('payment.detail.invoice');
+
+    Route::get('/system-settings', 'SystemSettingsController@index')->name('system.settings');
+    Route::post('/system-settings', 'SystemSettingsController@store')->name('system.settings.save');
+    Route::put('/system-settings', 'SystemSettingsController@update')->name('system.settings.update');
 });
 
 Route::namespace('Frontend')->middleware("throttle:1000,15")->group(function () {
