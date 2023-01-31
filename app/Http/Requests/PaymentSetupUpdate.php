@@ -26,7 +26,6 @@ class PaymentSetupUpdate extends FormRequest
         return [
             'title'    => 'required|unique:payment_setups,title,'.$this->uuid.',uuid',
             'client'   => 'required',
-            'email'    => 'required',
             'contents' => 'required',
             'total'    => 'required',
             'currency' => 'required',

@@ -28,25 +28,17 @@ $payment_opts = ($data->payment_options != '') ? json_decode($data->payment_opti
                 </div>
                 <div class="form-group required form-group-default form-group-default-select2 @error('email') has-error @enderror">
                     <label>Client</label>
-                    <select name="client" data-init-plugin="select2" class="full-width select-client form-control @error('email') error @enderror" data-placeholder="" required>
+                    <select name="client[]" multiple data-init-plugin="select2" class="full-width select-client form-control @error('email') error @enderror" data-placeholder="" required>
                         <option value="">Select a client</option>
                         @forelse ($clients as $key => $client)
-                            <option value="{{ $client->id }}" data-email="{{ $client->email }}" @if($client->id == $data->client_id) selected @endif>{{ $client->name }}</option>
+                            
+                            <option value="{{ $client->id }}" data-email="{{ $client->email }}" @if(in_array($client->id, $data->clients->pluck('client_id')->toArray())) selected @endif>{{ $client->name }}</option>
                         @empty
                         @endforelse
                     </select>
                     @error('client')
                         <label class="error">{{ $message }}</label>
                     @enderror
-                </div>
-                <div class="form-group required form-group-default @error('email') has-error @enderror">
-                    <label>Email</label>
-                    <div class="controls">
-                        <input type="email" class="form-control email-client @error('email') error @enderror" name="email" placeholder="Email" required autocomplete="off" value="{{ $data->email ?? old('email') }}">
-                        @error('email')
-                            <label class="error">{{ $message }}</label>
-                        @enderror
-                    </div>
                 </div>
                 <div class="row">
                     <div class="col-sm-6">

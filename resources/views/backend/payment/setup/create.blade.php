@@ -26,8 +26,7 @@ $recurring_types = config('app.addons.recurring_type');
                 </div>
                 <div class="form-group required form-group-default form-group-default-select2 @error('client') has-error @enderror">
                     <label>Client</label>
-                    <select name="client" data-init-plugin="select2" class="full-width select-client form-control @error('client') error @enderror" data-placeholder="" required>
-                        <option value="">Select a client</option>
+                    <select name="client[]" multiple data-init-plugin="select2" class="full-width select-client form-control @error('client') error @enderror" data-placeholder="" required>
                         @forelse ($clients as $key => $client)
                             <option value="{{ $client->id }}" data-email="{{ $client->email }}">{{ $client->name }}</option>
                         @empty
@@ -37,7 +36,7 @@ $recurring_types = config('app.addons.recurring_type');
                         <label class="error">{{ $message }}</label>
                     @enderror
                 </div>
-                <div class="form-group required form-group-default @error('email') has-error @enderror">
+                {{-- <div class="form-group required form-group-default @error('email') has-error @enderror">
                     <label>Email</label>
                     <div class="controls">
                         <input type="email" class="form-control email-client @error('email') error @enderror" name="email" placeholder="Email" required autocomplete="off" value="{{ old('email') }}">
@@ -45,7 +44,7 @@ $recurring_types = config('app.addons.recurring_type');
                             <label class="error">{{ $message }}</label>
                         @enderror
                     </div>
-                </div>
+                </div> --}}
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group required form-group-default input-group @error('currency') has-error @enderror">
@@ -74,7 +73,7 @@ $recurring_types = config('app.addons.recurring_type');
                         </div>  
                     </div>
                 </div>
-                <div class="row" style="display:none">
+                <div class="row">
                     <div class="col-6">
                         <div class="form-group required form-group-default input-group @error('recurring_type') has-error @enderror">
                             <div class="form-input-group">

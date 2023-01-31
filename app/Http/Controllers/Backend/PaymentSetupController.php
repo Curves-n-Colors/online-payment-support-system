@@ -36,14 +36,8 @@ class PaymentSetupController extends Controller
 
     public function store(PaymentSetupStore $request)
     {
-        if ($request->payment_option == 1) {
-            if (PaymentSetup::_storensend($request)) {
-                return redirect()->route('payment.entry.index')->with('success', 'The payment setup has been created.');
-            }
-        } else {
-            if (PaymentSetup::_storing($request)) {
-                return redirect()->route('payment.setup.index')->with('success', 'The payment setup has been created.');
-            }
+       if (PaymentSetup::_storing($request)) {
+            return redirect()->route('payment.setup.index')->with('success', 'The payment setup has been created.');
         }
         return back()->withInput()->with('error', 'Sorry, could not create payment setup at this time. Please try again later.');
     }
@@ -59,7 +53,8 @@ class PaymentSetupController extends Controller
 
     public function update(PaymentSetupUpdate $request, $uuid)
     {
-        if (PaymentSetup::_updating($request, $uuid)) {
+        $update = PaymentSetup::_updating($request, $uuid);
+        if ($update) {
             return redirect()->route('payment.setup.index')->with('success', 'The payment setup has been updated.');
         }
         return back()->withInput()->with('error', 'Sorry, could not update payment setup at this time. Please try again later.');

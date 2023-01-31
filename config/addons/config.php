@@ -13,11 +13,19 @@ return [
 	],
 
 	'recurring_type' => [
-		1  => 'ONETIME'
+		1  => 'ONETIME',
+		2  => 'WEEKLY',
+		3  => 'MONTHLY',
+		4  => 'QUARTERLY',
+		5  => 'YEARLY'
 	],
 
 	'type_recurring' => [
-		'ONETIME'  => 1
+		'ONETIME'  => 1,
+		'WEEKLY'   => 2,
+		'MONTHLY'  => 3,
+		'QUARTERLY'=> 4,
+		'YEARLY'   => 5		
 	],
 
 	'payment_status' => [

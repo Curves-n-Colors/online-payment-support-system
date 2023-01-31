@@ -2,18 +2,21 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Notification;
-use Illuminate\Contracts\Encryption\DecryptException;
+use Exception;
+use App\Models\Logs;
 use Illuminate\Support\Str;
+use App\Models\PaymentEntry;
+use App\Models\PaymentHasClient;
 
+use Illuminate\Support\Facades\DB;
 use App\Notifications\SendPaymentLink;
+use Illuminate\Database\Eloquent\Model;
+
 use App\Notifications\SendPaymentNotify;
 use App\Notifications\SendPaymentStatus;
-
-use App\Models\PaymentEntry;
-use App\Models\Logs;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Contracts\Encryption\DecryptException;
 
 class PaymentSetup extends Model
 {
@@ -33,6 +36,11 @@ class PaymentSetup extends Model
         return $this->belongsTo('App\Models\Client', 'client_id');
     }
 
+    public function clients()
+    {
+        return $this->hasMany('App\Models\PaymentHasClient', 'payment_setup_id');
+    }
+
     public function entries()
     {
         return $this->hasMany('App\Models\PaymentEntry', 'payment_setup_id')->orderBy('id', 'DESC');
@@ -45,27 +53,42 @@ class PaymentSetup extends Model
 
     public static function _storing($req)
     {
-        $model = new self();
-        $model->title      = $req->title;
-        $model->client_id  = $req->client;
-        $model->email      = $req->email;
-        $model->uuid       = Str::uuid()->toString();
-        $model->total      = (float) $req->total;
-        $model->currency   = $req->currency;
-        $model->remarks    = $req->remarks;
-        $model->contents   = $req->has('contents') ? json_encode($req->contents) : '';
-        $model->is_active  = $req->has('is_active') ? 10 : 0;
-        $model->is_advance = $req->has('is_advance') ? 10 : 0;
-        $model->user_id    = auth()->user()->id;
-        $model->payment_options = $req->has('payment_options') ? json_encode($req->payment_options) : '';
-        $model->reference_date  = date('Y-m-d', strtotime($req->reference_date));
-        $model->recurring_type  = $req->recurring_type;
+        DB::beginTransaction();
+        try{
+            $model = new self();
+            $model->title      = $req->title;
+            $model->client_id  = $req->client[1];
+            $model->uuid       = Str::uuid()->toString();
+            $model->total      = (float) $req->total;
+            $model->currency   = $req->currency;
+            $model->remarks    = $req->remarks;
+            $model->contents   = $req->has('contents') ? json_encode($req->contents) : '';
+            $model->is_active  = $req->has('is_active') ? 10 : 0;
+            $model->is_advance = $req->has('is_advance') ? 10 : 0;
+            $model->user_id    = auth()->user()->id;
+            $model->payment_options = $req->has('payment_options') ? json_encode($req->payment_options) : '';
+            $model->reference_date  = date('Y-m-d', strtotime($req->reference_date));
+            $model->recurring_type  = $req->recurring_type;
+            $model->save();
+          
+            
+            foreach($req->client as $key => $value){
+               
+                $client = new PaymentHasClient();
+                $client->payment_setup_id = $model->id;
+                $client->client_id = $value;
+                $client->save();
+                // Logs::_set('Payment Setup - ' . $client->id . ' has been created', 'payment-setup');
+            }
 
-        if ($model->save()) {
-            Logs::_set('Payment Setup - ' . $model->title . ' has been created', 'payment-setup');
-            return $model;
+        }catch (Exception $e)
+        {
+            DB::rollBack();
+            return $e;
         }
-        return false;
+        DB::commit();
+        return true;
+    
     }
 
     public static function _storensend($req)
@@ -121,27 +144,42 @@ class PaymentSetup extends Model
     public static function _updating($req, $uuid)
     {
         $model = self::where('uuid', $uuid)->first();
+
         if (!$model) return false;
 
-        $model->title      = $req->title;
-        $model->client_id  = $req->client;
-        $model->email      = $req->email;
-        $model->uuid       = Str::uuid()->toString();
-        $model->total      = (float) $req->total;
-        $model->currency   = $req->currency;
-        $model->remarks    = $req->remarks;
-        $model->contents   = $req->has('contents') ? json_encode($req->contents) : '';
-        // $model->is_active    = $req->has('is_active') ? 10 : 0;
-        $model->is_advance      = 10; // $req->has('is_advance') ? 10 : 0;
-        $model->payment_options = $req->has('payment_options') ? json_encode($req->payment_options) : '';
-        $model->reference_date  = date('Y-m-d', strtotime($req->reference_date));
-        $model->recurring_type  = $req->recurring_type;
+        DB::beginTransaction();
+        try{
 
-        if ($model->update()) {
-            Logs::_set('Payment Setup - ' . $model->title . ' has been updated', 'payment-setup');
-            return $model;
+            $model->title      = $req->title;
+            $model->total      = (float) $req->total;
+            $model->currency   = $req->currency;
+            $model->remarks    = $req->remarks;
+            $model->contents   = $req->has('contents') ? json_encode($req->contents) : '';
+            $model->is_advance      = 10; // $req->has('is_advance') ? 10 : 0;
+            $model->payment_options = $req->has('payment_options') ? json_encode($req->payment_options) : '';
+            $model->reference_date  = date('Y-m-d', strtotime($req->reference_date));
+            $model->recurring_type  = $req->recurring_type;
+            $model->update();
+
+            $model->clients->each->delete();   
+            
+            foreach($req->client as $key => $value){
+               
+                $client = new PaymentHasClient();
+                $client->payment_setup_id = $model->id;
+                $client->client_id = $value;
+                $client->save();
+                // Logs::_set('Payment Setup - ' . $client->id . ' has been created', 'payment-setup');
+            }
+
         }
-        return false;
+        catch (Exception $e)
+        {
+            DB::rollBack();
+            return $e;
+        }
+        DB::commit();
+        return true;
     }
 
     public static function _change_status($uuid)

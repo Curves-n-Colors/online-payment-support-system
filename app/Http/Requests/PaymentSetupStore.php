@@ -26,7 +26,6 @@ class PaymentSetupStore extends FormRequest
         return [
             'title'    => 'required|unique:payment_setups,title',
             'client'   => 'required',
-            'email'    => 'required',
             'contents' => 'required',
             'total'    => 'required',
             'currency' => 'required',
