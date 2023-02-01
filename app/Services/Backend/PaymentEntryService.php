@@ -18,7 +18,7 @@ class PaymentEntryService
         $model->is_active = ($model->is_active == 10 ? 0 : 10);
 
         if ($model->update()) {
-            Logs::_set('Payment Entry - ' . $model->title . ' has been ' . ($model->is_active == 10 ? 'activated' : 'deactivated') . ' for Setup - ' . $model->setup->title, 'payment-entry');
+            LogsService::_set('Payment Entry - ' . $model->title . ' has been ' . ($model->is_active == 10 ? 'activated' : 'deactivated') . ' for Setup - ' . $model->setup->title, 'payment-entry');
             return true;
         }
         return false;
@@ -41,7 +41,7 @@ class PaymentEntryService
         $model->payment_date     = date('Y-m-d', strtotime($date));
 
         if ($model->save()) {
-            Logs::_set('Payment Entry - ' . $model->title . ' has been created for Setup - ' . $data->title, 'payment-entry');
+            LogsService::_set('Payment Entry - ' . $model->title . ' has been created for Setup - ' . $data->title, 'payment-entry');
             return $model;
         }
         return false;
@@ -62,7 +62,7 @@ class PaymentEntryService
             ];
 
             Notification::route('mail', $notify['email'])->notify(new SendPaymentLink($notify));
-            Logs::_set('Payment Entry - ' . $model->title . ' has been sent for setup - ' . $model->setup->title, 'payment-entry');
+            LogsService::_set('Payment Entry - ' . $model->title . ' has been sent for setup - ' . $model->setup->title, 'payment-entry');
             return true;
         }
         return false;
@@ -72,7 +72,7 @@ class PaymentEntryService
     public static function _copying($uuid)
     {
         if ($model = PaymentEntry::where('uuid', $uuid)->first()) {
-            Logs::_set('Payment Entry - ' . $model->title . ' has been copied for setup - ' . $model->setup->title, 'payment-entry');
+            LogsService::_set('Payment Entry - ' . $model->title . ' has been copied for setup - ' . $model->setup->title, 'payment-entry');
             return route('pay.index', [PaymentSetupService::_encrypting($model->setup->uuid, $model->uuid)]);
         }
         return false;
@@ -84,7 +84,7 @@ class PaymentEntryService
             $model_title = $model->title;
             $setup_title = $model->setup->title;
             if ($model->delete()) {
-                Logs::_set('Payment Entry - ' . $model_title . ' has been deleted for Setup - ' . $setup_title, 'payment-entry');
+                LogsService::_set('Payment Entry - ' . $model_title . ' has been deleted for Setup - ' . $setup_title, 'payment-entry');
                 return true;
             }
         }
