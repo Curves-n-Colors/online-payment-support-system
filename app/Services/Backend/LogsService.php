@@ -2,7 +2,6 @@
 
 namespace App\Services\Backend;
 
-use App\Models\Logs;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 

@@ -68,7 +68,19 @@ $recurring_types = config('app.addons.recurring_type');
                                         <tr id="setup-{{$random}}" style="">
                                             <td>{{ $i }}</td>
                                             <td>{{ $row->title }}</td>
-                                            <td>{{ $row->client->name }}<br/>{{ $row->email }}</td>
+                                            <td>
+                                                @if(count($row->clients)>0)
+                                                    @foreach($row->clients as $data)
+                                                        <span>
+                                                        {{ $data->client->name }} <br>
+                                                        {{ $data->client->email }} <br>
+                                                        </span>    
+                                                     @endforeach
+                                                @else
+                                                'N/A'
+                                                @endif
+                                            </td>
+                                            {{-- <td>{{ $row->client->name }}<br/>{{ $row->client->email }}</td> --}}
                                             <td>{{ $row->currency . ' ' . number_format($row->total, 2) }}</td>
                                             <td>{{ $row->reference_date }}</td>
                                             <td>{{ isset($recurring_types[$row->recurring_type]) ? $recurring_types[$row->recurring_type] : 'N/A' }}</td>

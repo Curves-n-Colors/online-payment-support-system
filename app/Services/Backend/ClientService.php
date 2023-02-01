@@ -2,9 +2,9 @@
 
 namespace App\Services\Backend;
 
-use App\Models\Logs;
 use App\Models\Client;
 use Illuminate\Support\Str;
+use App\Services\Backend\LogsService;
 
 class ClientService
 {

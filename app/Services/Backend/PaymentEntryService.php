@@ -4,15 +4,23 @@ namespace App\Services\Backend;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\SendPaymentLink;
 use Illuminate\Support\Str;
-
 use App\Models\PaymentEntry;
-use App\Models\Logs;
 
 class PaymentEntryService
 {
+    public static function _find($uuid)
+    {
+        return PaymentEntry::where('uuid', $uuid)->firstOrFail();
+    }
+
+    public static function _get($group_id = null)
+    {
+        return PaymentEntry::orderBy('created_at', 'DESC');
+    }
+
     public static function _change_status($uuid)
     {
-        $model = PaymentEntry::where('uuid', $uuid)->first();
+        $model = self::_find($uuid);
         if (!$model) return -1;
 
         $model->is_active = ($model->is_active == 10 ? 0 : 10);
@@ -49,7 +57,7 @@ class PaymentEntryService
 
     public static function _sending($uuid)
     {
-        if ($model = PaymentEntry::where('uuid', $uuid)->first()) {
+        if ($model = self::_find($uuid)) {
             $notify = [
                 'client_id' => $model->client->id,
                 'client'    => $model->client->name,
@@ -71,7 +79,7 @@ class PaymentEntryService
 
     public static function _copying($uuid)
     {
-        if ($model = PaymentEntry::where('uuid', $uuid)->first()) {
+        if ($model = self::_find($uuid)) {
             LogsService::_set('Payment Entry - ' . $model->title . ' has been copied for setup - ' . $model->setup->title, 'payment-entry');
             return route('pay.index', [PaymentSetupService::_encrypting($model->setup->uuid, $model->uuid)]);
         }
@@ -80,7 +88,7 @@ class PaymentEntryService
 
     public static function _deleting($uuid)
     {
-        if ($model = PaymentEntry::where('uuid', $uuid)->first()) {
+        if ($model = self::_find($uuid)) {
             $model_title = $model->title;
             $setup_title = $model->setup->title;
             if ($model->delete()) {
@@ -90,6 +98,5 @@ class PaymentEntryService
         }
         return false;
     }
-
 
 }
