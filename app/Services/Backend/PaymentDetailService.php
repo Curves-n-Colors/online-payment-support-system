@@ -2,12 +2,11 @@
 
 namespace App\Services\Backend;
 
-use App\Models\Logs;
 use App\Models\PayNibl;
 use App\Models\PaymentDetail;
+use App\Services\Backend\LogsService;
 use App\Notifications\SendPaymentStatus;
 use Illuminate\Support\Facades\Notification;
-use PDF;
 
 class PaymentDetailService{
     public static function _find($uuid)
@@ -17,7 +16,7 @@ class PaymentDetailService{
 
     public static function _get($group_id = null)
     {
-        return PaymentDetail::orderBy('created_at', 'DESC');
+        return PaymentDetail::orderBy('created_at', 'DESC')->get();
     }
 
     public static function _storing($data, $detail)
@@ -40,7 +39,7 @@ class PaymentDetailService{
             $model->update();
 
             Notification::route('mail', $model->email)->notify(new SendPaymentStatus($model));
-            Logs::_set('Payment Detail - ' . $model->title . ' has been created for Setup - ' . $data->setup->title, 'payment-detail');
+            LogsService::_set('Payment Detail - ' . $model->title . ' has been created for Setup - ' . $data->setup->title, 'payment-detail');
             return true;
         }
         return false;
@@ -85,15 +84,5 @@ class PaymentDetailService{
         }
         return false;
     }
-
-    public static function _invoicing($uuid)
-    {
-        if ($detail = PaymentDetail::where('uuid', $uuid)->where('payment_status', config('app.addons.status_payment.COMPLETED'))->first()) {
-            $logo = 'https://climbalaya.com/images/logo/logo.png';
-            $pdf = PDF::setOptions(['dpi' => 150, 'isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true]); // , 'defaultFont' => 'sans-serif', 'images' => true
-            $pdf->loadView('pdf.invoice', ['logo' => $logo, 'data' => $detail]);
-            return $pdf->download('invoice.pdf');
-        }
-        return false;
-    }
+    
 }

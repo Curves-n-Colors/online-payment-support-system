@@ -2,9 +2,9 @@
 
 namespace App\Services\Backend;
 
-use App\Models\Logs;
 use App\Models\Client;
 use Illuminate\Support\Str;
+use App\Services\Backend\LogsService;
 
 class ClientService
 {
@@ -30,7 +30,7 @@ class ClientService
         $model->user_id   = auth()->user()->id;
 
         if ($model->save()) {
-            Logs::_set('Client - "'.$model->name.'" has been created', 'client');
+            LogsService::_set('Client - "'.$model->name.'" has been created', 'client');
             return true;
         }
         return false;
@@ -47,7 +47,7 @@ class ClientService
         $model->is_active = $req->has('is_active') ? 10 : 0;
 
         if ($model->update()) {
-            Logs::_set('Client - "'.$model->name.'" has been updated', 'client');
+            LogsService::_set('Client - "'.$model->name.'" has been updated', 'client');
             return true;
         }
         return false;
@@ -62,7 +62,7 @@ class ClientService
         $model->is_active = ($model->is_active == 10 ? 0 : 10);
         
         if ($model->update()) {
-            Logs::_set('Client - "'.$model->name.'" has been ' .($model->is_active == 10 ? 'activated' : 'deactivated'), 'client');
+            LogsService::_set('Client - "'.$model->name.'" has been ' .($model->is_active == 10 ? 'activated' : 'deactivated'), 'client');
             return true;
         }
         return false;

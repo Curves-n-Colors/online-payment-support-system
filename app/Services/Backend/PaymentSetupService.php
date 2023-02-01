@@ -3,21 +3,20 @@
 namespace App\Services\Backend;
 
 use Exception;
-use App\Models\Logs;
 use Illuminate\Support\Str;
-use App\Models\PaymentEntry;
 use App\Models\PaymentSetup;
-use App\Models\PaymentDetail;
 use App\Models\PaymentHasClient;
-
 use Illuminate\Support\Facades\DB;
+use App\Services\Backend\LogsService;
 use App\Notifications\SendPaymentLink;
-
 use App\Notifications\SendPaymentNotify;
 use Illuminate\Support\Facades\Notification;
+use App\Services\Backend\PaymentEntryService;
+use App\Services\Backend\PaymentDetailService;
 use Illuminate\Contracts\Encryption\DecryptException;
 
 class PaymentSetupService{
+    
     public static function _find($uuid)
     {
         return PaymentSetup::where('uuid', $uuid)->firstOrFail();
@@ -60,7 +59,7 @@ class PaymentSetupService{
                 $client->payment_setup_id = $model->id;
                 $client->client_id = $value;
                 $client->save();
-                // Logs::_set('Payment Setup - ' . $client->id . ' has been created', 'payment-setup');
+                // LogsService::_set('Payment Setup - ' . $client->id . ' has been created', 'payment-setup');
             }
 
         }catch (Exception $e)
@@ -101,7 +100,7 @@ class PaymentSetupService{
                 $client->payment_setup_id = $model->id;
                 $client->client_id = $value;
                 $client->save();
-                // Logs::_set('Payment Setup - ' . $client->id . ' has been created', 'payment-setup');
+                // LogsService::_set('Payment Setup - ' . $client->id . ' has been created', 'payment-setup');
             }
 
         }
@@ -122,7 +121,7 @@ class PaymentSetupService{
         $model->is_active = ($model->is_active == 10 ? 0 : 10);
 
         if ($model->update()) {
-            Logs::_set('Payment Setup - ' . $model->title . ' has been ' . ($model->is_active == 10 ? 'activated' : 'deactivated'), 'payment-setup');
+            LogsService::_set('Payment Setup - ' . $model->title . ' has been ' . ($model->is_active == 10 ? 'activated' : 'deactivated'), 'payment-setup');
             return true;
         }
         return false;
@@ -219,7 +218,7 @@ class PaymentSetupService{
                     $notify['encrypt'] = self::_encrypting($model->uuid, $ent['uuid']);
 
                     Notification::route('mail', $notify['email'])->notify(new SendPaymentLink($notify));
-                    Logs::_set('Payment Entry - ' . $ent['title'] . ' has been sent for setup - ' . $model->title, 'payment-entry');
+                    LogsService::_set('Payment Entry - ' . $ent['title'] . ' has been sent for setup - ' . $model->title, 'payment-entry');
                 }
             }
 
@@ -228,16 +227,16 @@ class PaymentSetupService{
                 $date  = $new['new_payment_date'];
                 $title = $data['rctype'] . ' PAYMENT (' . ($new['old_payment_date'] ? ($new['old_payment_date'] . ' to ') : '') . $new['new_payment_date'] . ')';
 
-                if ($entry = PaymentEntry::_storing($model, $title, $date)) {
+                if ($entry = PaymentEntryService::_storing($model, $title, $date)) {
                     $notify['uuid']  = $entry->uuid;
                     $notify['entry'] = $entry->title;
                     $notify['encrypt'] = self::_encrypting($model->uuid, $entry->uuid);
 
                     Notification::route('mail', $notify['email'])->notify(new SendPaymentLink($notify));
-                    Logs::_set('Payment Entry - ' . $title . ' has been sent for Setup - ' . $model->title, 'payment-entry');
+                    LogsService::_set('Payment Entry - ' . $title . ' has been sent for Setup - ' . $model->title, 'payment-entry');
                     $model->delete();
                 } else {
-                    Logs::_set('Payment Entry - ' . $title . ' could not created for Setup - ' . $model->title, 'payment-entry');
+                    LogsService::_set('Payment Entry - ' . $title . ' could not created for Setup - ' . $model->title, 'payment-entry');
                 }
             }
             return true;
@@ -280,10 +279,10 @@ class PaymentSetupService{
         }
 
         $detail = null;
-        $entry = PaymentEntry::where('uuid', $params[2])->first();
+        $entry = PaymentEntryService::_find($params[2]);
 
         if (!$entry) {
-            $detail = PaymentDetail::where('uuid', $params[2])->first();
+            $detail = PaymentDetailService::_find($params[2]);
             if (!$detail) {
                 return ['status' => 'link-unauthorised'];
             }
@@ -311,6 +310,6 @@ class PaymentSetupService{
             'setup' => $setup
         ];
         Notification::route('mail', $setup->email)->notify(new SendPaymentNotify($notify));
-        Logs::_set('Payment Notify has been sent for Setup - ' . $setup->title, 'payment-notify');
+        LogsService::_set('Payment Notify has been sent for Setup - ' . $setup->title, 'payment-notify');
     }
 }
