@@ -24,13 +24,14 @@ class ClientService
         $model = new Client();
         $model->name      = $req->name;
         $model->email     = $req->email;
+        $model->phone_no  = $req->phone_no;
         $model->uuid      = Str::uuid()->toString();
         $model->remarks   = $req->remarks;
         $model->is_active = $req->has('is_active') ? 10 : 0;
         $model->user_id   = auth()->user()->id;
 
         if ($model->save()) {
-            Logs::_set('Client - "'.$model->name.'" has been created', 'client');
+            LogsService::_set('Client - "'.$model->name.'" has been created', 'client');
             return true;
         }
         return false;
@@ -43,11 +44,12 @@ class ClientService
 
         $model->name      = $req->name;
         $model->email     = $req->email;
+        $model->phone_no  = $req->phone_no;
         $model->remarks   = $req->remarks;
         $model->is_active = $req->has('is_active') ? 10 : 0;
 
         if ($model->update()) {
-            Logs::_set('Client - "'.$model->name.'" has been updated', 'client');
+            LogsService::_set('Client - "'.$model->name.'" has been updated', 'client');
             return true;
         }
         return false;
@@ -56,13 +58,13 @@ class ClientService
     public static function _change_status($uuid)
     {
         $model = self::_find($uuid);
-        
+
         if (!$model) return -1;
 
         $model->is_active = ($model->is_active == 10 ? 0 : 10);
-        
+
         if ($model->update()) {
-            Logs::_set('Client - "'.$model->name.'" has been ' .($model->is_active == 10 ? 'activated' : 'deactivated'), 'client');
+            LogsService::_set('Client - "'.$model->name.'" has been ' .($model->is_active == 10 ? 'activated' : 'deactivated'), 'client');
             return true;
         }
         return false;

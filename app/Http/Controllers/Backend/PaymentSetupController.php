@@ -78,7 +78,7 @@ class PaymentSetupController extends Controller
 
     public function send(Request $request, $uuid)
     {
-        if ($request->has('master_password') && User::_check_master($request->master_password)) {
+        if ($request->has('master_password') && UserService::_check_master($request->master_password)) {
             if ($request->has('entries')) {
                 if (PaymentSetup::_sending($request->entries, $uuid)) {
                     return response()->json(['status' => true, 'link' => '', 'msg' => 'The payment link email(s) has been sent.']);
@@ -97,7 +97,7 @@ class PaymentSetupController extends Controller
         ]);
 
         if (!$validator->fails()) {
-            if ($request->has('master_password') && User::_check_master($request->master_password)) {
+            if ($request->has('master_password') && UserService::_check_master($request->master_password)) {
                 return response()->json(['status' => true, 'msg' => '']);
             }
             return response()->json(['status' => false, 'msg' => 'Sorry, PIN is not correct.']);
