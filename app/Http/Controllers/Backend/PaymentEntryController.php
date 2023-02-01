@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 use App\Models\PaymentEntry;
 use App\Models\Client;
+use App\Services\Backend\PaymentEntryService;
 use App\User;
 
 class PaymentEntryController extends Controller
@@ -36,16 +37,16 @@ class PaymentEntryController extends Controller
 
     public function change_status($uuid)
     {
-        if (PaymentEntry::_change_status($uuid)) {
+        if (PaymentEntryService::_change_status($uuid)) {
             return back()->with('success', 'The payment setup status has been changed.');
         }
         return back()->with('error', 'Sorry, could not change status of the payment setup at this time. Please try again later.');
     }
 
     public function send(Request $request, $uuid)
-    { 
+    {
         if ($request->has('master_password') && User::_check_master($request->master_password)) {
-            if (PaymentEntry::_sending($uuid)) {
+            if (PaymentEntryService::_sending($uuid)) {
                 return response()->json(['status' => true, 'link' => '', 'msg' => 'The payment link email has been sent.']);
             }
             return response()->json(['status' => false, 'msg' => 'The payment link you want to send does not exist.']);
@@ -56,7 +57,7 @@ class PaymentEntryController extends Controller
     public function copy(Request $request, $uuid)
     {
         if ($request->has('master_password') && User::_check_master($request->master_password)) {
-            if ($link = PaymentEntry::_copying($uuid)) {
+            if ($link = PaymentEntryService::_copying($uuid)) {
                 return response()->json(['status' => true, 'link' => $link, 'msg' => 'The payment link has been copied.']);
             }
             return response()->json(['status' => false, 'msg' => 'The payment link you want to copy does not exist.']);
