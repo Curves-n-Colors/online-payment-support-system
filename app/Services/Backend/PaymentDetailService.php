@@ -16,7 +16,7 @@ class PaymentDetailService{
 
     public static function _get($group_id = null)
     {
-        return PaymentDetail::orderBy('created_at', 'DESC')->get();
+        return PaymentDetail::orderBy('created_at', 'DESC');
     }
 
     public static function _storing($data, $detail)

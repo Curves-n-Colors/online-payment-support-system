@@ -53,7 +53,7 @@ $recurring_types = config('app.addons.recurring_type');
                                         <th width="50">Setup Title</th>
                                         <th width="50">Client</th>
                                         <th width="50">Amount</th>
-                                        <th width="50">Payment Date</th>
+                                        <th width="50">Payment Ending</th>
                                         <th width="50">Status</th>
                                         <th width="100">Option</th>
                                     </tr>
@@ -67,9 +67,9 @@ $recurring_types = config('app.addons.recurring_type');
                                             <td>{{ $i }}</td>
                                             <td>{{ $row->title }}</td>
                                             <td>{{ $row->setup->title }}</td>
-                                            <td>{{ $row->client->name }}<br/>{{ $row->email }}</td>
+                                            <td>{{ $row->client->name }}<br/>{{ $row->client->email }}</td>
                                             <td>{{ $row->currency . ' ' . number_format($row->total, 2) }}</td>
-                                            <td>{{ $row->payment_date }}</td>
+                                            <td>{{ $row->end_date }}</td>
                                             <td>
                                                 @if ($row->is_active == 10)
                                                 <strong class="text-success">ACTIVE</strong>
