@@ -8,6 +8,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 use App\Models\EmailNotification;
+use App\Services\Backend\EmailNotificationService;
 
 class SendPaymentLink extends Notification
 {
@@ -69,7 +70,7 @@ class SendPaymentLink extends Notification
     // custom fix
     public static function toDatabaseCustom($notify)
     {
-        return EmailNotification::_storing((object) [
+        return EmailNotificationService::_storing((object) [
             'uuid'      => $notify['uuid'],
             'client_id' => $notify['client_id'],
             'email'     => $notify['email'],

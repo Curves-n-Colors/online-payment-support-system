@@ -16,7 +16,7 @@ class PaymentDetailService{
 
     public static function _get($group_id = null)
     {
-        return PaymentDetail::orderBy('created_at', 'DESC')->get();
+        return PaymentDetail::orderBy('created_at', 'DESC');
     }
 
     public static function _storing($data, $detail)
@@ -44,7 +44,7 @@ class PaymentDetailService{
         }
         return false;
     }
-    
+
     public static function _refunding($req, $uuid)
     {
         if ($detail = self::_find($uuid)) {
@@ -84,5 +84,5 @@ class PaymentDetailService{
         }
         return false;
     }
-    
+
 }

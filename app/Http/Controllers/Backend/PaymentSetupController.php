@@ -10,6 +10,7 @@ use App\Http\Requests\PaymentSetupStore;
 use App\Http\Requests\PaymentSetupUpdate;
 use Illuminate\Support\Facades\Validator;
 use App\Services\Backend\PaymentSetupService;
+use App\Services\Backend\UserService;
 
 class PaymentSetupController extends Controller
 {

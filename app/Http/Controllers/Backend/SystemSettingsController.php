@@ -23,10 +23,11 @@ class SystemSettingsController extends Controller
         $email_day = 0;
         $setting= $this->setting;
         if(!is_null($setting)){
-            $extend_day = $setting->email_day;
-            $email_day = $setting->extend_day;
+            $extend_day       = $setting->extend_day;
+            $email_day        = $setting->email_day;
+            $email_send_time  = $setting->email_send_time;
         }
-       return view('backend.settings.form', compact('extend_day', 'email_day'));
+       return view('backend.settings.form', compact('extend_day', 'email_day','email_send_time'));
     }
 
     public function store(SystemSettingRequest $request)
