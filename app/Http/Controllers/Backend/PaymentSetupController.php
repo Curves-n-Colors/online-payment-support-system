@@ -35,6 +35,7 @@ class PaymentSetupController extends Controller
 
     public function store(PaymentSetupStore $request)
     {
+
        if (PaymentSetupService::_storing($request)) {
             return redirect()->route('payment.setup.index')->with('success', 'The payment setup has been created.');
         }

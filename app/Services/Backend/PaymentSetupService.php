@@ -16,7 +16,7 @@ use App\Services\Backend\PaymentDetailService;
 use Illuminate\Contracts\Encryption\DecryptException;
 
 class PaymentSetupService{
-    
+
     public static function _find($uuid)
     {
         return PaymentSetup::where('uuid', $uuid)->firstOrFail();
@@ -38,7 +38,7 @@ class PaymentSetupService{
         try{
             $model = new PaymentSetup();
             $model->title      = $req->title;
-            $model->client_id  = $req->client[1];
+            $model->client_id  = $req->client[0];
             $model->uuid       = Str::uuid()->toString();
             $model->total      = (float) $req->total;
             $model->currency   = $req->currency;
@@ -49,12 +49,15 @@ class PaymentSetupService{
             $model->user_id    = auth()->user()->id;
             $model->payment_options = $req->has('payment_options') ? json_encode($req->payment_options) : '';
             $model->reference_date  = date('Y-m-d', strtotime($req->reference_date));
+            $model->expire_date     = date('Y-m-d', strtotime($req->expire_date));
+            $model->no_of_payments  = $req->no_of_payments;
+            $model->extended_days   = $req->extended_days;
             $model->recurring_type  = $req->recurring_type;
             $model->save();
-          
-            
+
+
             foreach($req->client as $key => $value){
-               
+
                 $client = new PaymentHasClient();
                 $client->payment_setup_id = $model->id;
                 $client->client_id = $value;
@@ -69,7 +72,7 @@ class PaymentSetupService{
         }
         DB::commit();
         return true;
-    
+
     }
 
     public static function _updating($req, $uuid)
@@ -90,12 +93,15 @@ class PaymentSetupService{
             $model->payment_options = $req->has('payment_options') ? json_encode($req->payment_options) : '';
             $model->reference_date  = date('Y-m-d', strtotime($req->reference_date));
             $model->recurring_type  = $req->recurring_type;
+            $model->expire_date     = date('Y-m-d', strtotime($req->expire_date));
+            $model->no_of_payments  = $req->no_of_payments;
+            $model->extended_days   = $req->extended_days;
             $model->update();
 
-            $model->clients->each->delete();   
-            
+            $model->clients->each->delete();
+
             foreach($req->client as $key => $value){
-               
+
                 $client = new PaymentHasClient();
                 $client->payment_setup_id = $model->id;
                 $client->client_id = $value;
@@ -243,7 +249,7 @@ class PaymentSetupService{
         }
         return false;
     }
-    
+
     public static function _encrypting($setup_uuid, $entry_uuid)
     {
         return encrypt(config('app.addons.public_key') . '__' . $setup_uuid . '__' . $entry_uuid);
