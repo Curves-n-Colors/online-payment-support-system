@@ -45,7 +45,7 @@ class PaymentEntryController extends Controller
 
     public function send(Request $request, $uuid)
     {
-        if ($request->has('master_password') && User::_check_master($request->master_password)) {
+        if ($request->has('master_password') && UserService::_check_master($request->master_password)) {
             if (PaymentEntryService::_sending($uuid)) {
                 return response()->json(['status' => true, 'link' => '', 'msg' => 'The payment link email has been sent.']);
             }
@@ -56,7 +56,7 @@ class PaymentEntryController extends Controller
 
     public function copy(Request $request, $uuid)
     {
-        if ($request->has('master_password') && User::_check_master($request->master_password)) {
+        if ($request->has('master_password') && UserService::_check_master($request->master_password)) {
             if ($link = PaymentEntryService::_copying($uuid)) {
                 return response()->json(['status' => true, 'link' => $link, 'msg' => 'The payment link has been copied.']);
             }

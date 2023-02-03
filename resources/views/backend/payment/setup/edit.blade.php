@@ -3,10 +3,10 @@
 @section('title', 'Update Payment Setup')
 
 @section('content')
-@php 
-$currency_codes = config('app.addons.currency_code'); 
+@php
+$currency_codes = config('app.addons.currency_code');
 $payment_options = config('app.addons.payment_options');
-$recurring_types = config('app.addons.recurring_type'); 
+$recurring_types = config('app.addons.recurring_type');
 $contents = ($data->contents != '') ? json_decode($data->contents) : '';
 $payment_opts = ($data->payment_options != '') ? json_decode($data->payment_options, true) : '';
 @endphp
@@ -31,7 +31,7 @@ $payment_opts = ($data->payment_options != '') ? json_decode($data->payment_opti
                     <select name="client[]" multiple data-init-plugin="select2" class="full-width select-client form-control @error('email') error @enderror" data-placeholder="" required>
                         <option value="">Select a client</option>
                         @forelse ($clients as $key => $client)
-                            
+
                             <option value="{{ $client->id }}" data-email="{{ $client->email }}" @if(in_array($client->id, $data->clients->pluck('client_id')->toArray())) selected @endif>{{ $client->name }}</option>
                         @empty
                         @endforelse
@@ -54,7 +54,7 @@ $payment_opts = ($data->payment_options != '') ? json_decode($data->payment_opti
                                     <label class="error">{{ $message }}</label>
                                 @enderror
                             </div>
-                        </div>  
+                        </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group required form-group-default @error('total') has-error @enderror">
@@ -65,18 +65,18 @@ $payment_opts = ($data->payment_options != '') ? json_decode($data->payment_opti
                                     <label class="error">{{ $message }}</label>
                                 @enderror
                             </div>
-                        </div>  
+                        </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-6">
+                    <div class="col-4">
                         <div class="form-group required form-group-default input-group @error('recurring_type') has-error @enderror">
                             <div class="form-input-group">
                                 <label>Payment Recurrence Type</label>
                                 <select name="recurring_type" class="full-width form-control select-recurrence @error('recurring_type') error @enderror" data-placeholder="" required>
                                     @foreach ($recurring_types as $key => $rctype)
                                     <option value="{{ $key }}" @if($key == $data->recurring_type) selected @endif>{{ $rctype }}</option>
-                                    @endforeach    
+                                    @endforeach
                                 </select>
                                 @error('recurring_type')
                                     <label class="error">{{ $message }}</label>
@@ -84,6 +84,32 @@ $payment_opts = ($data->payment_options != '') ? json_decode($data->payment_opti
                             </div>
                         </div>
                     </div>
+
+                    <div class="col-4">
+                        <div class="form-group required form-group-default @error('no_of_payments') has-error @enderror">
+                            <label>No. of Payments (Installments) </label>
+                            <div class="controls">
+                                <input type="number" class="form-control @error('no_of_payments') error @enderror" name="no_of_payments"  placeholder="No of  Payment" value="{{ $data->no_of_payments ?? old('no_of_payments') }}"  autocomplete="off">
+                                @error('no_of_payments')
+                                    <label class="error">{{ $message }}</label>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-4">
+                        <div class="form-group required form-group-default @error('extended_days') has-error @enderror">
+                            <label>No of Extended Days</label>
+                            <div class="controls">
+                                <input type="number" class="form-control  @error('extended_days') error @enderror" name="extended_days"  placeholder="No Of  Extended Days"  autocomplete="off" value="{{ $data->extended_days ?? old('extended_days') }}">
+                                @error('extended_days')
+                                    <label class="error">{{ $message }}</label>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+
                     <div class="col-6">
                         <div class="form-group required form-group-default @error('reference_date') has-error @enderror">
                             <label>Payment Reference Date</label>
@@ -93,8 +119,21 @@ $payment_opts = ($data->payment_options != '') ? json_decode($data->payment_opti
                                     <label class="error">{{ $message }}</label>
                                 @enderror
                             </div>
-                        </div>  
+                        </div>
                     </div>
+
+                    <div class="col-6">
+                        <div class="form-group required form-group-default @error('expire_date') has-error @enderror">
+                            <label> Expire Date </label>
+                            <div class="controls">
+                                <input type="text" class="form-control datepicker @error('expire_date') error @enderror" name="expire_date" placeholder="Expiry Date"  autocomplete="off" value="{{ $data->expire_date }}">
+                                @error('expire_date')
+                                    <label class="error">{{ $message }}</label>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
                 <div class="form-group form-group-default">
                     <label>Remarks</label>

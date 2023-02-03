@@ -10,6 +10,7 @@ use App\User;
 use App\Http\Requests\UserStore;
 use App\Http\Requests\UserUpdate;
 use App\Http\Requests\UserProfileUpdate;
+use App\Services\Backend\UserService;
 
 class UserController extends Controller
 {
@@ -31,7 +32,7 @@ class UserController extends Controller
 
     public function store(UserStore $request)
     {
-        if (User::_storing($request)) {
+        if (UserService::_storing($request)) {
             return redirect()->route('user.index')->with('success', 'The user has been created.');
         }
         return back()->withInput()->with('error', 'Sorry, could not create user at this time. Please try again later.');
@@ -39,7 +40,7 @@ class UserController extends Controller
 
     public function edit($uuid)
     {
-        if ($data = User::where('uuid', $uuid)->first()) { 
+        if ($data = User::where('uuid', $uuid)->first()) {
             return view('backend.user.edit', compact('data'));
         }
         return back()->with('warning', 'The user you want to edit does not exist.');
@@ -47,15 +48,15 @@ class UserController extends Controller
 
     public function update(UserUpdate $request, $uuid)
     {
-        if (User::_updating($request, $uuid)) {
+        if (UserService::_updating($request, $uuid)) {
             return redirect()->route('user.index')->with('success', 'The user has been updated.');
         }
         return back()->withInput()->with('error', 'Sorry, could not update user at this time. Please try again later.');
     }
-    
+
     public function change_status($uuid)
     {
-    	if (User::_change_status($uuid)) {
+    	if (UserService::_change_status($uuid)) {
     		return back()->with('success', 'The user status has been changed.');
     	}
         return back()->with('error', 'Sorry, could not change status of the user at this time. Please try again later.');
@@ -69,7 +70,7 @@ class UserController extends Controller
 
     public function profile_update(UserProfileUpdate $request)
     {
-        if (User::_profiling($request)) {
+        if (UserService::_profiling($request)) {
             return back()->with('success', 'Your profile has been updated.');
         }
         return back()->withInput()->with('error', 'Sorry, could not update your profile at this time. Please try again later.');

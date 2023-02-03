@@ -9,6 +9,7 @@ use App\Models\PaymentDetail;
 use App\Models\Client;
 use App\User;
 use App\Http\Requests\PaymentRequest;
+use App\Services\Backend\UserService;
 
 class PaymentController extends Controller
 {
@@ -61,7 +62,7 @@ class PaymentController extends Controller
 
     public function send(Request $request, $uuid)
     {
-        if ($request->has('master_password') && User::_check_master($request->master_password)) {
+        if ($request->has('master_password') && UserService::_check_master($request->master_password)) {
             if (PaymentDetail::_sending($uuid)) {
                 return response()->json(['status' => true, 'link' => '', 'msg' => 'The Payment Link has been sent.']);
             }
@@ -72,7 +73,7 @@ class PaymentController extends Controller
 
     public function copy(Request $request, $uuid)
     {
-        if ($request->has('master_password') && User::_check_master($request->master_password)) {
+        if ($request->has('master_password') && UserService::_check_master($request->master_password)) {
             if ($link = PaymentDetail::_copying($uuid)) {
                 return response()->json(['status' => true, 'link' => $link, 'msg' => 'The Payment Link has been copied.']);
             }
@@ -83,7 +84,7 @@ class PaymentController extends Controller
 
     public function refund(Request $request, $uuid)
     {
-        if ($request->has('master_password') && User::_check_master($request->master_password)) {
+        if ($request->has('master_password') && UserService::_check_master($request->master_password)) {
             if (PaymentDetail::_refunding($request->all(), $uuid)) {
                 return response()->json(['status' => true, 'msg' => 'The Payment transaction has been refunded.']);
             }

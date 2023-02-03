@@ -24,6 +24,7 @@ class ClientService
         $model = new Client();
         $model->name      = $req->name;
         $model->email     = $req->email;
+        $model->phone_no  = $req->phone_no;
         $model->uuid      = Str::uuid()->toString();
         $model->remarks   = $req->remarks;
         $model->is_active = $req->has('is_active') ? 10 : 0;
@@ -43,6 +44,7 @@ class ClientService
 
         $model->name      = $req->name;
         $model->email     = $req->email;
+        $model->phone_no  = $req->phone_no;
         $model->remarks   = $req->remarks;
         $model->is_active = $req->has('is_active') ? 10 : 0;
 
@@ -56,11 +58,11 @@ class ClientService
     public static function _change_status($uuid)
     {
         $model = self::_find($uuid);
-        
+
         if (!$model) return -1;
 
         $model->is_active = ($model->is_active == 10 ? 0 : 10);
-        
+
         if ($model->update()) {
             LogsService::_set('Client - "'.$model->name.'" has been ' .($model->is_active == 10 ? 'activated' : 'deactivated'), 'client');
             return true;

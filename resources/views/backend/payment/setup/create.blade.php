@@ -3,10 +3,10 @@
 @section('title', 'Create Payment Setup')
 
 @section('content')
-@php 
+@php
 $currency_codes = config('app.addons.currency_code');
-$payment_options = config('app.addons.payment_options'); 
-$recurring_types = config('app.addons.recurring_type'); 
+$payment_options = config('app.addons.payment_options');
+$recurring_types = config('app.addons.recurring_type');
 @endphp
 <div class="container-fluid p-t-15 p-b-30">
     <form id="payment-setup-form" role="form" method="POST" action="{{ route('payment.setup.store') }}">
@@ -59,7 +59,7 @@ $recurring_types = config('app.addons.recurring_type');
                                     <label class="error">{{ $message }}</label>
                                 @enderror
                             </div>
-                        </div>  
+                        </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group required form-group-default @error('total') has-error @enderror">
@@ -70,20 +70,43 @@ $recurring_types = config('app.addons.recurring_type');
                                     <label class="error">{{ $message }}</label>
                                 @enderror
                             </div>
-                        </div>  
+                        </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-6">
+                    <div class="col-4">
                         <div class="form-group required form-group-default input-group @error('recurring_type') has-error @enderror">
                             <div class="form-input-group">
                                 <label>Payment Recurrence Type</label>
                                 <select name="recurring_type" class="full-width form-control select-recurrence @error('recurring_type') error @enderror" data-placeholder="" required>
                                     @foreach ($recurring_types as $key => $rctype)
                                     <option value="{{ $key }}" @if($key == 2) selected @endif>{{ $rctype }}</option>
-                                    @endforeach    
+                                    @endforeach
                                 </select>
                                 @error('recurring_type')
+                                    <label class="error">{{ $message }}</label>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group required form-group-default @error('no_of_payments') has-error @enderror">
+                            <label>No. of Payments (Installments) </label>
+                            <div class="controls">
+                                <input type="number" class="form-control @error('no_of_payments') error @enderror" name="no_of_payments"  placeholder="No of  Payment" value="{{ old('no_of_payments')}}"  autocomplete="off">
+                                @error('no_of_payments')
+                                    <label class="error">{{ $message }}</label>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-4">
+                        <div class="form-group required form-group-default @error('extended_days') has-error @enderror">
+                            <label>No of Extended Days</label>
+                            <div class="controls">
+                                <input type="number" class="form-control  @error('extended_days') error @enderror" name="extended_days"  placeholder="No Of  Extended Days"  autocomplete="off" value="{{ old('extended_days') }}">
+                                @error('extended_days')
                                     <label class="error">{{ $message }}</label>
                                 @enderror
                             </div>
@@ -93,12 +116,23 @@ $recurring_types = config('app.addons.recurring_type');
                         <div class="form-group required form-group-default @error('reference_date') has-error @enderror">
                             <label>Payment Reference Date</label>
                             <div class="controls">
-                                <input type="text" class="form-control datepicker @error('reference_date') error @enderror" name="reference_date" placeholder="Expiry Date" required autocomplete="off" value="{{ date('Y-m-d') }}">
+                                <input type="text" class="form-control datepicker @error('reference_date') error @enderror" name="reference_date" placeholder="Start Date" required autocomplete="off" value="{{ date('Y-m-d') }}">
                                 @error('reference_date')
                                     <label class="error">{{ $message }}</label>
                                 @enderror
                             </div>
-                        </div>  
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group required form-group-default @error('expire_date') has-error @enderror">
+                            <label> Expire Date </label>
+                            <div class="controls">
+                                <input type="text" class="form-control datepicker @error('expire_date') error @enderror" name="expire_date" placeholder="Expiry Date"  autocomplete="off">
+                                @error('expire_date')
+                                    <label class="error">{{ $message }}</label>
+                                @enderror
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group form-group-default">

@@ -107,6 +107,7 @@ Route::namespace('CronJob')->middleware("throttle:100,15")->group(function () {
     // Route::get('/cronjob/one-month/notify/monthly/{encrypt}', 'OneMonthNotifyController@monthly');
     // Route::get('/cronjob/support/encrypting/{text}', 'PaymentController@encrypting');
     // Route::get('/cronjob/test', 'PaymentController@test');
+    
 });
 
 Route::fallback(function () {

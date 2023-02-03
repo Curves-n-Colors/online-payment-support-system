@@ -28,6 +28,18 @@
                         @enderror
                     </div>
                 </div>
+
+                <div class="form-group required form-group-default @error('phone_no') has-error @enderror">
+                    <label>Phone</label>
+                    <div class="controls">
+                        <input type="text" class="form-control @error('phone_no') error @enderror" name="phone_no" placeholder="Phone" required autocomplete="off" autofocus value="{{ $data->phone_no ?? old('phone_no') }}">
+                        @error('phone_no')
+                            <label class="error">{{ $message }}</label>
+                        @enderror
+                    </div>
+                </div>
+
+
                 <div class="form-group form-group-default">
                     <label>Remarks</label>
                     <div class="controls">

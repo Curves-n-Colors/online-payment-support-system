@@ -10,6 +10,7 @@ use App\Http\Requests\PaymentSetupStore;
 use App\Http\Requests\PaymentSetupUpdate;
 use Illuminate\Support\Facades\Validator;
 use App\Services\Backend\PaymentSetupService;
+use App\Services\Backend\UserService;
 
 class PaymentSetupController extends Controller
 {
@@ -34,6 +35,7 @@ class PaymentSetupController extends Controller
 
     public function store(PaymentSetupStore $request)
     {
+
        if (PaymentSetupService::_storing($request)) {
             return redirect()->route('payment.setup.index')->with('success', 'The payment setup has been created.');
         }
@@ -76,7 +78,7 @@ class PaymentSetupController extends Controller
 
     public function send(Request $request, $uuid)
     {
-        if ($request->has('master_password') && User::_check_master($request->master_password)) {
+        if ($request->has('master_password') && UserService::_check_master($request->master_password)) {
             if ($request->has('entries')) {
                 if (PaymentSetupService::_sending($request->entries, $uuid)) {
                     return response()->json(['status' => true, 'link' => '', 'msg' => 'The payment link email(s) has been sent.']);
@@ -95,7 +97,7 @@ class PaymentSetupController extends Controller
         ]);
 
         if (!$validator->fails()) {
-            if ($request->has('master_password') && User::_check_master($request->master_password)) {
+            if ($request->has('master_password') && UserService::_check_master($request->master_password)) {
                 return response()->json(['status' => true, 'msg' => '']);
             }
             return response()->json(['status' => false, 'msg' => 'Sorry, PIN is not correct.']);

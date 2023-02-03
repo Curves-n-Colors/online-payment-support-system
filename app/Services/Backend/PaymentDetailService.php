@@ -46,7 +46,7 @@ class PaymentDetailService{
         }
         return false;
     }
-    
+
     public static function _refunding($req, $uuid)
     {
         if ($detail = self::_find($uuid)) {
