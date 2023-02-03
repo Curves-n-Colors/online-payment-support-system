@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Helpers\HBLPayment\Inquiry;
 use Illuminate\Database\Eloquent\Model;
+use App\Services\Backend\PaymentEntryService;
+use App\Services\Backend\PaymentDetailService;
 
 class HblPaymentResultResponse extends Model
 {
@@ -35,8 +37,9 @@ class HblPaymentResultResponse extends Model
                 'status' => $hbl_inital_response->payment_status
             ];
             $entry = PaymentEntry::where('uuid', $hbl_inital_response->payment_uuid)->where('is_active', 10)->first();
-            PaymentDetail::_storing($entry, $detail);
-            PaymentEntry::_deleting($entry->uuid);
+ 
+            PaymentDetailService::_storing($entry, $detail);
+            PaymentEntryService::_update_new_entry($entry->uuid);
         }
     }
 

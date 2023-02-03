@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Notification;
 use App\Notifications\SendPaymentLink;
 use Illuminate\Support\Str;
 use App\Models\PaymentEntry;
+use App\Models\PaymentSetup;
 
 class PaymentEntryService
 {
@@ -97,6 +98,31 @@ class PaymentEntryService
                 LogsService::_set('Payment Entry - ' . $model_title . ' has been deleted for Setup - ' . $setup_title, 'payment-entry');
                 return true;
             }
+        }
+        return false;
+    }
+
+    public static function _update_new_entry($uuid)
+    {
+        if ($model = self::_find($uuid)) {
+            $payment_setup_model = $model->setup;
+            $new_start_date = $model->end_date;
+            $new_end_date = date('Y-m-d', strtotime($new_start_date . ' + 1 month')); 
+
+            $old_title  = $model->title;
+            $index = strpos($old_title,"(");
+            $sub_text = substr($old_title,0,$index);
+
+            $new_title = $sub_text. ' ( '.$new_start_date.' to '.$new_end_date.' )';
+            $model->start_date = $new_start_date;
+            $model->end_date = $new_end_date;
+            $model->uuid     = Str::uuid()->toString();
+            $model->title   = $new_title;
+            $model->update();
+           
+            return true;
+           //dd($model); Payment Entry
+           //dd($model->setup); PAYMENT SETUP DETAILS
         }
         return false;
     }

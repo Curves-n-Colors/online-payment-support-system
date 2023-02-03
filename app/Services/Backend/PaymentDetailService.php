@@ -8,6 +8,8 @@ use App\Services\Backend\LogsService;
 use App\Notifications\SendPaymentStatus;
 use Illuminate\Support\Facades\Notification;
 
+use PDF;
+
 class PaymentDetailService{
     public static function _find($uuid)
     {
@@ -22,10 +24,10 @@ class PaymentDetailService{
     public static function _storing($data, $detail)
     {
         $model = new PaymentDetail();
-        $model->payment_setup_id = $data->setup->id;
+        $model->payment_setup_id = $data->payment_setup_id;
         $model->title            = $data->title;
         $model->client_id        = $data->client_id;
-        $model->email            = $data->email;
+        $model->email            = $data->email??NULL;
         $model->uuid             = $data->uuid;
         $model->total            = $data->total;
         $model->currency         = $data->currency;
@@ -38,8 +40,8 @@ class PaymentDetailService{
             $model->ref_code = config('app.addons.ref_code_prefix') . '-' . $model->id;
             $model->update();
 
-            Notification::route('mail', $model->email)->notify(new SendPaymentStatus($model));
-            LogsService::_set('Payment Detail - ' . $model->title . ' has been created for Setup - ' . $data->setup->title, 'payment-detail');
+            // Notification::route('mail', $model->email)->notify(new SendPaymentStatus($model));
+            // LogsService::_set('Payment Detail - ' . $model->title . ' has been created for Setup - ' . $data->setup->title, 'payment-detail');
             return true;
         }
         return false;
@@ -81,6 +83,17 @@ class PaymentDetailService{
                     }
                 }
             }
+        }
+        return false;
+    }
+
+    public static function _invoicing($uuid)
+    {
+        if ($detail = PaymentDetail::where('uuid', $uuid)->where('payment_status', config('app.addons.status_payment.COMPLETED'))->first()) {
+            $logo = 'https://climbalaya.com/images/logo/logo.png';
+            $pdf = PDF::setOptions(['dpi' => 150, 'isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true]); // , 'defaultFont' => 'sans-serif', 'images' => true
+            $pdf->loadView('pdf.invoice', ['logo' => $logo, 'data' => $detail]);
+            return $pdf->download('invoice.pdf');
         }
         return false;
     }
