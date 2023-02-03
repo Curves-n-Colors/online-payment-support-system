@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Payment Entry')
+@section('title', 'Expired Payment')
 
 @section('content')
 @php
@@ -20,13 +20,13 @@ $recurring_types = config('app.addons.recurring_type');
                         Payment Setups
                     </a>
                 </li>
-	            <li class="active">
-                    <a href="javascript:;" class="active">
+	            <li class=" ">
+                    <a href="javascript:;" class="">
                         Pending Payments
                     </a>
                 </li>
-                <li class="">
-                    <a href="{{ route('payment.expired')}}" class="">
+                <li class="active">
+                    <a href="{{ route('payment.expired')}}" class="active">
                         Expired Payments
                     </a>
                 </li>
@@ -76,8 +76,10 @@ $recurring_types = config('app.addons.recurring_type');
                                             <td>{{ $row->currency . ' ' . number_format($row->total, 2) }}</td>
                                             <td>{{ $row->end_date }}</td>
                                             <td>
-                                                @if ($row->is_active == 10)
-                                                <strong class="text-success">ACTIVE</strong>
+                                                @if ($row->is_expired == 10)
+                                                <strong class="text-success">EXPIRED</strong>
+                                                @elseif ($row->is_expired == 0 && $row->is_active == 10)
+                                                <strong class="text-danger">ACTIVE</strong>
                                                 @else
                                                 <strong class="text-danger">INACTIVE</strong>
                                                 @endif
@@ -86,13 +88,13 @@ $recurring_types = config('app.addons.recurring_type');
                                                 <button class="btn btn-primary m-b-5 btn-view-more" type="button">VIEW</button>
 
                                                 @if ($row->is_active == 10)
-                                                <button class="btn btn-complete m-b-5 btn-proceed-init" data-url="{{ route('payment.entry.send', [$row->uuid]) }}" type="button">RESEND</button>
-                                                <button class="btn btn-complete m-b-5 btn-proceed-init" data-url="{{ route('payment.entry.copy', [$row->uuid]) }}" type="button">COPY</button>
+                                                <button class="btn btn-complete m-b-5 btn-proceed-init" data-url=" " type="button"> EXTEND</button>
                                                 @endif
 
-                                                <button class="btn {{ $row->is_active == 10 ? 'btn-danger' : 'btn-success' }} m-b-5 btn-change-status" type="button" data-index="{{ $i }}">
-                                                    <span>{{ $row->is_active == 10 ? 'DEACTIVATE' : 'ACTIVATE' }}</span>
+                                                <button class="btn {{ $row->is_active == 10 ? 'btn-danger' : 'btn-success' }} m-b-5 btn-proceed-init"  data-url="" type="button" data-index="{{ $i }}">
+                                                    <span>{{ $row->is_active == 10 ? 'SUSPEND' : 'ACTIVE' }}</span>
                                                 </button>
+
                                                 <form action="{{ route('payment.entry.change.status', [$row->uuid]) }}" method="POST" class="change-status-form-{{ $i }}" style="display: none;">@csrf @method('PUT')</form>
 
                                                 <input type="hidden" data-title="entry_title" value="{{ $row->title }}" class="payment-item">

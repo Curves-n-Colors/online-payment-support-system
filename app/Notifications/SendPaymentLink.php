@@ -7,7 +7,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-use App\Models\EmailNotification;
 use App\Services\Backend\EmailNotificationService;
 
 class SendPaymentLink extends Notification

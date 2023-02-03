@@ -26,6 +26,11 @@ $recurring_types = config('app.addons.recurring_type');
                     </a>
                 </li>
                 <li class="">
+                    <a href="{{ route('payment.expired')}}" class="">
+                        Expired Payments
+                    </a>
+                </li>
+                <li class="">
                     <a href="{{ route('payment.detail.index') }}" class="">
                         Payment History
                     </a>
@@ -98,6 +103,12 @@ $recurring_types = config('app.addons.recurring_type');
                                                 <button class="btn btn-complete m-b-5 btn-proceed-init btn-get-entires" data-action="{{ route('payment.setup.entry', [$row->uuid]) }}" data-random="{{ $random }}" data-url="{{ route('payment.setup.send', [$row->uuid]) }}" type="button">SEND</button>
                                                 <a href="{{ route('payment.setup.edit', [$row->uuid]) }}" class="btn btn-info m-b-5">EDIT</a>
                                                 @endif
+                                                {{-- BUTTON TO TEST SENN EMAIL --}}
+                                                {{-- <form action="{{ route('payment.setup.send', [$row->uuid]) }}" method="POST">
+                                                    @csrf @method('PUT')
+                                                    <input type="hidden" name="entries" value="new">
+                                                    <button type="submit">SEND</button>
+                                                </form> --}}
 
                                                 <button class="btn {{ $row->is_active == 10 ? 'btn-danger' : 'btn-success' }} m-b-5 btn-change-status" type="button" data-index="{{ $i }}">
                                                     <span>{{ $row->is_active == 10 ? 'DEACTIVATE' : 'ACTIVATE' }}</span>

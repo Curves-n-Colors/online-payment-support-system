@@ -64,6 +64,8 @@ Route::namespace('Backend')->middleware('auth')->group(function () {
     Route::put('/payment/entry/{uuid}/send', 'PaymentEntryController@send')->name('payment.entry.send');
     Route::put('/payment/entry/{uuid}/copy', 'PaymentEntryController@copy')->name('payment.entry.copy');
 
+    Route::get('/payment/expired','PaymentExpiredController@payment_expired')->name('payment.expired');
+
     Route::get('/payment/details', 'PaymentDetailController@index')->name('payment.detail.index');
     Route::put('/payment/detail/{uuid}/refund', 'PaymentDetailController@refund')->name('payment.detail.refund');
     Route::get('/payment/detail/{uuid}/invoice', 'PaymentDetailController@invoice_download')->name('payment.detail.invoice');
@@ -107,7 +109,7 @@ Route::namespace('CronJob')->middleware("throttle:100,15")->group(function () {
     // Route::get('/cronjob/one-month/notify/monthly/{encrypt}', 'OneMonthNotifyController@monthly');
     // Route::get('/cronjob/support/encrypting/{text}', 'PaymentController@encrypting');
     // Route::get('/cronjob/test', 'PaymentController@test');
-    
+
 });
 
 Route::fallback(function () {

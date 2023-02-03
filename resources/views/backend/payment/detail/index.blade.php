@@ -3,7 +3,7 @@
 @section('title', 'Payment History')
 
 @section('content')
-@php 
+@php
 $payment_status = config('app.addons.payment_status');
 $status_payment = config('app.addons.status_payment');
 @endphp
@@ -24,6 +24,11 @@ $status_payment = config('app.addons.status_payment');
 	            <li class="">
                     <a href="{{ route('payment.entry.index') }}" class="">
                         Pending Payments
+                    </a>
+                </li>
+                <li class="">
+                    <a href="{{ route('payment.expired')}}" class="">
+                        Expired Payments
                     </a>
                 </li>
                 <li class="active">
@@ -97,7 +102,7 @@ $status_payment = config('app.addons.status_payment');
                                                 @if ($row->payment_type == 'NIBL' && $row->payment_status == $status_payment['COMPLETED'])
                                                 <button class="btn btn-danger m-b-5 btn-refund" data-url="{{ route('payment.detail.refund', $row->uuid) }}" type="button">REFUND</button>
                                                 @endif
-                                                
+
                                                 <input type="hidden" data-title="ref_code" value="{{ $row->ref_code }}" class="payment-item">
                                                 <input type="hidden" data-title="detail_title" value="{{ $row->title }}" class="payment-item">
                                                 <input type="hidden" data-title="setup_title" value="{{ $row->title }}" class="payment-item">
@@ -114,13 +119,13 @@ $status_payment = config('app.addons.status_payment');
                                                 <input type="hidden" value='{{ $row->contents }}' class="contents">
 
                                                 @if ($row->payment_type == 'NIBL')
-                                                    @php 
+                                                    @php
                                                     $transaction = collect($row->payment_nibl)->filter(function ($value, $key) {
                                                         return !in_array($key, ['id', 'uuid', 'created_at', 'updated_at']);
                                                     });
                                                 @endphp
                                                 @elseif ($row->payment_type == 'KHALTI')
-                                                    @php 
+                                                    @php
                                                     $transaction = collect($row->payment_khalti)->filter(function ($value, $key) {
                                                         return !in_array($key, ['id', 'uuid', 'created_at', 'updated_at']);
                                                     });
@@ -128,7 +133,7 @@ $status_payment = config('app.addons.status_payment');
                                                 @else
                                                     @php $transaction = []; @endphp
                                                 @endif
-                                                
+
                                                 <input type="hidden" value='{{ json_encode($transaction) }}' class="transactions">
                                             </td>
                                         </tr>

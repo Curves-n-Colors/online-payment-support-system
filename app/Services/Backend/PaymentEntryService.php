@@ -32,13 +32,13 @@ class PaymentEntryService
         return false;
     }
 
-    public static function _storing($data, $title, $date)
+    public static function _storing($data, $title, $client, $start_date, $end_date)
     {
         $model = new PaymentEntry();
         $model->payment_setup_id = $data->id;
         $model->title            = $title;
-        $model->client_id        = $data->client_id;
-        $model->email            = $data->email;
+        $model->client_id        = $client->client_id;
+        $model->email            = NULL;
         $model->uuid             = Str::uuid()->toString();
         $model->total            = $data->total;
         $model->currency         = $data->currency;
@@ -46,7 +46,9 @@ class PaymentEntryService
         $model->is_active        = 10;
         $model->user_id          = auth()->check() ? auth()->user()->id : 0;
         $model->payment_options  = $data->payment_options;
-        $model->payment_date     = date('Y-m-d', strtotime($date));
+        $model->payment_date     = NULL;//date('Y-m-d', strtotime($date));
+        $model->start_date       = date('Y-m-d', strtotime($start_date));
+        $model->end_date         = date('Y-m-d', strtotime($end_date));
 
         if ($model->save()) {
             LogsService::_set('Payment Entry - ' . $model->title . ' has been created for Setup - ' . $data->title, 'payment-entry');

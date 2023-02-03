@@ -18,7 +18,7 @@
 
 </head>
 <body class="fixed-header">
-    
+
     <div class="page-container">
 
         @include('includes.header')
@@ -28,7 +28,7 @@
             <div class="content">
                 @yield('content')
             </div>
-            
+
             @include('includes.footer')
 
         </div>
@@ -48,7 +48,7 @@
     <script src="{{ asset('assets/plugins/jquery/jquery-easy.js') }}" type="text/javascript"></script>
     <script src="{{ asset('assets/plugins/jquery-actual/jquery.actual.min.js') }}"></script>
     <script src="{{ asset('assets/js/notify.min.js') }}"></script>
-    
+
     <script type="text/javascript">
         // navbar menu collapse code when click anywhere in the document
         $(document).ready(function () {
@@ -58,7 +58,7 @@
                     $(".fixed-header").removeClass('menu-active');
                     $("div.btn-menu").removeClass('menu-active');
                     $("div.menu-overlay").removeClass('menu-open');
-                } 
+                }
             });
         });
     </script>
