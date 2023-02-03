@@ -6,6 +6,8 @@ use App\Notifications\SendPaymentLink;
 use Illuminate\Support\Str;
 use App\Models\PaymentEntry;
 use App\Models\PaymentSetup;
+use App\Notifications\SendReactivationMail;
+use App\Notifications\SendSuspendMail;
 
 class PaymentEntryService
 {
@@ -79,6 +81,55 @@ class PaymentEntryService
         return false;
     }
 
+    public static function _suspend_status_mail($uuid)
+    {
+        if ($model = self::_find($uuid)) {
+            $notify = [
+                'client_id' => $model->client->id,
+                'client'    => $model->client->name,
+                'email'     => $model->email,
+                'currency'  => $model->currency,
+                'total'     => number_format($model->total, 2),
+                'encrypt'   => PaymentSetupService::_encrypting($model->setup->uuid, $model->uuid),
+                'entry'     => $model->title,
+                'uuid'      => $model->uuid
+            ];
+
+            //Suspend Payment Entry
+            if( $model->is_active == 10)
+            {
+                Notification::route('mail', $notify['email'])->notify(new SendSuspendMail($notify));
+                LogsService::_set('Payment Entry - ' . $model->title . ' has been suspended - ' . $model->setup->title.' - For Client - ' .  $model->client->name , 'payment-entry');
+                $model->is_active = 0;
+                $model->save();
+                return [
+                    'status' =>true,
+                    'msg'    =>"Service suspended & Mail sent to client"
+                ];
+
+            }else{
+                // Reactivate Client
+                Notification::route('mail', $notify['email'])->notify(new SendReactivationMail($notify));
+                LogsService::_set('Payment Entry - ' . $model->title . ' has been reactivated - ' . $model->setup->title.' - For Client - ' .  $model->client->name , 'payment-entry');
+
+                $model->is_active  = 10;
+                $model->is_expired = 0;
+                $model->save();
+                return [
+                    'status' =>true,
+                    'msg'    =>"Payment entry has  reactivated"
+                ];
+            }
+
+
+        };
+
+        return [
+            'status' =>false,
+            'msg'    =>" "
+        ];
+    }
+
 
     public static function _copying($uuid)
     {
@@ -107,7 +158,7 @@ class PaymentEntryService
         if ($model = self::_find($uuid)) {
             $payment_setup_model = $model->setup;
             $new_start_date = $model->end_date;
-            $new_end_date = date('Y-m-d', strtotime($new_start_date . ' + 1 month')); 
+            $new_end_date = date('Y-m-d', strtotime($new_start_date . ' + 1 month'));
 
             $old_title  = $model->title;
             $index = strpos($old_title,"(");
@@ -119,7 +170,7 @@ class PaymentEntryService
             $model->uuid     = Str::uuid()->toString();
             $model->title   = $new_title;
             $model->update();
-           
+
             return true;
            //dd($model); Payment Entry
            //dd($model->setup); PAYMENT SETUP DETAILS
