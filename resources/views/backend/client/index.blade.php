@@ -23,6 +23,11 @@
                     </a>
                 </li>
                 <li class="">
+                    <a href="{{ route('payment.expired')}}" class="">
+                        Expired Payments
+                    </a>
+                </li>
+                <li class="">
                     <a href="{{ route('payment.detail.index') }}" class="">
                         Payment History
                     </a>
@@ -38,7 +43,7 @@
                     <div class="card m-b-0">
                         <div class="card-header">
                             <div class="card-title full-width">
-                                <h5 class="no-margin">Clients 
+                                <h5 class="no-margin">Clients
                                     <a href="{{ route('client.create') }}" class="btn btn-info pull-right m-r-5">Create Client</a>
                                 </h5>
                             </div>

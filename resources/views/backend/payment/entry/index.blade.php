@@ -3,8 +3,8 @@
 @section('title', 'Payment Entry')
 
 @section('content')
-@php 
-$recurring_types = config('app.addons.recurring_type'); 
+@php
+$recurring_types = config('app.addons.recurring_type');
 @endphp
 <div class="container-fluid">
     <div class="row m-t-30">
@@ -23,6 +23,11 @@ $recurring_types = config('app.addons.recurring_type');
 	            <li class="active">
                     <a href="javascript:;" class="active">
                         Pending Payments
+                    </a>
+                </li>
+                <li class="">
+                    <a href="{{ route('payment.expired')}}" class="">
+                        Expired Payments
                     </a>
                 </li>
                 <li class="">
@@ -79,7 +84,7 @@ $recurring_types = config('app.addons.recurring_type');
                                             </td>
                                             <td class="list-item">
                                                 <button class="btn btn-primary m-b-5 btn-view-more" type="button">VIEW</button>
-                                                
+
                                                 @if ($row->is_active == 10)
                                                 <button class="btn btn-complete m-b-5 btn-proceed-init" data-url="{{ route('payment.entry.send', [$row->uuid]) }}" type="button">RESEND</button>
                                                 {{-- BUTTON TO TEST SENN EMAIL --}}

@@ -36,6 +36,11 @@
                     <strong>Payment History</strong>
                 </div>
             </a>
+            <a href="{{ route('payment.detail.index') }}" class="text-info">
+                <div class="padding-10">
+                    <strong> Expired Payment</strong>
+                </div>
+            </a>
             <a href="{{ route('email.index') }}" class="text-info">
                 <div class="padding-10">
                     <strong>Email Notifications</strong>

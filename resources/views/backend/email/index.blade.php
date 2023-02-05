@@ -22,6 +22,13 @@
                         Pending Payments
                     </a>
                 </li>
+
+                <li class="">
+                    <a href="{{ route('payment.expired')}}" class="">
+                        Expired Payments
+                    </a>
+                </li>
+
                 <li class="">
                     <a href="{{ route('payment.detail.index') }}" class="">
                         Payment History
@@ -63,7 +70,7 @@
 
                                                         <li class="p-l-25">"client" : "{{ $row->client->name }}",</li>
                                                         <li class="p-l-25">"email" : "{{ $row->email }}",</li>
-                                                        
+
                                                         @foreach ($listing as $key => $item)
                                                         @if($key == 'link')
                                                         <li class="p-l-25">"{{ $key }}" : "<span data-copy="{{ $item }}" data-title="Link" class="btn-copy-to-clipboard text-danger cursor-pointer">click here to copy the link</span>",</li>
@@ -71,7 +78,7 @@
                                                         <li class="p-l-25">"{{ $key }}" : "{{ $item }}",</li>
                                                         @endif
                                                         @endforeach
-                                                        
+
                                                         <li class="p-l-25">"sent_at" : "{{ $row->created_at }}"</li>
                                                         <li>}</li>
                                                     </ul>

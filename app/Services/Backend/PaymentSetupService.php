@@ -94,9 +94,6 @@ class PaymentSetupService{
             $model->payment_options = $req->has('payment_options') ? json_encode($req->payment_options) : '';
             $model->reference_date  = date('Y-m-d', strtotime($req->reference_date));
             $model->recurring_type  = $req->recurring_type;
-            $model->expire_date     = date('Y-m-d', strtotime($req->expire_date));
-            $model->no_of_payments  = $req->no_of_payments;
-            $model->extended_days   = $req->extended_days;
             $model->update();
 
             $model->clients->each->delete();
@@ -134,7 +131,7 @@ class PaymentSetupService{
         return false;
     }
 
-    public static function _entries($uuid)
+        public static function _entries($uuid)
     {
         if ($model = self::_find($uuid)) {
             $entries = null;
@@ -202,7 +199,9 @@ class PaymentSetupService{
             $model = $data['model'];
 
             $notify = [
-               
+                'client_id' => $model->client->id,
+                'client'    => $model->client->name,
+                'email'     => $model->email,
                 'currency'  => $model->currency,
                 'total'     => number_format($model->total, 2),
                 'encrypt'   => '',
@@ -210,11 +209,7 @@ class PaymentSetupService{
                 'uuid'      => ''
             ];
 
-            // dd($model->clients);
-            // dd($data['entries']);
-
             if ($data['entries']) {
-                dd('CHA');
                 $selected_entries = array_filter(array_map(function (array $item) use ($entries) {
                     if (in_array($item['uuid'], $entries)) {
                         return $item;
@@ -230,37 +225,23 @@ class PaymentSetupService{
                     LogsService::_set('Payment Entry - ' . $ent['title'] . ' has been sent for setup - ' . $model->title, 'payment-entry');
                 }
             }
+
             if (in_array('new', $entries)) {
-            
                 $new   = $data['new_entry'];
-                $end_date  = $new['new_payment_date'];
-                $start_date  = $new['old_payment_date'];
-                $title = $data['rctype'] . ' PAYMENT (' . ($start_date ? ($start_date . ' to ') : '') . $end_date . ')';
-                $clients = $model->clients;
+                $date  = $new['new_payment_date'];
+                $title = $data['rctype'] . ' PAYMENT (' . ($new['old_payment_date'] ? ($new['old_payment_date'] . ' to ') : '') . $new['new_payment_date'] . ')';
 
-                // dd($clients[0]->client);
-                try{
-                    DB::beginTransaction();
-                    foreach($clients as $c){
-                        $entry = PaymentEntryService::_storing($model, $title, $c, $start_date, $end_date);
-                        $notify['uuid']      = $entry->uuid;
-                        $notify['entry']     = $entry->title;
-                        $notify['encrypt']   = self::_encrypting($model->uuid, $entry->uuid);
-                        $notify['client_id'] = $entry->client->id;
-                        $notify['client']    = $entry->client->name;
-                        $notify['email']     = $entry->client->email;
-                        Notification::route('mail', $notify['email'])->notify(new SendPaymentLink($notify));
-                        LogsService::_set('Payment Entry - ' . $title . ' has been sent for Setup - ' . $model->title, 'payment-entry');
-                        DB::commit();
-                    }
-                }
-                catch(Exception $e)
-                {
-                    DB::rollback();
+                if ($entry = PaymentEntryService::_storing($model, $title, $date)) {
+                    $notify['uuid']  = $entry->uuid;
+                    $notify['entry'] = $entry->title;
+                    $notify['encrypt'] = self::_encrypting($model->uuid, $entry->uuid);
+
+                    Notification::route('mail', $notify['email'])->notify(new SendPaymentLink($notify));
+                    LogsService::_set('Payment Entry - ' . $title . ' has been sent for Setup - ' . $model->title, 'payment-entry');
+                    $model->delete();
+                } else {
                     LogsService::_set('Payment Entry - ' . $title . ' could not created for Setup - ' . $model->title, 'payment-entry');
-                    return false;
                 }
-
             }
             return true;
         }

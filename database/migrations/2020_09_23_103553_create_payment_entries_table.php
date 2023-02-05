@@ -19,7 +19,7 @@ class CreatePaymentEntriesTable extends Migration
             $table->string('title', 100)->unique();
             $table->integer('user_id')->unsigned();
             $table->integer('client_id')->unsigned();
-            $table->string('email');
+            $table->string('email')->nullable();
             $table->uuid('uuid')->unique();
             $table->boolean('is_active');
             $table->json('contents')->nullable();
