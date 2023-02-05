@@ -348,7 +348,7 @@ class PaymentSetup extends Model
         }
 
         $detail = null;
-        $entry = PaymentEntry::where('uuid', $params[2])->first();
+        $entry = PaymentEntry::where('uuid', $params[2])->where('is_expired',0)->first();
 
         if (!$entry) {
             $detail = PaymentDetail::where('uuid', $params[2])->first();

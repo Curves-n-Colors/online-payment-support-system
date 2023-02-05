@@ -19,6 +19,7 @@ use App\Http\Controllers\Controller;
 use App\Models\HblPaymentResultResponse;
 use App\Notifications\SendPaymentErrorLog;
 use Illuminate\Support\Facades\Notification;
+use App\Services\Backend\PaymentSetupService;
 
 class ResultController extends Controller
 {
@@ -37,7 +38,8 @@ class ResultController extends Controller
     }
     public function success($encrypt, Request $request)
     {
-        $check = PaymentSetup::_validating($encrypt);
+        // $check = PaymentSetup::_validating($encrypt);
+        $check = PaymentSetupService::_validating($encrypt);
         if ($check['status'] == 200) {
             $detail = $check['detail'];
             return view('frontend.result.success_summary', compact('detail'));
