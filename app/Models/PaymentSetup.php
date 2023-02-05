@@ -70,10 +70,10 @@ class PaymentSetup extends Model
             $model->reference_date  = date('Y-m-d', strtotime($req->reference_date));
             $model->recurring_type  = $req->recurring_type;
             $model->save();
-          
-            
+
+
             foreach($req->client as $key => $value){
-               
+
                 $client = new PaymentHasClient();
                 $client->payment_setup_id = $model->id;
                 $client->client_id = $value;
@@ -88,7 +88,7 @@ class PaymentSetup extends Model
         }
         DB::commit();
         return true;
-    
+
     }
 
     public static function _storensend($req)
@@ -161,10 +161,10 @@ class PaymentSetup extends Model
             $model->recurring_type  = $req->recurring_type;
             $model->update();
 
-            $model->clients->each->delete();   
-            
+            $model->clients->each->delete();
+
             foreach($req->client as $key => $value){
-               
+
                 $client = new PaymentHasClient();
                 $client->payment_setup_id = $model->id;
                 $client->client_id = $value;
@@ -361,9 +361,14 @@ class PaymentSetup extends Model
         //     return [ 'status' => 'link-inactive', 'entry' => $entry, 'detail' => $detail ];
         // }
 
+        if($entry && $entry->is_active == 0 && $entry->is_expired){
+            return ['status' => 200, 'entry' => $entry, 'detail' => $detail];
+        }
+
         if ($entry && $entry->is_active != 10) {
             return ['status' => 'link-inactive', 'entry' => $entry, 'detail' => $detail];
         }
+
 
         if ($detail && $detail->payment_status == config('app.addons.status_payment.COMPLETED')) {
             return ['status' => 200, 'entry' => $entry, 'detail' => $detail];

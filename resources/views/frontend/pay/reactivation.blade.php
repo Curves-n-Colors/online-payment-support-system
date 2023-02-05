@@ -13,12 +13,22 @@ $payment_opts = ($entry->payment_options != '') ? json_decode($entry->payment_op
 <main class="page payment-page">
 	<section class="payment-form dark d-flex align-items-center min-vh-100">
 		<div class="container">
+            @if (session()->has('msg'))
+                <div class="alert alert-success">
+                    <p>{{ session()->get('msg') }}</p>
+                </div>
+            @endif
+
 			<div class="block-heading">
 				<h2>Service Suspended</h2>
 			</div>
-			<form action=" " method="POST" id="checkout-form">
+
+
+
+
+            <form action="{{ route('payment.reactivate',[$encrypt])}}" method="POST" id="checkout-form">
 				@csrf
-				@method('PUT')
+
 				<div class="products">
 
 					<h3 class="title">Hello {{ $entry->client->name }}</h3>
@@ -30,7 +40,7 @@ $payment_opts = ($entry->payment_options != '') ? json_decode($entry->payment_op
 					@if ($payment_options)
 					<div class="row">
 						<div class="form-group col-sm-12">
-							<button type="submit" class="btn btn-primary btn-block" id="payment-button"> Reactivation Request</button>
+							<button type="submit" class="btn btn-primary btn-block" id="payment-button">@if($entry['is_reactivate_request'])  Request To Reactive Service Sent @else Request To Reactive Service  @endif </button>
 							@if($khalti)
 							<input type="hidden" name="khalti_token" id="khalti-token">
 							<input type="hidden" name="khalti_account" id="khalti-account">
@@ -40,6 +50,8 @@ $payment_opts = ($entry->payment_options != '') ? json_decode($entry->payment_op
 					@endif
 				</div>
 			</form>
+
+
 			<div class="block-heading">
 				<h4><a href="{{ env('CLIENT_DOMAIN') }}" target="_blank">{{ env('APP_NAME') }}</a></h4>
 			</div>

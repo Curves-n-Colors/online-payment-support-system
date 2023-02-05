@@ -6,13 +6,10 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use App\Services\Backend\EmailNotificationService;
 
-
-class SendSuspendMail extends Notification
+class SendExtendMail extends Notification
 {
     use Queueable;
-
     public $notify;
     /**
      * Create a new notification instance.
@@ -43,14 +40,12 @@ class SendSuspendMail extends Notification
      */
     public function toMail($notifiable)
     {
-        self::toDatabaseCustom($this->notify);
         return (new MailMessage)
-            ->subject('Service Suspended')
+            ->subject('Payment  Due Date Extended')
             ->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'))
             ->greeting('Hello ' . $this->notify['client'] . ',')
-            ->line('Your service has beend suspended for '. $this->notify['entry'])
-            ->line('Please click on the below buton for Reactivation Request')
-            ->action('Reactivation Request ', route('payment.reactivate', [$this->notify['encrypt']]))
+            ->line('Your payment  date is extended upto '.$this->notify['extended_date'].'. Your payment due is ' . $this->notify['currency'] . ' ' . $this->notify['total'])
+            ->action('Pay Now', route('pay.index', [$this->notify['encrypt']]))
             ->line('Thank you for your business!');
     }
 
@@ -65,20 +60,5 @@ class SendSuspendMail extends Notification
         return [
             //
         ];
-    }
-
-    public static function toDatabaseCustom($notify)
-    {
-        return EmailNotificationService::_storing((object) [
-            'uuid'      => $notify['uuid'],
-            'client_id' => $notify['client_id'],
-            'email'     => $notify['email'],
-            'body'      => [
-                'subject'  => 'Service Suspended',
-                'greeting' => 'Hello ' . $notify['client'],
-                'message'  => 'Your service has beend suspended for '. $notify['entry'],
-                'link'     => route('payment.reactivate', [$notify['encrypt']])
-            ]
-        ]);
     }
 }

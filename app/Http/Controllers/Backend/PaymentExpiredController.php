@@ -29,6 +29,9 @@ class PaymentExpiredController extends Controller
         if ($request->has('to')) {
             $entries->whereDate('payment_date', '<=', filter_var($request->to, FILTER_SANITIZE_STRING));
         }
+        if ($request->has('reactivate_request')) {
+            $entries->where('is_reactivate_request',10);
+        }
 
         $data = $entries->get();
         $clients = Client::select('uuid', 'name')->get();
@@ -64,6 +67,36 @@ class PaymentExpiredController extends Controller
             }
         }
         return redirect()->route('result.error', [$check['status']]);
+    }
+
+    public function reactivation_notify(Request $request, $encrypt)
+    {
+        $check = PaymentSetup::_validating($encrypt);
+        if ($check['status'] == 200) {
+            $entry = $check['entry'];
+            $detail = $check['detail'];
+
+            if(PaymentEntryService::_reactivate_request_mail($entry))
+            {
+                return redirect(route('payment.reactivate',$encrypt))->with(['msg' => 'Request for service reactive sent successfully']);
+            }
+
+
+        }
+        return redirect()->route('result.error', [$check['status']]);
+    }
+
+    public function extend(Request $request ,$uuid)
+    {
+
+        if ($request->has('master_password') && UserService::_check_master($request->master_password)) {
+            if (PaymentEntryService::_extend_mail($uuid)) {
+
+                return response()->json(['status' => true, 'msg' => "Payment entry extended successfully"]);
+            }
+            return response()->json(['status' => false, 'msg' => 'Something went wrong.Please try again later.']);
+        }
+        return response()->json(['status' => false, 'msg' => 'Invalid Master Password']);
     }
 
 }

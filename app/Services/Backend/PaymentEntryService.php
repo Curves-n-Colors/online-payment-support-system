@@ -6,7 +6,9 @@ use App\Notifications\SendPaymentLink;
 use Illuminate\Support\Str;
 use App\Models\PaymentEntry;
 use App\Models\PaymentSetup;
+use App\Notifications\SendExtendMail;
 use App\Notifications\SendReactivationMail;
+use App\Notifications\SendReactiveMailToAdmin;
 use App\Notifications\SendSuspendMail;
 
 class PaymentEntryService
@@ -175,6 +177,62 @@ class PaymentEntryService
            //dd($model); Payment Entry
            //dd($model->setup); PAYMENT SETUP DETAILS
         }
+        return false;
+    }
+
+    public static function _reactivate_request_mail($entry)
+    {
+        if ($model = self::_find($entry['uuid'])){
+            $model->is_reactivate_request = 10;
+            $model->save();
+
+            $notify = [
+                'client_id' => $model->client->id,
+                'client'    => $model->client->name,
+                'email'     => $model->client->email,
+                'currency'  => $model->currency,
+                'total'     => number_format($model->total, 2),
+                'encrypt'   => PaymentSetupService::_encrypting($model->setup->uuid, $model->uuid),
+                'entry'     => $model->title,
+                'uuid'      => $model->uuid
+            ];
+
+            Notification::route('mail', $notify['email'])->notify(new SendReactiveMailToAdmin($notify));
+            LogsService::_set('Payment Reactive Request for - ' . $model->setup->title . ' has been received from client - ' . $model->client->name, 'payment-entry-reactive');
+            return true;
+        }
+
+        return false;
+    }
+
+    public static function _extend_mail($uuid)
+    {
+
+        if ($model = self::_find($uuid)){
+            $model->is_extended = 10;
+            $model->save();
+
+            $extended_days = ' + '.$model->setup->extended_days.' day';
+            $end_date = $model->end_date;
+            $new_payment_date = date('Y-m-d', strtotime($end_date . $extended_days));
+
+            $notify = [
+                'client_id' => $model->client->id,
+                'client'    => $model->client->name,
+                'email'     => $model->client->email,
+                'currency'  => $model->currency,
+                'total'     => number_format($model->total, 2),
+                'encrypt'   => PaymentSetupService::_encrypting($model->setup->uuid, $model->uuid),
+                'entry'     => $model->title,
+                'uuid'      => $model->uuid,
+                'extended_date' => $new_payment_date
+            ];
+
+            Notification::route('mail', $notify['email'])->notify(new SendExtendMail($notify));
+            LogsService::_set('Payment date  extended for - ' . $model->setup->title . ' for client - ' . $model->client->name, 'payment-entry-reactive');
+            return true;
+        }
+
         return false;
     }
 
