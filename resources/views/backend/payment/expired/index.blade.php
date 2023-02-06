@@ -20,8 +20,8 @@ $recurring_types = config('app.addons.recurring_type');
                         Payment Setups
                     </a>
                 </li>
-	            <li class=" ">
-                    <a href="javascript:;" class="">
+                <li class="">
+                    <a href="{{ route('payment.entry.index') }}" class="">
                         Pending Payments
                     </a>
                 </li>
@@ -77,7 +77,7 @@ $recurring_types = config('app.addons.recurring_type');
                                             <td>{{ $row->end_date }}</td>
                                             <td>
                                                 @if ($row->is_expired == 10)
-                                                <strong class="text-success">EXPIRED</strong>
+                                                <strong class="text-success">@if($row->is_extended == 10 && $row->is_active) EXTENDED @elseif($row->is_extended == 10 && $row->is_active == 0) SUSPENDED @else EXPIRED @endif </strong>
                                                 @elseif ($row->is_expired == 0 && $row->is_active == 10)
                                                 <strong class="text-danger">ACTIVE</strong>
                                                 @else
@@ -87,9 +87,13 @@ $recurring_types = config('app.addons.recurring_type');
                                             <td class="list-item">
                                                 <button class="btn btn-primary m-b-5 btn-view-more" type="button">VIEW</button>
 
-                                                @if ($row->is_active == 10)
-                                                <button class="btn btn-complete m-b-5 btn-proceed-init" data-url=" " type="button"> EXTEND</button>
+                                                @if ($row->is_active == 10 && $row->is_extended == 10)
+                                                    <button class="btn btn-complete m-b-5 "  type="button" data-index="{{ $i }}"  type="button"> EXTENDED</button>
+                                                @elseif ($row->is_active != 0)
+                                                    <button class="btn btn-complete m-b-5 btn-proceed-init" data-url="{{ route('payment.entry.extend', [$row->uuid]) }}" type="button" data-index="{{ $i }}"  type="button"> EXTEND</button>
                                                 @endif
+
+                                                <button class="btn btn-complete m-b-5 btn-proceed-init" data-url="{{ route('payment.entry.send.reactivate.link', [$row->uuid]) }}"  type="button" data-index="{{ $i }}"  type="button"> SEND REACTIVE LINK </button>
 
                                                 <button class="btn {{ $row->is_active == 10 ? 'btn-danger' : 'btn-success' }} m-b-5 btn-proceed-init"  data-url="{{ route('payment.entry.suspend', [$row->uuid]) }}"  type="button" data-index="{{ $i }}"  @if( $row->is_active == 0) title="Suspended. Activate Now ?" @endif>
                                                     <span>{{ $row->is_active == 10 ? 'SUSPEND' : 'ACTIVE' }}</span>

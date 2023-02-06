@@ -66,7 +66,11 @@ Route::namespace('Backend')->middleware('auth')->group(function () {
 
     Route::get('/payment/expired','PaymentExpiredController@payment_expired')->name('payment.expired');
     Route::put('/payment/entry/{uuid}/suspend-status', 'PaymentExpiredController@suspend_status')->name('payment.entry.suspend');
-    Route::get('reactivation/{encrypt}','PaymentExpiredController@reactivation')->name('payment.reactivation');
+    Route::get('reactivate/{encrypt}','PaymentExpiredController@reactivate')->name('payment.reactivate');
+    Route::post('reactivate/{encrypt}','PaymentExpiredController@reactivation_notify');
+    Route::put('payment/{uuid}/extend','PaymentExpiredController@extend')->name('payment.entry.extend');
+    Route::put('payment/{uuid}/reactivate-link','PaymentExpiredController@reactivate_link')->name('payment.entry.send.reactivate.link');
+
 
 
     Route::get('/payment/details', 'PaymentDetailController@index')->name('payment.detail.index');
