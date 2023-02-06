@@ -7,10 +7,10 @@ use Carbon\Carbon;
 
 use App\Models\Logs;
 use App\Models\PayNibl;
-use Illuminate\Support\Str;
 use App\Models\PayKhalti;
 use App\Models\PaymentHBL;
 use App\Models\PaymentNibl;
+use Illuminate\Support\Str;
 use App\Models\PaymentEntry;
 use App\Models\PaymentSetup;
 use Illuminate\Http\Request;
@@ -19,11 +19,12 @@ use App\Models\PaymentDetail;
 use App\Models\PaymentKhalti;
 use App\Http\Requests\PayRequest;
 use App\Http\Requests\NiblRequest;
+use App\Models\HblPaymentResponse;
 use App\Helpers\HBLPayment\Payment;
 use App\Http\Controllers\Controller;
-use App\Models\HblPaymentResponse;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use App\Services\Backend\TempAdvanceDetailsService;
 
 
 class PayController extends Controller
@@ -141,19 +142,39 @@ class PayController extends Controller
 
     public function hbl_pay($entry, $encrypt, $request)
     {
-
+       
         $invoiceNo = str_pad(Carbon::now()->timestamp, 20, 0, STR_PAD_LEFT);
+        if(isset($request->is_advance)){
+            //GENERATE NEW END DATE
+            $end_date = date('Y-m-d', strtotime($entry->start_date . ' + '.$request->selected_month.' month'));
+
+            $amount = $entry['total']*$request->selected_month;
+
+            $title = $entry->title;
+            $index = strpos($title,"(");
+            $type= substr($title,0,$index);
+            
+            $title = $type.'('.$entry->start_date.' TO '.$end_date.')';
+        }else{
+            $amount = $entry['total'];
+            $title = $entry['title'];
+        }
+        // dd($request->all());
 
         $pay = new Payment(
             $orderNo = $invoiceNo,
-            $amount = $entry['total'],
-            $productDescription =  $entry['title'],
-            $amountText = str_pad($entry['total'] * 100, 12, 0, STR_PAD_LEFT),
+            $amount = $amount,
+            $productDescription =  $title,
+            $amountText = str_pad($amount * 100, 12, 0, STR_PAD_LEFT),
             $currencyCode = $entry['currency'],
             $officeId = config('app.addons.payment_options.hbl.merchant_id'),
             $encryptCode = $encrypt, 
         );
         $response = $pay->ExecuteJose();
+
+        if(isset($request->is_advance)){
+            TempAdvanceDetailsService::_storing($entry['uuid'], $request->selected_month, $response);
+        }
 
         if($response){
             HblPaymentResponse::_save_response($response,$entry['uuid']);

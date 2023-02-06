@@ -35,6 +35,8 @@ class PaymentDetailService{
         $model->payment_date     = date('Y-m-d', strtotime($data->payment_date));
         $model->payment_status   = $detail['status'];
         $model->payment_type     = $detail['type'];
+        $model->is_advance       = isset($detail['advance_month'])??0;
+        $model->advance_months   = isset($detail['advance_month'])?$detail['advance_month']:0;
 
         if ($model->save()) {
             $model->ref_code = config('app.addons.ref_code_prefix') . '-' . $model->id;
