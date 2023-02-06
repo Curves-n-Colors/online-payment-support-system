@@ -53,7 +53,7 @@ class PaymentExpiredController extends Controller
     }
 
 
-    public function reactivation(Request $request, $encrypt)
+    public function reactivate(Request $request, $encrypt)
     {
         $check = PaymentSetup::_validating($encrypt);
         if ($check['status'] == 200) {
@@ -93,6 +93,20 @@ class PaymentExpiredController extends Controller
             if (PaymentEntryService::_extend_mail($uuid)) {
 
                 return response()->json(['status' => true, 'msg' => "Payment entry extended successfully"]);
+            }
+            return response()->json(['status' => false, 'msg' => 'Something went wrong.Please try again later.']);
+        }
+        return response()->json(['status' => false, 'msg' => 'Invalid Master Password']);
+    }
+
+    public function reactivate_link(Request $request,$uuid)
+    {
+
+        if ($request->has('master_password') && UserService::_check_master($request->master_password)) {
+            $data = PaymentEntryService::_reactivate_mail_to_client($uuid);
+            if ($data['status']) {
+
+                return response()->json(['status' => true, 'msg' => 'Rective link sent successfully']);
             }
             return response()->json(['status' => false, 'msg' => 'Something went wrong.Please try again later.']);
         }

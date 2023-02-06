@@ -365,6 +365,8 @@ class PaymentSetup extends Model
             return ['status' => 200, 'entry' => $entry, 'detail' => $detail];
         }
 
+
+
         if ($entry && $entry->is_active != 10) {
             return ['status' => 'link-inactive', 'entry' => $entry, 'detail' => $detail];
         }

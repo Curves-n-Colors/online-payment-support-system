@@ -50,7 +50,7 @@ class SendSuspendMail extends Notification
             ->greeting('Hello ' . $this->notify['client'] . ',')
             ->line('Your service has beend suspended for '. $this->notify['entry'])
             ->line('Please click on the below buton for Reactivation Request')
-            ->action('Reactivation Request ', route('payment.reactivate', [$this->notify['encrypt']]))
+            ->action('Service Reactivation Request', route('payment.reactivate', [$this->notify['encrypt']]))
             ->line('Thank you for your business!');
     }
 

@@ -44,11 +44,11 @@ class SendReactiveMailToAdmin extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                ->subject('Service Reactiva Request  : '.$this->notify['entry'])
+                ->subject('Service Reactivation  Request  : '.$this->notify['entry'])
                 ->from(env('MAIL_FROM_ADDRESS'), $this->notify['email'])
-                ->greeting('Client Name ' . $this->notify['client'] . ',')
+                ->greeting('Client Name : ' . $this->notify['client'] . ',')
                 ->line('Payment Reactive request for Entry Name '. $this->notify['entry'])
-                ->action('Reactive Service ', route('payment.expired'));
+                ->action('Reactivate Service ', route('payment.expired'));
 
     }
 

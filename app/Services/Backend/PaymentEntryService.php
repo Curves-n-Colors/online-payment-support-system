@@ -132,6 +132,37 @@ class PaymentEntryService
         ];
     }
 
+    public static function _reactivate_mail_to_client($uuid)
+    {
+        if ($model = self::_find($uuid)) {
+                $notify = [
+                    'client_id' => $model->client->id,
+                    'client'    => $model->client->name,
+                    'email'     => $model->email,
+                    'currency'  => $model->currency,
+                    'total'     => number_format($model->total, 2),
+                    'encrypt'   => PaymentSetupService::_encrypting($model->setup->uuid, $model->uuid),
+                    'entry'     => $model->title,
+                    'uuid'      => $model->uuid
+                ];
+
+                Notification::route('mail', $notify['email'])->notify(new SendSuspendMail($notify));
+                LogsService::_set('Payment Entry - ' . $model->title . ' reactivate mail send for  - ' . $model->setup->title.' - For Client - ' .  $model->client->name , 'payment-entry');
+                $model->is_active = 0;
+                $model->save();
+                return [
+                    'status' =>true,
+                ];
+
+
+        };
+
+        return [
+            'status' =>false,
+            'msg'    =>" "
+        ];
+    }
+
 
     public static function _copying($uuid)
     {
@@ -198,7 +229,7 @@ class PaymentEntryService
             ];
 
             Notification::route('mail', $notify['email'])->notify(new SendReactiveMailToAdmin($notify));
-            LogsService::_set('Payment Reactive Request for - ' . $model->setup->title . ' has been received from client - ' . $model->client->name, 'payment-entry-reactive');
+            LogsService::_set('Service Reactivation Request for - ' . $model->setup->title . ' has been received from client - ' . $model->client->name, 'payment-entry-reactive');
             return true;
         }
 
