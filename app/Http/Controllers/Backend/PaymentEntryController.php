@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Backend;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\Client;
 
 use App\Models\PaymentEntry;
-use App\Models\Client;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Services\Backend\UserService;
 use App\Services\Backend\PaymentEntryService;
-use App\User;
 
 class PaymentEntryController extends Controller
 {

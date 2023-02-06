@@ -15,7 +15,7 @@ $payment_opts = ($data->payment_options != '') ? json_decode($data->payment_opti
         @csrf
         @method('PUT')
         <div class="row">
-            <div class="col-sm-12 col-md-12 col-lg-5 col-xlg-4">
+            <div class="col-sm-12 col-md-12 col-lg-6 col-xlg-6">
                 <h5>Update Payment Setup</h5>
                 <div class="form-group form-group-default">
                     <label>Payment Setup Title</label>
@@ -188,7 +188,7 @@ $payment_opts = ($data->payment_options != '') ? json_decode($data->payment_opti
                     </div>
                 </div>
             </div>
-            <div class="col-sm-12 col-md-12 col-lg-7 col-xlg-8">
+            <div class="col-sm-12 col-md-12 col-lg-6 col-xlg-6">
                 <div class="payment-container m-t-45">
                     @php $idx = 0; @endphp
                     @forelse ($contents as $content)

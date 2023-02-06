@@ -63,6 +63,7 @@ $status_payment = config('app.addons.status_payment');
                                         <th width="50">Payment Date</th>
                                         <th width="50">Paid Date</th>
                                         <th width="50">Status</th>
+                                        <th width="50">Advance</th>
                                         <th width="100">Option</th>
                                     </tr>
                                 </thead>
@@ -93,6 +94,14 @@ $status_payment = config('app.addons.status_payment');
                                                 @else
                                                     <strong class="text-danger">N/A</strong>
                                                 @endif
+                                            </td>
+                                            <td>
+                                                @if($row->is_advance)
+                                                <strong class="text-complete">{{ $row->advance_months }} MONTHS</strong>
+                                                @else
+                                                <strong class="text-danger">N/A</strong>
+                                                @endif
+
                                             </td>
                                             <td class="list-item">
                                                 <button class="btn btn-primary m-b-5 btn-view-more" type="button">VIEW</button>

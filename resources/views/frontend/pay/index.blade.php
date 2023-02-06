@@ -21,7 +21,7 @@ $payment_opts = ($entry->payment_options != '') ? json_decode($entry->payment_op
 				@csrf
 				@method('PUT')
 				<div class="products">
-					<p>{{ $entry->title }}</p>
+					<p class="title">{{ $entry->title }}</p>
 					<h3 class="title">{{ $entry->client->name }}</h3>
 					@forelse ($contents as $content)
 					<div class="item">
@@ -39,7 +39,10 @@ $payment_opts = ($entry->payment_options != '') ? json_decode($entry->payment_op
 						<div class="item-name">No details available</div>
 					</div>
 					@endforelse
-					<div class="total">Total<span class="price">{{ $entry->currency }} {{ number_format($entry->total, 2) }}</span></div>
+					<div class="advance_payment">
+						<div class="total">Advance Payment <span class="price">x <span id="no_months">2</span> MONTHS</div>
+					</div>
+					<div class="total">Total<span class="price">{{ $entry->currency }} <span id="amount">{{ number_format($entry->total, 2) }}</span></span></div>
 				</div>
 				<div class="card-details">
 					<h3 class="title">Payment Option</h3>
@@ -63,6 +66,20 @@ $payment_opts = ($entry->payment_options != '') ? json_decode($entry->payment_op
 					@error('payment_type')
                         <label class="error">{{ $message }}</label>
                     @enderror
+					<div class="advance">
+						<div class="item form-group" id="advance_month">
+							<label for="selected_month"><strong>Select no. of months for the advance pay.</strong></label>
+							<select class="form-control" id="selected_month" name="selected_month" autocomplete="off">
+								@for($i=2; $i<=12; $i++)
+								<option value={{ $i }}>{{ $i.' MONTHS' }}</option>
+								@endfor
+							</select>
+						</div>
+						<div class="item form-check">
+							<input type="checkbox" class="form-check-input" id="is_advance" name="is_advance" value="1" autocomplete="off">
+							<label class="form-check-label" for="is_advance">Do you want to advance pay?</label>
+						</div>
+					</div>
 					@if ($payment_options)
 					<div class="row">
 						<div class="form-group col-sm-12">
@@ -75,6 +92,7 @@ $payment_opts = ($entry->payment_options != '') ? json_decode($entry->payment_op
 					</div>
 					@endif
 				</div>
+				
 			</form>
 			<div class="block-heading">
 				<h4><a href="{{ env('CLIENT_DOMAIN') }}" target="_blank">{{ env('APP_NAME') }}</a></h4>
@@ -86,7 +104,55 @@ $payment_opts = ($entry->payment_options != '') ? json_decode($entry->payment_op
 @endsection
 
 @section('page-specific-script')
+<script>
+	var amount = {!!json_encode(number_format($entry->total, 2)) !!};
+	var title = {!!json_encode($entry->title) !!};
 
+	var subTitle = title.indexOf('(');
+
+	var paymentTitle = title.substring(0, subTitle)
+	console.log(paymentTitle);
+
+
+	var startDate = {!!json_encode($entry->start_date) !!};
+
+	
+	$('#advance_month').hide();
+	$('.advance_payment').hide();
+
+	$('#is_advance').click(function(){
+		if($(this).is(':checked')){
+			$('#advance_month').show();
+		}else{
+			$('#advance_month').hide();
+			$('.advance_payment').hide();
+			$('#amount').text(amount);
+			$('p.title').text(title);
+		}
+	});
+
+	$('#selected_month').change(function(){
+		var value = $(this).val();
+		
+		var advanceAmount = parseFloat(value * amount).toFixed(2);
+		if(value>0){
+			$('.advance_payment').show();
+			$("#no_months").text(value);
+			$('#amount').text(advanceAmount);
+			//ADD DATE IN STARTING DATE ONLY WHEN MONTH IS SELECTED
+			const date = new Date(startDate);
+			date.setMonth(date.getMonth() + parseInt(value));
+			var endDate=date.toISOString().slice(0, 10);
+			var newTitle = `${paymentTitle} ( ${startDate} TO ${endDate})`;
+			$('p.title').text(newTitle);
+			console.log(newTitle);
+
+		}else{
+			$('.advance_payment').hide();
+		}
+		console.log(advanceAmount);
+	})
+</script>
 @if($khalti)
 <script src="{{ $payment_options['KHALTI']['script'] }}"></script>
 <script>
@@ -131,6 +197,8 @@ $payment_opts = ($entry->payment_options != '') ? json_decode($entry->payment_op
         	checkout_form.submit();
         }
     }
+
+
 </script>
 @endif
 

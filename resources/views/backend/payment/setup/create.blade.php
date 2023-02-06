@@ -13,7 +13,7 @@ $recurring_types = config('app.addons.recurring_type');
         @csrf
         <input type="hidden" id="setup_option" name="payment_option" value="0">
         <div class="row">
-            <div class="col-sm-12 col-md-12 col-lg-5 col-xlg-4">
+            <div class="col-sm-12 col-md-12 col-lg-6 col-xlg-6">
                 <h5>Create Payment Setup</h5>
                 <div class="form-group form-group-default">
                     <label>Payment Setup Title</label>
@@ -190,7 +190,7 @@ $recurring_types = config('app.addons.recurring_type');
                     </div>
                 </div>
             </div>
-            <div class="col-sm-12 col-md-12 col-lg-7 col-xlg-8">
+            <div class="col-sm-12 col-md-12 col-lg-6 col-xlg-6">
                 <div class="payment-container m-t-45">
                     <div class="form-group-attached payment-content m-b-10">
                         <div class="row">

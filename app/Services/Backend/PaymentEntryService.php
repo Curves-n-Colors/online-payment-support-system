@@ -68,7 +68,7 @@ class PaymentEntryService
             $notify = [
                 'client_id' => $model->client->id,
                 'client'    => $model->client->name,
-                'email'     => $model->email,
+                'email'     => $model->client->email,
                 'currency'  => $model->currency,
                 'total'     => number_format($model->total, 2),
                 'encrypt'   => PaymentSetupService::_encrypting($model->setup->uuid, $model->uuid),
@@ -190,18 +190,25 @@ class PaymentEntryService
     {
         if ($model = self::_find($uuid)) {
             $payment_setup_model = $model->setup;
+
             $new_start_date = $model->end_date;
             $new_end_date = date('Y-m-d', strtotime($new_start_date . ' + 1 month'));
 
-            $old_title  = $model->title;
-            $index = strpos($old_title,"(");
-            $sub_text = substr($old_title,0,$index);
+            if($new_end_date > $payment_setup_model->expire_date){
+                $model->is_expired =10;
+                $model->is_active  =0;
+            }else{
+                $old_title  = $model->title;
+                $index = strpos($old_title,"(");
+                $sub_text = substr($old_title,0,$index);
 
-            $new_title = $sub_text. ' ( '.$new_start_date.' to '.$new_end_date.' )';
-            $model->start_date = $new_start_date;
-            $model->end_date = $new_end_date;
-            $model->uuid     = Str::uuid()->toString();
-            $model->title   = $new_title;
+                $new_title = $sub_text. ' ( '.$new_start_date.' to '.$new_end_date.' )';
+
+                $model->start_date = $new_start_date;
+                $model->end_date = $new_end_date;
+                $model->uuid     = Str::uuid()->toString();
+                $model->title   = $new_title;
+            }
             $model->update();
 
             return true;

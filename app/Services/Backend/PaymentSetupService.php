@@ -4,6 +4,7 @@ namespace App\Services\Backend;
 
 use Exception;
 use Illuminate\Support\Str;
+use App\Models\PaymentEntry;
 use App\Models\PaymentSetup;
 use App\Models\PaymentHasClient;
 use Illuminate\Support\Facades\DB;
@@ -282,7 +283,7 @@ class PaymentSetupService{
         }
 
         $detail = null;
-        $entry = PaymentEntryService::_find($params[2]);
+        $entry = PaymentEntry::where('uuid', $params[2])->where('is_expired',0)->first();
 
         if (!$entry) {
             $detail = PaymentDetailService::_find($params[2]);

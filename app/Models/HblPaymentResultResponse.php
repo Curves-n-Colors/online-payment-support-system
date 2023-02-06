@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\TempAdvanceDetails;
 use App\Helpers\HBLPayment\Inquiry;
 use Illuminate\Database\Eloquent\Model;
 use App\Services\Backend\PaymentEntryService;
@@ -37,7 +38,21 @@ class HblPaymentResultResponse extends Model
                 'status' => $hbl_inital_response->payment_status
             ];
             $entry = PaymentEntry::where('uuid', $hbl_inital_response->payment_uuid)->where('is_active', 10)->first();
- 
+            //FOR ADVANCE PAY;
+            $has_advance = TempAdvanceDetails::where('payment_uuid',$hbl_inital_response->payment_uuid)->where('pid', $model->pid)
+                                                ->where('order_no', $model->order_no)
+                                                // ->latest()
+                                                ->first();
+            if($has_advance){
+                $entry->title       = $has_advance->title;
+                $entry->start_date  = $has_advance->start_date;
+                $entry->end_date    = $has_advance->end_date;
+                $entry->total       = $has_advance->amount;
+                $entry->update();
+
+                $detail['advance_month'] = $has_advance->months;
+            }
+            
             PaymentDetailService::_storing($entry, $detail);
             PaymentEntryService::_update_new_entry($entry->uuid);
         }

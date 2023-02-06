@@ -87,6 +87,11 @@ $recurring_types = config('app.addons.recurring_type');
 
                                                 @if ($row->is_active == 10)
                                                 <button class="btn btn-complete m-b-5 btn-proceed-init" data-url="{{ route('payment.entry.send', [$row->uuid]) }}" type="button">RESEND</button>
+                                                {{-- BUTTON TO TEST SENN EMAIL --}}
+                                                 {{-- <form action="{{ route('payment.entry.send', [$row->uuid]) }}" method="POST">
+                                                    @csrf @method('PUT')
+                                                    <button type="submit">RESEND</button>
+                                                </form> --}}
                                                 <button class="btn btn-complete m-b-5 btn-proceed-init" data-url="{{ route('payment.entry.copy', [$row->uuid]) }}" type="button">COPY</button>
                                                 @endif
 
