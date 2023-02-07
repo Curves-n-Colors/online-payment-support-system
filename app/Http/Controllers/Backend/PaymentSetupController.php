@@ -77,7 +77,7 @@ class PaymentSetupController extends Controller
 
     public function send(Request $request, $uuid)
     {
-        if (1) {
+        if ($request->has('master_password') && UserService::_check_master($request->master_password)) {
             if ($request->has('entries')) {
                 if (PaymentSetupService::_sending($request->entries, $uuid)) {
                     return response()->json(['status' => true, 'link' => '', 'msg' => 'The payment link email(s) has been sent.']);

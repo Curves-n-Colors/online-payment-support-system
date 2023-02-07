@@ -200,11 +200,7 @@ class PaymentSetupService{
         if ($data = self::_entries($uuid)) {
 
             $model = $data['model'];
-
             $notify = [
-                'client_id' => $model->client->id,
-                'client'    => $model->client->name,
-                'email'     => $model->email,
                 'currency'  => $model->currency,
                 'total'     => number_format($model->total, 2),
                 'encrypt'   => '',
@@ -229,21 +225,24 @@ class PaymentSetupService{
                 }
             }
 
-            if (in_array('new', $entries)) {
+             if (in_array('new', $entries)) {
                 $new   = $data['new_entry'];
-                $date  = $new['new_payment_date'];
                 $title = $data['rctype'] . ' PAYMENT (' . ($new['old_payment_date'] ? ($new['old_payment_date'] . ' to ') : '') . $new['new_payment_date'] . ')';
-
-                if ($entry = PaymentEntryService::_storing($model, $title, $date)) {
-                    $notify['uuid']  = $entry->uuid;
-                    $notify['entry'] = $entry->title;
-                    $notify['encrypt'] = self::_encrypting($model->uuid, $entry->uuid);
-
-                    Notification::route('mail', $notify['email'])->notify(new SendPaymentLink($notify));
-                    LogsService::_set('Payment Entry - ' . $title . ' has been sent for Setup - ' . $model->title, 'payment-entry');
-                    $model->delete();
-                } else {
-                    LogsService::_set('Payment Entry - ' . $title . ' could not created for Setup - ' . $model->title, 'payment-entry');
+                foreach($model->clients as $client){
+                    if ($entry = PaymentEntryService::_storing($model, $title, $client, $new)) {
+                        $notify['uuid']  = $entry->uuid;
+                        $notify['client_id']  = $client->client_id;
+                        $notify['client']  = $client->client->name;
+                        $notify['entry'] = $entry->title;
+                        $notify['email'] = $client->client->email;
+                        $notify['encrypt'] = self::_encrypting($model->uuid, $entry->uuid);
+    
+                        Notification::route('mail', $notify['email'])->notify(new SendPaymentLink($notify));
+                        LogsService::_set('Payment Entry - ' . $title . ' has been sent for Setup - ' . $model->title, 'payment-entry');
+                    }else{
+                        LogsService::_set('Payment Entry - ' . $title . ' could not created for Setup - ' . $model->title, 'payment-entry');
+                    }
+                    
                 }
             }
             return true;
