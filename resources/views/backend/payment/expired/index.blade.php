@@ -83,6 +83,11 @@ $recurring_types = config('app.addons.recurring_type');
                                                 @else
                                                 <strong class="text-danger">INACTIVE</strong>
                                                 @endif
+
+                                                @if($row->is_completed)
+                                                <br>
+                                                <strong class="text-warning">COMPLETED</strong>
+                                                @endif
                                             </td>
                                             <td class="list-item">
                                                 <button class="btn btn-primary m-b-5 btn-view-more" type="button">VIEW</button>
@@ -93,11 +98,13 @@ $recurring_types = config('app.addons.recurring_type');
                                                     <button class="btn btn-complete m-b-5 btn-proceed-init" data-url="{{ route('payment.entry.extend', [$row->uuid]) }}" type="button" data-index="{{ $i }}"  type="button"> EXTEND</button>
                                                 @endif
 
+                                                @if(!$row->is_completed)
                                                 <button class="btn btn-complete m-b-5 btn-proceed-init" data-url="{{ route('payment.entry.send.reactivate.link', [$row->uuid]) }}"  type="button" data-index="{{ $i }}"  type="button"> SEND REACTIVE LINK </button>
 
                                                 <button class="btn {{ $row->is_active == 10 ? 'btn-danger' : 'btn-success' }} m-b-5 btn-proceed-init"  data-url="{{ route('payment.entry.suspend', [$row->uuid]) }}"  type="button" data-index="{{ $i }}"  @if( $row->is_active == 0) title="Suspended. Activate Now ?" @endif>
                                                     <span>{{ $row->is_active == 10 ? 'SUSPEND' : 'ACTIVE' }}</span>
                                                 </button>
+                                                @endif
 
                                                 <form action="{{ route('payment.entry.change.status', [$row->uuid]) }}" method="POST" class="change-status-form-{{ $i }}" style="display: none;">@csrf @method('PUT')</form>
 

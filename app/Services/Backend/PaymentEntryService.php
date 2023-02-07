@@ -195,8 +195,9 @@ class PaymentEntryService
             $new_end_date = date('Y-m-d', strtotime($new_start_date . ' + 1 month'));
 
             if($new_end_date > $payment_setup_model->expire_date){
-                $model->is_expired =10;
-                $model->is_active  =0;
+                $model->is_expired   = 10;
+                $model->is_active    = 0;
+                $model->is_completed = 10;
             }else{
                 $old_title  = $model->title;
                 $index = strpos($old_title,"(");
