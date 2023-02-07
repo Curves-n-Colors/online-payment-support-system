@@ -93,7 +93,9 @@ $recurring_types = config('app.addons.recurring_type');
                                                     <button class="btn btn-complete m-b-5 btn-proceed-init" data-url="{{ route('payment.entry.extend', [$row->uuid]) }}" type="button" data-index="{{ $i }}"  type="button"> EXTEND</button>
                                                 @endif
 
-                                                <button class="btn btn-complete m-b-5 btn-proceed-init" data-url="{{ route('payment.entry.send.reactivate.link', [$row->uuid]) }}"  type="button" data-index="{{ $i }}"  type="button"> SEND REACTIVE LINK </button>
+                                                @if ($row->is_active == 0)
+                                                    <button class="btn btn-complete m-b-5 send-reactivate-link" data-url="{{ route('payment.entry.send.reactivate.link', [$row->uuid]) }}"  type="button" data-index="{{ $i }}"  type="button"> SEND REACTIVE LINK </button>
+                                                @endif
 
                                                 <button class="btn {{ $row->is_active == 10 ? 'btn-danger' : 'btn-success' }} m-b-5 btn-proceed-init"  data-url="{{ route('payment.entry.suspend', [$row->uuid]) }}"  type="button" data-index="{{ $i }}"  @if( $row->is_active == 0) title="Suspended. Activate Now ?" @endif>
                                                     <span>{{ $row->is_active == 10 ? 'SUSPEND' : 'ACTIVE' }}</span>

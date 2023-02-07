@@ -132,9 +132,50 @@ class PaymentEntryService
         ];
     }
 
-    public static function _reactivate_mail_to_client($uuid)
+    public static function _reactivate_mail_to_client($request,$uuid)
     {
         if ($model = self::_find($uuid)) {
+
+                //Create a new entry after reactivation
+                $model->deactivate_remark = $request->deactivate_remark;
+                $model->is_payment_deactivate = 10;
+                $model->save();
+
+                //create new entry after reactivation
+                 $start_date =  $request->reactivate_date;
+                 $end_date   = null;
+                 $rctype = config('app.addons.recurring_type.' . $model->setup->recurring_type);
+                 if ($rctype == 'ONETIME') {
+                     $end_date   = null;
+
+                } else {
+                    if ($rctype == 'YEARLY') {
+                        $timing = ' + 1 year';
+                    } else if ($rctype == 'MONTHLY') {
+                        $timing = ' + 1 month';
+                    } else {
+                        $timing = '';
+                    }
+                    $end_date = date('Y-m-d', strtotime($start_date . $timing));
+                }
+
+                $new_entry = new PaymentEntry();
+                $new_entry->payment_setup_id = $model->payment_setup_id;
+                $new_entry->title            = $rctype. ' PAYMENT (' . $start_date . ' to ' . $end_date . ')';
+                $new_entry->user_id          = $model->user_id;
+                $new_entry->client_id        = $model->client_id;
+                $new_entry->email            = $model->email;
+                $new_entry->uuid             = Str::uuid()->toString();
+                $new_entry->is_active        = 10;
+                $new_entry->contents         = $model->contents;
+                $new_entry->total            = $model->total;
+                $new_entry->currency         = $model->currency;
+                $new_entry->payment_options = $model->payment_options;
+                $new_entry->payment_date     = null;
+                $new_entry->start_date       = $request->reactivate_date;
+                $new_entry->end_date         = $end_date;
+                $new_entry->save();
+
                 $notify = [
                     'client_id' => $model->client->id,
                     'client'    => $model->client->name,
@@ -146,15 +187,12 @@ class PaymentEntryService
                     'uuid'      => $model->uuid
                 ];
 
-                Notification::route('mail', $notify['email'])->notify(new SendSuspendMail($notify));
-                LogsService::_set('Payment Entry - ' . $model->title . ' reactivate mail send for  - ' . $model->setup->title.' - For Client - ' .  $model->client->name , 'payment-entry');
-                $model->is_active = 0;
+                // Notification::route('mail', $notify['email'])->notify(new SendSuspendMail($notify));
+                // LogsService::_set('Payment Entry - ' . $model->title . ' reactivate mail send for  - ' . $model->setup->title.' - For Client - ' .  $model->client->name , 'payment-entry');
                 $model->save();
                 return [
                     'status' =>true,
                 ];
-
-
         };
 
         return [
