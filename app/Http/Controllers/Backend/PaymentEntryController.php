@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\Backend\UserService;
 use App\Services\Backend\PaymentEntryService;
+use Carbon\Carbon;
 
 class PaymentEntryController extends Controller
 {
@@ -30,6 +31,17 @@ class PaymentEntryController extends Controller
         }
 
         $data = $entries->get();
+        
+        if($request->has('pending')){
+            $data=$entries->where('start_date', '<',Carbon::now())->get();
+        }
+
+        if($request->has('upcoming')){
+            $data=$entries->where('start_date', '>',Carbon::now())->get();
+        }
+        
+        
+        // dd($pending_data, $upcoming_data);
 
         $clients = Client::select('uuid', 'name')->get();
         return view('backend.payment.entry.index', compact('data', 'clients'));

@@ -66,6 +66,7 @@ $payment_opts = ($entry->payment_options != '') ? json_decode($entry->payment_op
 					@error('payment_type')
                         <label class="error">{{ $message }}</label>
                     @enderror
+					
 					@if(isset($diff) and $diff>1)
 					<div class="advance">
 						<div class="item form-group" id="advance_month">
@@ -83,6 +84,7 @@ $payment_opts = ($entry->payment_options != '') ? json_decode($entry->payment_op
 						</div>
 					</div>
 					@endif
+					
 					@if ($payment_options)
 					<div class="row">
 						<div class="form-group col-sm-12">
