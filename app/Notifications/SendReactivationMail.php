@@ -47,6 +47,9 @@ class SendReactivationMail extends Notification
             ->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'))
             ->greeting('Hello ' . $this->notify['client'] . ',')
             ->line('Your service has beend reactivated for '. $this->notify['entry'])
+            ->line('Your payment due is ' . $this->notify['currency'] . ' ' . $this->notify['total'])
+            ->line('Please click on the pay now button below to make your payment')
+            ->action('Pay Now', route('pay.index', [$this->notify['encrypt']]))
             ->line('Thank you for your business!');
     }
 

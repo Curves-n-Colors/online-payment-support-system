@@ -177,18 +177,18 @@ class PaymentEntryService
                 $new_entry->save();
 
                 $notify = [
-                    'client_id' => $model->client->id,
-                    'client'    => $model->client->name,
-                    'email'     => $model->email,
-                    'currency'  => $model->currency,
-                    'total'     => number_format($model->total, 2),
-                    'encrypt'   => PaymentSetupService::_encrypting($model->setup->uuid, $model->uuid),
-                    'entry'     => $model->title,
-                    'uuid'      => $model->uuid
+                    'client_id' => $new_entry->client->id,
+                    'client'    => $new_entry->client->name,
+                    'email'     => $new_entry->email,
+                    'currency'  => $new_entry->currency,
+                    'total'     => number_format($new_entry->total, 2),
+                    'encrypt'   => PaymentSetupService::_encrypting($new_entry->setup->uuid, $new_entry->uuid),
+                    'entry'     => $new_entry->title,
+                    'uuid'      => $new_entry->uuid
                 ];
 
-                // Notification::route('mail', $notify['email'])->notify(new SendSuspendMail($notify));
-                // LogsService::_set('Payment Entry - ' . $model->title . ' reactivate mail send for  - ' . $model->setup->title.' - For Client - ' .  $model->client->name , 'payment-entry');
+                Notification::route('mail', $notify['email'])->notify(new SendReactivationMail($notify));
+                LogsService::_set('Payment Entry - ' . $model->title . ' reactivate mail send for  - ' . $model->setup->title.' - For Client - ' .  $model->client->name , 'payment-entry');
                 $model->save();
                 return [
                     'status' =>true,
