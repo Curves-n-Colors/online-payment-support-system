@@ -34,7 +34,6 @@ class PaymentSetupController extends Controller
 
     public function store(PaymentSetupStore $request)
     {
-
        if (PaymentSetupService::_storing($request)) {
             return redirect()->route('payment.setup.index')->with('success', 'The payment setup has been created.');
         }
@@ -52,6 +51,7 @@ class PaymentSetupController extends Controller
 
     public function update(PaymentSetupUpdate $request, $uuid)
     {
+
         $update = PaymentSetupService::_updating($request, $uuid);
         if ($update) {
             return redirect()->route('payment.setup.index')->with('success', 'The payment setup has been updated.');

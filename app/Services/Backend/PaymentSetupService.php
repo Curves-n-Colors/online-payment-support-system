@@ -50,7 +50,7 @@ class PaymentSetupService{
             $model->user_id    = auth()->user()->id;
             $model->payment_options = $req->has('payment_options') ? json_encode($req->payment_options) : '';
             $model->reference_date  = date('Y-m-d', strtotime($req->reference_date));
-            $model->expire_date     = date('Y-m-d', strtotime($req->expire_date));
+            $model->expire_date     = $req->expire_date ? date('Y-m-d', strtotime($req->expire_date)) : null;
             $model->no_of_payments  = $req->no_of_payments;
             $model->extended_days   = $req->extended_days;
             $model->recurring_type  = $req->recurring_type;
@@ -94,7 +94,7 @@ class PaymentSetupService{
             $model->payment_options = $req->has('payment_options') ? json_encode($req->payment_options) : '';
             $model->reference_date  = date('Y-m-d', strtotime($req->reference_date));
             $model->recurring_type  = $req->recurring_type;
-            $model->expire_date     = date('Y-m-d', strtotime($req->expire_date));
+            $model->expire_date     = $req->expire_date  ? date('Y-m-d', strtotime($req->expire_date)) : null;
             $model->no_of_payments  = $req->no_of_payments;
             $model->extended_days   = $req->extended_days;
             $model->update();
