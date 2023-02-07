@@ -101,9 +101,8 @@ class PaymentExpiredController extends Controller
 
     public function reactivate_link(Request $request,$uuid)
     {
-
         if ($request->has('master_password') && UserService::_check_master($request->master_password)) {
-            $data = PaymentEntryService::_reactivate_mail_to_client($uuid);
+            $data = PaymentEntryService::_reactivate_mail_to_client($request ,$uuid);
             if ($data['status']) {
 
                 return response()->json(['status' => true, 'msg' => 'Rective link sent successfully']);

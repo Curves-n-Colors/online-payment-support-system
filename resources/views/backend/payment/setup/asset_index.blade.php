@@ -117,6 +117,64 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade stick-up show" id="reactivate-modal" data-backdrop="static" data-keyboard="false" style="padding: 0 !important;">
+    <div class="modal-dialog modal-sm" style="max-width: 500px; margin: 0 auto;">
+        <div class="modal-content">
+            <div class="modal-header clearfix text-left">
+                <h5>Enter Your Master PIN</h5>
+                <p>Please verify your access before proceeding</p>
+            </div>
+            <div class="modal-body">
+                <form action="" method="POST" id="reactivate-form">
+                    @csrf
+                    @method('PUT')
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group-attached m-b-15" id="list-entries" style="display:none;"></div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group form-group-default">
+                                <label> Select Reactivation Date </label>
+                                <input type="date" class="form-control" required autofocus placeholder="Remark" autocomplete="off"  name="reactivate_date">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group form-group-default">
+                                <label> Enter Reactivation Remark </label>
+                                <input type="text" class="form-control" required autofocus placeholder="Remark" autocomplete="off"  name="deactivate_remark">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group form-group-default">
+                                <label>Enter Your Master PIN</label>
+                                <input type="password" class="form-control" required autofocus placeholder="Password" autocomplete="off" name="master_password" id="master-auth-password-reactivate">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <button type="submit" id="payment-send-proceed-btn" data-random="" class="btn btn-lg btn-primary btn-block m-t-5 btn-proceed-reactivate">Proceed</button>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-lg btn-danger btn-block m-t-5" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <div class="modal fade slide-right show" id="show-details-modal" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-sm" style="max-width: 800px; margin: 0 auto;">
         <div class="modal-content-wrapper">
@@ -192,13 +250,13 @@ $(document).on('click', '.btn-view-more', function (e) {
     $list_item.find(".payment-item").each( function() {
         detail[$(this).data('title')] = $(this).val();
     });
-    
-    var contents = JSON.parse($list_item.find('.contents').val()); 
+
+    var contents = JSON.parse($list_item.find('.contents').val());
     document.querySelector('#payment-detail').innerHTML = JSON.stringify(detail, null, 3);
     document.querySelector('#payment-contents').innerHTML = JSON.stringify(contents, null, 3);
 
     var transactions = $list_item.find('.transactions').val();
-    
+
     if (typeof transactions != 'undefined' && transactions != '[]') {
         $('#payment-transaction').parents('.row').show();
         document.querySelector('#payment-transaction').innerHTML = JSON.stringify(JSON.parse(transactions), null, 3);
