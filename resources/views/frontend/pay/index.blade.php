@@ -66,20 +66,25 @@ $payment_opts = ($entry->payment_options != '') ? json_decode($entry->payment_op
 					@error('payment_type')
                         <label class="error">{{ $message }}</label>
                     @enderror
+					
+					@if(isset($diff) and $diff>1)
 					<div class="advance">
 						<div class="item form-group" id="advance_month">
 							<label for="selected_month"><strong>Select no. of months for the advance pay.</strong></label>
 							<select class="form-control" id="selected_month" name="selected_month" autocomplete="off">
-								@for($i=2; $i<=12; $i++)
+								@for($i=2; $i<=$diff; $i++)
 								<option value={{ $i }}>{{ $i.' MONTHS' }}</option>
 								@endfor
 							</select>
 						</div>
+						
 						<div class="item form-check">
 							<input type="checkbox" class="form-check-input" id="is_advance" name="is_advance" value="1" autocomplete="off">
 							<label class="form-check-label" for="is_advance">Do you want to advance pay?</label>
 						</div>
 					</div>
+					@endif
+					
 					@if ($payment_options)
 					<div class="row">
 						<div class="form-group col-sm-12">

@@ -31,13 +31,29 @@ class PayController extends Controller
 {
     public function index(Request $request, $encrypt)
     {
+
         $check = PaymentSetup::_validating($encrypt);
         if ($check['status'] == 200) {
             $entry = $check['entry'];
+           
             $detail = $check['detail'];
 
+            //FOR NO OF MONTHS FOR ADVANCE PAY
+            $diff = 0;
+            if(isset($entry->start_date) and isset($entry->setup->expire_date)){
+                $start_date = strtotime($entry->start_date);
+                $end_date = strtotime($entry->setup->expire_date);
+                $year1 = date('Y', $start_date);
+                $year2 = date('Y', $end_date);
+                
+                $month1 = date('m', $start_date);
+                $month2 = date('m', $end_date);
+                
+                $diff = (($year2 - $year1) * 12) + ($month2 - $month1);
+            }
+            // dd($entry->start_date,  $entry->setup->expire_date, $diff);
             if ($entry) {
-                return view('frontend.pay.index', compact('encrypt', 'entry'));
+                return view('frontend.pay.index', compact('encrypt', 'entry', 'diff'));
             } else if ($detail) {
                 return redirect()->route('result.success', [$encrypt]);
             }
