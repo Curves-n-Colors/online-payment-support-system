@@ -16,7 +16,7 @@ class CreatePaymentEntriesTable extends Migration
         Schema::create('payment_entries', function (Blueprint $table) {
             $table->id();
             $table->integer('payment_setup_id')->unsigned();
-            $table->string('title', 100)->unique();
+            $table->string('title', 100);
             $table->integer('user_id')->unsigned();
             $table->integer('client_id')->unsigned();
             $table->string('email')->nullable();

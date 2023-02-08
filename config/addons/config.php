@@ -25,8 +25,15 @@ return [
 		'WEEKLY'   => 2,
 		'MONTHLY'  => 3,
 		'QUARTERLY'=> 4,
-		'YEARLY'   => 5		
+		'YEARLY'   => 5
 	],
+
+    'sparrow' => [
+        'token'            => 'bqcdhRTETd8R8j0jygXm',
+        'identity'         => 'ThamesIntl',
+        'request_url'      => 'http://api.sparrowsms.com/v2/sms/',
+        'credit_check_url' => 'http://api.sparrowsms.com/v2/credit/?token=bqcdhRTETd8R8j0jygXm'
+    ],
 
 	'payment_status' => [
 		0  => 'PENDING',
@@ -246,7 +253,7 @@ return [
 errors.100
 => this condition is triggered when a payment is successful and system deactivated the payment link
 => in pay.index route it is redirect as link deactived error
-=> but in result.success it is considered as payment successful 
+=> but in result.success it is considered as payment successful
 
 
 https://unpkg.com/khalti-checkout-web@latest/dist/khalti-checkout.iffe.js

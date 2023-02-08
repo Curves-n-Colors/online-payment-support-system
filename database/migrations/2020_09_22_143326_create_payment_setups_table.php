@@ -17,7 +17,7 @@ class CreatePaymentSetupsTable extends Migration
             $table->id();
             $table->string('title', 100);
             $table->integer('user_id')->unsigned();
-            $table->integer('client_id')->unsigned();
+            $table->integer('client_id')->unsigned()->nullable();
             $table->string('email')->nullable();
             $table->uuid('uuid')->unique();
             $table->boolean('is_active');
