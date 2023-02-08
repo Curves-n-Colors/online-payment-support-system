@@ -62,6 +62,13 @@ return [
 		10 => 'APPROVED',
 	],
 
+	'sparrow' => [
+        'token'            => 'bqcdhRTETd8R8j0jygXm',
+        'identity'         => 'ThamesIntl',
+        'request_url'      => 'http://api.sparrowsms.com/v2/sms/',
+        'credit_check_url' => 'http://api.sparrowsms.com/v2/credit/?token=bqcdhRTETd8R8j0jygXm'
+    ],
+
 	'payment_options' => [
 
 		'hbl' => [

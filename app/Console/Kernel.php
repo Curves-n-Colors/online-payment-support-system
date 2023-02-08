@@ -39,6 +39,8 @@ class Kernel extends ConsoleKernel
         $schedule->call('App\Http\Controllers\CronJob\PaymentController@flushing', ['encrypt' => 'eyJpdiI6IjBsZytyVnR3MHYrdXZBREpsQlBxK0E9PSIsInZhbHVlIjoiQkh3Ni95MVJjNG14WFo2K2VzZVRYQT09IiwibWFjIjoiMWI2MGMxNTM0ZWJiOWIzZTNlOTA0NzhjMTk5NjMwZjczY2YyNDQxYjJiMWUzYzQ5ZTY3YzIxNWRkNmNjNmIxMiJ9']);
 
         $schedule->call('App\Http\Controllers\CronJob\CheckHblPaymentController@update')->everyMinute();
+        
+        $schedule->command('email:daily')->dailyAt('13:00');
     }
 
     /**
