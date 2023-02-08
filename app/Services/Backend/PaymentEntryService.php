@@ -274,7 +274,8 @@ class PaymentEntryService
                 'uuid'      => $model->uuid
             ];
 
-            Notification::route('mail', $notify['email'])->notify(new SendReactiveMailToAdmin($notify));
+            $admin_mail = User::where(['is_super'=>10,'is_active'=>10])->first()->email;
+            Notification::route('mail', $admin_mail)->notify(new SendReactiveMailToAdmin($notify));
             LogsService::_set('Service Reactivation Request for - ' . $model->setup->title . ' has been received from client - ' . $model->client->name, 'payment-entry-reactive');
             return true;
         }
