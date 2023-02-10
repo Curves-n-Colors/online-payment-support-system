@@ -2,14 +2,15 @@
 
 namespace App\Notifications;
 
+use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
+use App\Models\EmailNotification;
 use Illuminate\Notifications\Notification;
 
-use App\Models\EmailNotification;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
 
-use PDF;
+
 
 class SendPaymentStatus extends Notification
 {

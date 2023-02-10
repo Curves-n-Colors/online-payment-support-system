@@ -148,7 +148,12 @@ class PaymentSetupService{
                     $timing = ' + 1 year';
                 } else if ($rctype == 'MONTHLY') {
                     $timing = ' + 1 month';
-                } else {
+                } else if ($rctype == 'QUARTERLY') {
+                    $timing = ' + 4 month';
+                } else if ($rctype == 'WEEKLY') {
+                    $timing = ' + 7 day';
+                }
+                 else {
                     $timing = '';
                 }
 

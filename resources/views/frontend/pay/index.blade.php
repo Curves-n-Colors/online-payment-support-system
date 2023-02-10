@@ -110,7 +110,8 @@ $payment_opts = ($entry->payment_options != '') ? json_decode($entry->payment_op
 
 @section('page-specific-script')
 <script>
-	var amount = {!!json_encode(number_format($entry->total, 2)) !!};
+	var amount = {!!json_encode(($entry->total)) !!};
+	
 	var title = {!!json_encode($entry->title) !!};
 
 	var subTitle = title.indexOf('(');
@@ -139,7 +140,9 @@ $payment_opts = ($entry->payment_options != '') ? json_decode($entry->payment_op
 	$('#selected_month').change(function(){
 		var value = $(this).val();
 		
-		var advanceAmount = parseFloat(value * amount).toFixed(2);
+		var advanceAmount = parseFloat(value * parseFloat(amount) ).toFixed(2);
+		
+		console.log(amount);
 		if(value>0){
 			$('.advance_payment').show();
 			$("#no_months").text(value);

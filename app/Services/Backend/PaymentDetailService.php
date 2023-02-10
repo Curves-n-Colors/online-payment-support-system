@@ -3,12 +3,14 @@
 namespace App\Services\Backend;
 
 use App\Models\PayNibl;
+
+use Barryvdh\DomPDF\Facade as PDF;
 use App\Models\PaymentDetail;
 use App\Services\Backend\LogsService;
 use App\Notifications\SendPaymentStatus;
 use Illuminate\Support\Facades\Notification;
 
-use PDF;
+
 
 class PaymentDetailService{
     public static function _find($uuid)
@@ -42,8 +44,8 @@ class PaymentDetailService{
             $model->ref_code = config('app.addons.ref_code_prefix') . '-' . $model->id;
             $model->update();
 
-            // Notification::route('mail', $model->email)->notify(new SendPaymentStatus($model));
-            // LogsService::_set('Payment Detail - ' . $model->title . ' has been created for Setup - ' . $data->setup->title, 'payment-detail');
+            Notification::route('mail', $model->email)->notify(new SendPaymentStatus($model));
+            LogsService::_set('Payment Detail - ' . $model->title . ' has been created for Setup - ' . $data->setup->title, 'payment-detail');
             return true;
         }
         return false;

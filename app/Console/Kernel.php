@@ -40,7 +40,7 @@ class Kernel extends ConsoleKernel
 
         $schedule->call('App\Http\Controllers\CronJob\CheckHblPaymentController@update')->everyMinute();
         
-        $schedule->command('email:daily')->dailyAt('13:00');
+        $schedule->command('email:daily')->daily();
     }
 
     /**
