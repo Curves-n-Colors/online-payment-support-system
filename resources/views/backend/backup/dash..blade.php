@@ -14,7 +14,7 @@ $ref_code_prefix = config('app.addons.ref_code_prefix');
             <div class="card m-b-15">
                 <div class="card-header">
                     <div class="card-title full-width">
-                        <h5 class="no-margin">Pending Payments
+                        <h5 class="no-margin">Payment Records
                             <a href="{{ route('payment.create') }}" class="btn btn-info pull-right m-r-5">Create Payment</a>
                         </h5>
                     </div>

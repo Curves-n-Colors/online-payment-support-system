@@ -72,7 +72,19 @@ class PaymentSetupService{
             return $e;
         }
         DB::commit();
-        return true;
+        return $model->uuid;
+
+    }
+
+    public static function _storensend($req){
+
+        $model = self::_storing($req);
+        if($model){
+            if(self::_sending(['new'],$model)){
+              return true;  
+            }
+        }
+        return false;
 
     }
 

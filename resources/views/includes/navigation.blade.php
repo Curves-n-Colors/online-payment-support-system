@@ -28,7 +28,7 @@
             </a>
             <a href="{{ route('payment.entry.index') }}" class="text-info">
                 <div class="padding-10">
-                    <strong>Pending Payments</strong>
+                    <strong>Payment Records</strong>
                 </div>
             </a>
             <a href="{{ route('payment.detail.index') }}" class="text-info">

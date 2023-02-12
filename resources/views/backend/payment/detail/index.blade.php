@@ -23,14 +23,14 @@ $status_payment = config('app.addons.status_payment');
                 </li>
 	            <li class="">
                     <a href="{{ route('payment.entry.index') }}" class="">
-                        Pending Payments
+                        Payment Records
                     </a>
                 </li>
-                <li class="">
+                {{-- <li class="">
                     <a href="{{ route('payment.expired')}}" class="">
                         Expired Payments
                     </a>
-                </li>
+                </li> --}}
                 <li class="active">
                     <a href="javascript:;" class="active">
                         Payment History

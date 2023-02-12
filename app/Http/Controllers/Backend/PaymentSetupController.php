@@ -34,9 +34,15 @@ class PaymentSetupController extends Controller
 
     public function store(PaymentSetupStore $request)
     {
-       if (PaymentSetupService::_storing($request)) {
-            return redirect()->route('payment.setup.index')->with('success', 'The payment setup has been created.');
-        }
+        if ($request->payment_option == 1) {
+            if (PaymentSetupService::_storensend($request)) {
+                return redirect()->route('payment.entry.index')->with('success', 'The payment setup has been created.');
+            }
+        }else{
+            if (PaymentSetupService::_storing($request)) {
+                return redirect()->route('payment.setup.index')->with('success', 'The payment setup has been created.');
+            }
+         }
         return back()->withInput()->with('error', 'Sorry, could not create payment setup at this time. Please try again later.');
     }
 

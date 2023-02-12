@@ -23,11 +23,11 @@
                     </a>
                 </li>
 
-                <li class="">
+                {{-- <li class="">
                     <a href="{{ route('payment.expired')}}" class="">
                         Expired Payments
                     </a>
-                </li>
+                </li> --}}
 
                 <li class="">
                     <a href="{{ route('payment.detail.index') }}" class="">

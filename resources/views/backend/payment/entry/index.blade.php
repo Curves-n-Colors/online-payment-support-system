@@ -22,14 +22,14 @@ $recurring_types = config('app.addons.recurring_type');
                 </li>
                 <li class="active">
                     <a href="javascript:;" class="active">
-                        Pending Payments
+                        Payment Records
                     </a>
                 </li>
-                <li class="">
+                {{-- <li class="">
                     <a href="{{ route('payment.expired')}}" class="">
                         Expired Payments
                     </a>
-                </li>
+                </li> --}}
                 <li class="">
                     <a href="{{ route('payment.detail.index') }}" class="">
                         Payment History
@@ -58,6 +58,10 @@ $recurring_types = config('app.addons.recurring_type');
                                     <li class="nav-item">
                                         <a class="{{ isset(request()['upcoming'])?'active':'' }}" href="{{ route('payment.entry.index') }}?upcoming=">Upcoming
                                             Payments</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="{{ isset(request()['expired'])?'active':'' }}"
+                                            href="{{ route('payment.expired') }}">Expired Payments</a>
                                     </li>
                                 </ul>
                                 

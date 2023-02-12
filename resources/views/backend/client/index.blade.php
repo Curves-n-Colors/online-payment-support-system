@@ -19,14 +19,14 @@
                 </li>
 	            <li class="">
                     <a href="{{ route('payment.entry.index') }}" class="">
-                        Pending Payments
+                        Payment Records
                     </a>
                 </li>
-                <li class="">
+                {{-- <li class="">
                     <a href="{{ route('payment.expired')}}" class="">
                         Expired Payments
                     </a>
-                </li>
+                </li> --}}
                 <li class="">
                     <a href="{{ route('payment.detail.index') }}" class="">
                         Payment History

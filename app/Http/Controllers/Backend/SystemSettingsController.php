@@ -21,6 +21,7 @@ class SystemSettingsController extends Controller
     {
         $extend_day = 0;
         $email_day = 0;
+        $email_send_time = NULL;
         $setting= $this->setting;
         if(!is_null($setting)){
             $extend_day       = $setting->extend_day;
