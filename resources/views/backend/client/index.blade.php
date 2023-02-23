@@ -6,7 +6,7 @@
 <div class="container-fluid">
     <div class="row m-t-30">
         <div class="col-sm-12 col-md-12 col-lg-12">
-            <ul class="nav nav-tabs nav-tabs-fillup">
+            {{-- <ul class="nav nav-tabs nav-tabs-fillup">
 	            <li class="active">
                     <a href="" class="active">
                         Clients
@@ -22,11 +22,11 @@
                         Payment Records
                     </a>
                 </li>
-                {{-- <li class="">
+                <li class="">
                     <a href="{{ route('payment.expired')}}" class="">
                         Expired Payments
                     </a>
-                </li> --}}
+                </li>
                 <li class="">
                     <a href="{{ route('payment.detail.index') }}" class="">
                         Payment History
@@ -37,7 +37,7 @@
                         Email Notifications
                     </a>
                 </li>
-	        </ul>
+	        </ul> --}}
 	        <div class="tab-content no-padding m-b-30">
 	            <div class="tab-pane slide-right active">
                     <div class="card m-b-0">

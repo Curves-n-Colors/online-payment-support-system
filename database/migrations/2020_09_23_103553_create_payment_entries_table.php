@@ -27,6 +27,14 @@ class CreatePaymentEntriesTable extends Migration
             $table->string('currency', 8);
             $table->json('payment_options')->nullable();
             $table->date('payment_date')->nullable();
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
+            $table->boolean('is_completed')->default(0);
+            $table->boolean('is_expired')->default(0);
+            $table->boolean('is_extended')->default(0);
+            $table->boolean('is_payment_deactivate')->default(0);
+            $table->boolean('is_reactivate_request')->default(0);
+            $table->string('deactivate_remark')->nullable();
             $table->timestamps();
         });
     }

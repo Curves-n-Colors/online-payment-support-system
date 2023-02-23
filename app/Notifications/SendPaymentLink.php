@@ -48,6 +48,7 @@ class SendPaymentLink extends Notification
         return (new MailMessage)
             ->subject('Payment Due')
             ->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'))
+            ->cc(env('CLIENT_EMAIL'))
             ->greeting('Hello ' . $this->notify['client'] . ',')
             ->line('Your payment due is ' . $this->notify['currency'] . ' ' . $this->notify['total'])
             ->line('Please click on the pay now button below to make your payment')

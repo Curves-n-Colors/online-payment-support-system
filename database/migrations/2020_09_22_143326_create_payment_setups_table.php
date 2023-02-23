@@ -17,8 +17,6 @@ class CreatePaymentSetupsTable extends Migration
             $table->id();
             $table->string('title', 100);
             $table->integer('user_id')->unsigned();
-            $table->integer('client_id')->unsigned()->nullable();
-            $table->string('email')->nullable();
             $table->uuid('uuid')->unique();
             $table->boolean('is_active');
             $table->boolean('is_advance');
@@ -29,6 +27,9 @@ class CreatePaymentSetupsTable extends Migration
             $table->json('payment_options')->nullable();
             $table->integer('recurring_type')->nullable();
             $table->date('reference_date')->nullable();
+            $table->date('expire_date')->nullable();
+            $table->integer('no_of_payments')->nullable();
+            $table->integer('extended_days')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

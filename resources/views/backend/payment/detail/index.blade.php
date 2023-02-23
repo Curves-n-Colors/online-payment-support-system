@@ -12,9 +12,9 @@ $status_payment = config('app.addons.status_payment');
         <div class="col-sm-12 col-md-12 col-lg-12">
             <ul class="nav nav-tabs nav-tabs-fillup">
 	            <li class="">
-                    <a href="{{ route('client.index') }}" class="">
+                    {{-- <a href="{{ route('client.index') }}" class="">
                         Clients
-                    </a>
+                    </a> --}}
                 </li>
 	            <li class="">
                     <a href="{{ route('payment.setup.index') }}" class="">

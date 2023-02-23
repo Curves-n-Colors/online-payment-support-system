@@ -4,6 +4,15 @@
 
 @section('content')
 <div class="container-fluid">
+    <div class="row" style="margin: 25px 0;">
+            <div class="col-12" style="padding: 0;">
+                <div class="full-width">
+                    <h5 class="no-margin">
+                        <a href="{{ route('client.index') }}" class="btn btn-info pull-right m-r-5">SEE CLIENT LIST</a>
+                    </h5>
+                </div>
+            </div>
+        </div>
     <div class="row m-t-30">
         <div class="col-sm-12 col-md-12 col-lg-4 col-xlg-4 m-b-30">
             <div class="widget-11 card no-margin">
@@ -213,5 +222,6 @@
             </div>
         </div>
     </div>
+
 </div>
 @endsection

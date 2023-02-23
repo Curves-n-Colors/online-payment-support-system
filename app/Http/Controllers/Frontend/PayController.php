@@ -179,7 +179,7 @@ class PayController extends Controller
 
         $pay = new Payment(
             $orderNo = $invoiceNo,
-            $amount = $amount,
+            $amount =(int) $amount,
             $productDescription =  $title,
             $amountText = str_pad($amount * 100, 12, 0, STR_PAD_LEFT),
             $currencyCode = $entry['currency'],

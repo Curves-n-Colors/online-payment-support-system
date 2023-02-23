@@ -11,9 +11,9 @@ $recurring_types = config('app.addons.recurring_type');
         <div class="col-sm-12 col-md-12 col-lg-12">
             <ul class="nav nav-tabs nav-tabs-fillup">
                 <li class="">
-                    <a href="{{ route('client.index') }}" class="">
+                    {{-- <a href="{{ route('client.index') }}" class="">
                         Clients
-                    </a>
+                    </a> --}}
                 </li>
                 <li class="">
                     <a href="{{ route('payment.setup.index') }}" class="">
@@ -123,6 +123,7 @@ $recurring_types = config('app.addons.recurring_type');
                                                 <span>{{ $row->is_active == 10 ? 'DEACTIVATE' :
                                                     'ACTIVATE' }}</span>
                                             </button>
+                                            <a href="{{ route('payment.entry.approve',[$row->uuid] ) }}" class="btn btn-success m-b-5">APPROVE PAYMENT</a>
                                             <form action="{{ route('payment.entry.change.status', [$row->uuid]) }}" method="POST"
                                                 class="change-status-form-{{ $i }}" style="display: none;">@csrf @method('PUT')</form>
                             

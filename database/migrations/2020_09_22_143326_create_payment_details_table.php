@@ -27,6 +27,8 @@ class CreatePaymentDetailsTable extends Migration
             $table->date('payment_date')->nullable();
             $table->string('payment_type', 16)->nullable();
             $table->tinyInteger('payment_status')->unsigned()->nullable();
+            $table->boolean('is_advance')->default(0);
+            $table->integer('advance_months')->nullable();
             $table->timestamps();
         });
     }

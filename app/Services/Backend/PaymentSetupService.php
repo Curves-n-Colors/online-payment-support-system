@@ -39,7 +39,6 @@ class PaymentSetupService{
         try{
             $model = new PaymentSetup();
             $model->title      = $req->title;
-            $model->client_id  = $req->client[0];
             $model->uuid       = Str::uuid()->toString();
             $model->total      = (float) $req->total;
             $model->currency   = $req->currency;

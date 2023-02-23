@@ -26,7 +26,9 @@ if (! function_exists('system_email_send_time')) {
 
     function system_email_send_time()
     {
-         return DB::table('system_settings')->first()->email_send_time??"09:00";
+        $time =  DB::table('system_settings')->first()->email_send_time??"09:00 AM";
+        return date("H:i", strtotime($time));
+
     }
 
 }

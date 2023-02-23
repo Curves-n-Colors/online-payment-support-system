@@ -17,8 +17,9 @@ class CreateClientsTable extends Migration
             $table->id();
             $table->string('name');
             $table->uuid('uuid')->unique();
-            $table->boolean('is_active');
             $table->string('email');
+            $table->string('phone_no');
+            $table->boolean('is_active');
             $table->text('remarks')->nullable();
             $table->integer('user_id')->unsigned();
             $table->timestamps();

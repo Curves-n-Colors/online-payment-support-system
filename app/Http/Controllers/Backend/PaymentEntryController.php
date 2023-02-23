@@ -17,29 +17,28 @@ class PaymentEntryController extends Controller
     {
         $entries = PaymentEntry::orderBy('created_at', 'DESC');
 
-        if (
-            $request->has('client') &&
-            $client = Client::select('id')->where('uuid', filter_var($request->client, FILTER_SANITIZE_STRING))->first()
-        ) {
+        if ($request->has('client') && $client = Client::select('id')->where('uuid', filter_var($request->client, FILTER_SANITIZE_STRING))->first()) {
             $entries->where('client_id', $client->id);
         }
-        if ($request->has('from')) {
-            $entries->whereDate('payment_date', '>=', filter_var($request->from, FILTER_SANITIZE_STRING));
-        }
-        if ($request->has('to')) {
-            $entries->whereDate('payment_date', '<=', filter_var($request->to, FILTER_SANITIZE_STRING));
+
+        if ($request->has('from') and !is_null($request->from)) {
+            $entries->whereDate('start_date', '>=', filter_var($request->from, FILTER_SANITIZE_STRING));
         }
 
-        $data = $entries->get();
+        if ($request->has('to') and !is_null($request->from)) {
+            $entries->whereDate('end_date', '<=', filter_var($request->to, FILTER_SANITIZE_STRING));
+        }
+
         
         if($request->has('pending')){
-            $data=$entries->where('start_date', '<',Carbon::now())->get();
-        }
-
-        if($request->has('upcoming')){
-            $data=$entries->where('start_date', '>',Carbon::now())->get();
+            $entries->where('start_date', '<',Carbon::now());
         }
         
+        if($request->has('upcoming')){
+            $entries->where('start_date', '>',Carbon::now());
+        }
+        
+        $data = $entries->get();
         
         // dd($pending_data, $upcoming_data);
 
@@ -75,5 +74,11 @@ class PaymentEntryController extends Controller
             return response()->json(['status' => false, 'msg' => 'The payment link you want to copy does not exist.']);
         }
         return response()->json(['status' => false, 'msg' => 'Invalid Master Password']);
+    }
+
+    public function approve($uuid)
+    {
+        $entry = PaymentEntryService::_find($uuid);
+        return view('backend.payment.entry.approve', compact('entry'));
     }
 }

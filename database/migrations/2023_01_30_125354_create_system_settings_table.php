@@ -17,6 +17,7 @@ class CreateSystemSettingsTable extends Migration
             $table->id();
             $table->integer('extend_day')->default(0);
             $table->integer('email_day')->default(0);
+            $table->time('email_send_time')->nullable();
             $table->timestamps();
         });
     }

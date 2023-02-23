@@ -1,0 +1,729 @@
+{
+  "ignition.healthCheck": {
+    "name": "ignition.healthCheck",
+    "domain": null,
+    "action": "Facade\\Ignition\\Http\\Controllers\\HealthCheckController",
+    "uri": "_ignition/health-check",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "ignition.executeSolution": {
+    "name": "ignition.executeSolution",
+    "domain": null,
+    "action": "Facade\\Ignition\\Http\\Controllers\\ExecuteSolutionController",
+    "uri": "_ignition/execute-solution",
+    "method": [
+      "POST"
+    ]
+  },
+  "ignition.shareReport": {
+    "name": "ignition.shareReport",
+    "domain": null,
+    "action": "Facade\\Ignition\\Http\\Controllers\\ShareReportController",
+    "uri": "_ignition/share-report",
+    "method": [
+      "POST"
+    ]
+  },
+  "ignition.scripts": {
+    "name": "ignition.scripts",
+    "domain": null,
+    "action": "Facade\\Ignition\\Http\\Controllers\\ScriptController",
+    "uri": "_ignition/scripts/{script}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "ignition.styles": {
+    "name": "ignition.styles",
+    "domain": null,
+    "action": "Facade\\Ignition\\Http\\Controllers\\StyleController",
+    "uri": "_ignition/styles/{style}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "cypress.factory": {
+    "name": "cypress.factory",
+    "domain": null,
+    "action": "Laracasts\\Cypress\\Controllers\\CypressController@factory",
+    "uri": "__cypress__/factory",
+    "method": [
+      "POST"
+    ]
+  },
+  "cypress.login": {
+    "name": "cypress.login",
+    "domain": null,
+    "action": "Laracasts\\Cypress\\Controllers\\CypressController@login",
+    "uri": "__cypress__/login",
+    "method": [
+      "POST"
+    ]
+  },
+  "cypress.logout": {
+    "name": "cypress.logout",
+    "domain": null,
+    "action": "Laracasts\\Cypress\\Controllers\\CypressController@logout",
+    "uri": "__cypress__/logout",
+    "method": [
+      "POST"
+    ]
+  },
+  "cypress.artisan": {
+    "name": "cypress.artisan",
+    "domain": null,
+    "action": "Laracasts\\Cypress\\Controllers\\CypressController@artisan",
+    "uri": "__cypress__/artisan",
+    "method": [
+      "POST"
+    ]
+  },
+  "cypress.run-php": {
+    "name": "cypress.run-php",
+    "domain": null,
+    "action": "Laracasts\\Cypress\\Controllers\\CypressController@runPhp",
+    "uri": "__cypress__/run-php",
+    "method": [
+      "POST"
+    ]
+  },
+  "cypress.csrf-token": {
+    "name": "cypress.csrf-token",
+    "domain": null,
+    "action": "Laracasts\\Cypress\\Controllers\\CypressController@csrfToken",
+    "uri": "__cypress__/csrf_token",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "cypress.routes": {
+    "name": "cypress.routes",
+    "domain": null,
+    "action": "Laracasts\\Cypress\\Controllers\\CypressController@routes",
+    "uri": "__cypress__/routes",
+    "method": [
+      "POST"
+    ]
+  },
+  "cypress.current-user": {
+    "name": "cypress.current-user",
+    "domain": null,
+    "action": "Laracasts\\Cypress\\Controllers\\CypressController@currentUser",
+    "uri": "__cypress__/current-user",
+    "method": [
+      "POST"
+    ]
+  },
+  "": {
+    "name": null,
+    "domain": null,
+    "action": "Closure",
+    "uri": "{fallbackPlaceholder}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "login": {
+    "name": "login",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Auth\\LoginController@showLoginForm",
+    "uri": "login",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "logout": {
+    "name": "logout",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Auth\\LoginController@logout",
+    "uri": "logout",
+    "method": [
+      "POST"
+    ]
+  },
+  "password.request": {
+    "name": "password.request",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Auth\\ForgotPasswordController@showLinkRequestForm",
+    "uri": "password/reset",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "password.email": {
+    "name": "password.email",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Auth\\ForgotPasswordController@sendResetLinkEmail",
+    "uri": "password/email",
+    "method": [
+      "POST"
+    ]
+  },
+  "password.reset": {
+    "name": "password.reset",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Auth\\ResetPasswordController@showResetForm",
+    "uri": "password/reset/{token}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "password.update": {
+    "name": "password.update",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Auth\\ResetPasswordController@reset",
+    "uri": "password/reset",
+    "method": [
+      "POST"
+    ]
+  },
+  "password.confirm": {
+    "name": "password.confirm",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Auth\\ConfirmPasswordController@showConfirmForm",
+    "uri": "password/confirm",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "secret.logout": {
+    "name": "secret.logout",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Auth\\LoginController@secret_logout",
+    "uri": "secret/logout",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "password.change": {
+    "name": "password.change",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Auth\\PasswordController@change",
+    "uri": "password/change",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "password.changing": {
+    "name": "password.changing",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Auth\\PasswordController@changing",
+    "uri": "password/changing",
+    "method": [
+      "POST"
+    ]
+  },
+  "password.master.changing": {
+    "name": "password.master.changing",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Auth\\PasswordController@master_changing",
+    "uri": "password/master/changing",
+    "method": [
+      "POST"
+    ]
+  },
+  "dash.index": {
+    "name": "dash.index",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\DashController@index",
+    "uri": "dashboard",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "profile": {
+    "name": "profile",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\UserController@profile",
+    "uri": "profile",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "profile.update": {
+    "name": "profile.update",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\UserController@profile_update",
+    "uri": "profile/update",
+    "method": [
+      "PATCH"
+    ]
+  },
+  "user.index": {
+    "name": "user.index",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\UserController@index",
+    "uri": "users",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "user.create": {
+    "name": "user.create",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\UserController@create",
+    "uri": "user/create",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "user.store": {
+    "name": "user.store",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\UserController@store",
+    "uri": "user/store",
+    "method": [
+      "POST"
+    ]
+  },
+  "user.edit": {
+    "name": "user.edit",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\UserController@edit",
+    "uri": "user/{uuid}/edit",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "user.update": {
+    "name": "user.update",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\UserController@update",
+    "uri": "user/{uuid}/update",
+    "method": [
+      "PUT"
+    ]
+  },
+  "user.change.status": {
+    "name": "user.change.status",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\UserController@change_status",
+    "uri": "user/{uuid}/change-status",
+    "method": [
+      "PUT"
+    ]
+  },
+  "client.index": {
+    "name": "client.index",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\ClientController@index",
+    "uri": "clients",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "client.create": {
+    "name": "client.create",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\ClientController@create",
+    "uri": "client/create",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "client.store": {
+    "name": "client.store",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\ClientController@store",
+    "uri": "client/store",
+    "method": [
+      "POST"
+    ]
+  },
+  "client.edit": {
+    "name": "client.edit",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\ClientController@edit",
+    "uri": "client/{uuid}/edit",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "client.update": {
+    "name": "client.update",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\ClientController@update",
+    "uri": "client/{uuid}/update",
+    "method": [
+      "PUT"
+    ]
+  },
+  "client.change.status": {
+    "name": "client.change.status",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\ClientController@change_status",
+    "uri": "client/{uuid}/change-status",
+    "method": [
+      "PUT"
+    ]
+  },
+  "email.index": {
+    "name": "email.index",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\EmailController@index",
+    "uri": "emails",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "payment.setup.index": {
+    "name": "payment.setup.index",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\PaymentSetupController@index",
+    "uri": "payment/setups",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "payment.setup.create": {
+    "name": "payment.setup.create",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\PaymentSetupController@create",
+    "uri": "payment/setup/create",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "payment.setup.store": {
+    "name": "payment.setup.store",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\PaymentSetupController@store",
+    "uri": "payment/setup/store",
+    "method": [
+      "POST"
+    ]
+  },
+  "payment.setup.edit": {
+    "name": "payment.setup.edit",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\PaymentSetupController@edit",
+    "uri": "payment/setup/{uuid}/edit",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "payment.setup.update": {
+    "name": "payment.setup.update",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\PaymentSetupController@update",
+    "uri": "payment/setup/{uuid}/update",
+    "method": [
+      "PUT"
+    ]
+  },
+  "payment.setup.change.status": {
+    "name": "payment.setup.change.status",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\PaymentSetupController@change_status",
+    "uri": "payment/setup/{uuid}/change-status",
+    "method": [
+      "PUT"
+    ]
+  },
+  "payment.setup.entry": {
+    "name": "payment.setup.entry",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\PaymentSetupController@entry",
+    "uri": "payment/setup/{uuid}/entry",
+    "method": [
+      "PUT"
+    ]
+  },
+  "payment.setup.send": {
+    "name": "payment.setup.send",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\PaymentSetupController@send",
+    "uri": "payment/setup/{uuid}/send",
+    "method": [
+      "PUT"
+    ]
+  },
+  "payment.setup.verify": {
+    "name": "payment.setup.verify",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\PaymentSetupController@verifyPin",
+    "uri": "payment-setup/pin-verify",
+    "method": [
+      "POST"
+    ]
+  },
+  "payment.entry.index": {
+    "name": "payment.entry.index",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\PaymentEntryController@index",
+    "uri": "payment/entries",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "payment.entry.change.status": {
+    "name": "payment.entry.change.status",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\PaymentEntryController@change_status",
+    "uri": "payment/entry/{uuid}/change-status",
+    "method": [
+      "PUT"
+    ]
+  },
+  "payment.entry.send": {
+    "name": "payment.entry.send",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\PaymentEntryController@send",
+    "uri": "payment/entry/{uuid}/send",
+    "method": [
+      "PUT"
+    ]
+  },
+  "payment.entry.copy": {
+    "name": "payment.entry.copy",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\PaymentEntryController@copy",
+    "uri": "payment/entry/{uuid}/copy",
+    "method": [
+      "PUT"
+    ]
+  },
+  "payment.expired": {
+    "name": "payment.expired",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\PaymentExpiredController@payment_expired",
+    "uri": "payment/expired",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "payment.entry.suspend": {
+    "name": "payment.entry.suspend",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\PaymentExpiredController@suspend_status",
+    "uri": "payment/entry/{uuid}/suspend-status",
+    "method": [
+      "PUT"
+    ]
+  },
+  "payment.reactivate": {
+    "name": "payment.reactivate",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\PaymentExpiredController@reactivate",
+    "uri": "reactivate/{encrypt}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "payment.entry.extend": {
+    "name": "payment.entry.extend",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\PaymentExpiredController@extend",
+    "uri": "payment/{uuid}/extend",
+    "method": [
+      "PUT"
+    ]
+  },
+  "payment.entry.send.reactivate.link": {
+    "name": "payment.entry.send.reactivate.link",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\PaymentExpiredController@reactivate_link",
+    "uri": "payment/{uuid}/reactivate-link",
+    "method": [
+      "PUT"
+    ]
+  },
+  "payment.detail.index": {
+    "name": "payment.detail.index",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\PaymentDetailController@index",
+    "uri": "payment/details",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "payment.detail.refund": {
+    "name": "payment.detail.refund",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\PaymentDetailController@refund",
+    "uri": "payment/detail/{uuid}/refund",
+    "method": [
+      "PUT"
+    ]
+  },
+  "payment.detail.invoice": {
+    "name": "payment.detail.invoice",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\PaymentDetailController@invoice_download",
+    "uri": "payment/detail/{uuid}/invoice",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "system.settings": {
+    "name": "system.settings",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\SystemSettingsController@index",
+    "uri": "system-settings",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "system.settings.save": {
+    "name": "system.settings.save",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\SystemSettingsController@store",
+    "uri": "system-settings",
+    "method": [
+      "POST"
+    ]
+  },
+  "system.settings.update": {
+    "name": "system.settings.update",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Backend\\SystemSettingsController@update",
+    "uri": "system-settings",
+    "method": [
+      "PUT"
+    ]
+  },
+  "pay.index": {
+    "name": "pay.index",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Frontend\\PayController@index",
+    "uri": "pay/{encrypt}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "pay.proceed": {
+    "name": "pay.proceed",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Frontend\\PayController@proceed",
+    "uri": "pay/{encrypt}",
+    "method": [
+      "PUT"
+    ]
+  },
+  "pay.hbl.proceed": {
+    "name": "pay.hbl.proceed",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Frontend\\PayController@hblBackendResponse",
+    "uri": "pay-hbl",
+    "method": [
+      "GET",
+      "HEAD",
+      "POST",
+      "PUT",
+      "PATCH",
+      "DELETE",
+      "OPTIONS"
+    ]
+  },
+  "pay.nibl.confirm": {
+    "name": "pay.nibl.confirm",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Frontend\\PayController@nibl_confirm",
+    "uri": "pay/nibl/confirm",
+    "method": [
+      "POST"
+    ]
+  },
+  "result.success": {
+    "name": "result.success",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Frontend\\ResultController@success",
+    "uri": "result/success/{encrypt}",
+    "method": [
+      "GET",
+      "HEAD",
+      "POST",
+      "PUT",
+      "PATCH",
+      "DELETE",
+      "OPTIONS"
+    ]
+  },
+  "result.error": {
+    "name": "result.error",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Frontend\\ResultController@error",
+    "uri": "result/error/{code}",
+    "method": [
+      "GET",
+      "HEAD",
+      "POST",
+      "PUT",
+      "PATCH",
+      "DELETE",
+      "OPTIONS"
+    ]
+  },
+  "result.failed": {
+    "name": "result.failed",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Frontend\\ResultController@failed",
+    "uri": "result/failed",
+    "method": [
+      "GET",
+      "HEAD",
+      "POST",
+      "PUT",
+      "PATCH",
+      "DELETE",
+      "OPTIONS"
+    ]
+  },
+  "result.cancellation": {
+    "name": "result.cancellation",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Frontend\\ResultController@cancellation",
+    "uri": "result/cancellation",
+    "method": [
+      "GET",
+      "HEAD",
+      "POST",
+      "PUT",
+      "PATCH",
+      "DELETE",
+      "OPTIONS"
+    ]
+  },
+  "result.backend": {
+    "name": "result.backend",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Frontend\\ResultController@test",
+    "uri": "result/backend",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  }
+}

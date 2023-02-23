@@ -11,9 +11,9 @@ $recurring_types = config('app.addons.recurring_type');
         <div class="col-sm-12 col-md-12 col-lg-12">
             <ul class="nav nav-tabs nav-tabs-fillup">
 	            <li class="">
-                    <a href="{{ route('client.index') }}" class="">
+                    {{-- <a href="{{ route('client.index') }}" class="">
                         Clients
-                    </a>
+                    </a> --}}
                 </li>
 	            <li class="active">
                     <a href="javascript:;" class="active">
@@ -116,8 +116,8 @@ $recurring_types = config('app.addons.recurring_type');
                                                 <form action="{{ route('payment.setup.change.status', [$row->uuid]) }}" method="POST" class="change-status-form-{{ $i }}" style="display: none;">@csrf @method('PUT')</form>
 
                                                 <input type="hidden" data-title="setup_title" value="{{ $row->title }}" class="payment-item">
-                                                <input type="hidden" data-title="client" value='{{ $row->client->name }}' class="payment-item">
-                                                <input type="hidden" data-title="email" value='{{ $row->email }}' class="payment-item">
+                                                {{-- <input type="hidden" data-title="client" value='{{ $row->client->name }}' class="payment-item">
+                                                <input type="hidden" data-title="email" value='{{ $row->email }}' class="payment-item"> --}}
                                                 <input type="hidden" data-title="total_amount" value="{{ $row->currency . ' ' . number_format($row->total, 2) }}" class="payment-item">
                                                 <input type="hidden" data-title="recurring_type" value='{{ $recurring_types[1] }}' class="payment-item">
                                                 <input type="hidden" data-title="reference_date" value='{{ $row->reference_date }}' class="payment-item">
