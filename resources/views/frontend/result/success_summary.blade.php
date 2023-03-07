@@ -24,11 +24,11 @@ $contents = ($detail->contents != '') ? json_decode($detail->contents) : '';
                         <span class="price">{{ $detail->currency }} {{ $content->amount }}</span>
                         <div class="item-name">{{ $content->title }}</div>
                         <div class="item-description">{{ $content->description }}</div>
-                        @if ($content->link_url != '')
+                        {{-- @if ($content->link_url != '')
                         <a href="{{ $content->link_url }}" class="item-description">
                             {{ $content->link_title ?? 'Click Here' }}
                         </a>
-                        @endif
+                        @endif --}}
                     </div>
                     @empty
                     <div class="item">

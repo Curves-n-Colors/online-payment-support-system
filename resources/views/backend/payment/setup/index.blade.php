@@ -9,38 +9,9 @@ $recurring_types = config('app.addons.recurring_type');
 <div class="container-fluid">
     <div class="row m-t-30">
         <div class="col-sm-12 col-md-12 col-lg-12">
-            <ul class="nav nav-tabs nav-tabs-fillup">
-	            <li class="">
-                    {{-- <a href="{{ route('client.index') }}" class="">
-                        Clients
-                    </a> --}}
-                </li>
-	            <li class="active">
-                    <a href="javascript:;" class="active">
-                        Payment Setups
-                    </a>
-                </li>
-	            <li class="">
-                    <a href="{{ route('payment.entry.index') }}" class="">
-                        Payment Records
-                    </a>
-                </li>
-                {{-- <li class="">
-                    <a href="{{ route('payment.expired')}}" class="">
-                        Expired Payments
-                    </a>
-                </li> --}}
-                <li class="">
-                    <a href="{{ route('payment.detail.index') }}" class="">
-                        Payment History
-                    </a>
-                </li>
-                <li class="">
-                    <a href="{{ route('email.index') }}" class="">
-                        Email Notifications
-                    </a>
-                </li>
-	        </ul>
+            
+            @include('backend.includes.nav')
+
 	        <div class="tab-content no-padding m-b-30">
 	            <div class="tab-pane slide-right active">
                     <div class="card m-b-0">
@@ -119,7 +90,7 @@ $recurring_types = config('app.addons.recurring_type');
                                                 {{-- <input type="hidden" data-title="client" value='{{ $row->client->name }}' class="payment-item">
                                                 <input type="hidden" data-title="email" value='{{ $row->email }}' class="payment-item"> --}}
                                                 <input type="hidden" data-title="total_amount" value="{{ $row->currency . ' ' . number_format($row->total, 2) }}" class="payment-item">
-                                                <input type="hidden" data-title="recurring_type" value='{{ $recurring_types[1] }}' class="payment-item">
+                                                
                                                 <input type="hidden" data-title="reference_date" value='{{ $row->reference_date }}' class="payment-item">
                                                 <input type="hidden" data-title="payment_timing" value='{{ $row->is_advance == 10 ? "ADVANCE PAYMENT" : "POST PAYMENT" }}' class="payment-item">
                                                 <input type="hidden" data-title="payment_options" value='{{ $row->payment_options }}' class="payment-item">

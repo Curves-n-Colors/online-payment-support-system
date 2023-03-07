@@ -15,4 +15,14 @@ class PaymentHasClient extends Model
     {
         return $this->belongsTo('App\Models\Client', 'client_id');
     }
+
+    public function details()
+    {
+        return $this->belongsTo('App\Models\PaymentSetup', 'payment_setup_id');
+    }
+
+    public function entry()
+    {
+        return $this->hasOne('App\Models\PaymentEntry', 'subscription_id', 'id');
+    }
 }

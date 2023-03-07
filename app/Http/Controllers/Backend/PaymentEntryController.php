@@ -31,11 +31,11 @@ class PaymentEntryController extends Controller
 
         
         if($request->has('pending')){
-            $entries->where('start_date', '<',Carbon::now());
+            $entries->where('start_date', '<',Carbon::now())->where('is_expired', 0);
         }
         
         if($request->has('upcoming')){
-            $entries->where('start_date', '>',Carbon::now());
+            $entries->where('start_date', '>',Carbon::now())->where('is_expired', 0);
         }
         
         $data = $entries->get();
@@ -79,6 +79,26 @@ class PaymentEntryController extends Controller
     public function approve($uuid)
     {
         $entry = PaymentEntryService::_find($uuid);
-        return view('backend.payment.entry.approve', compact('entry'));
+        $diff = 0;
+        if(isset($entry->start_date) and isset($entry->subscription->expire_date)){
+            $start_date = strtotime($entry->start_date);
+            $end_date = strtotime($entry->subscription->expire_date);
+            $year1 = date('Y', $start_date);
+            $year2 = date('Y', $end_date);
+                
+            $month1 = date('m', $start_date);
+            $month2 = date('m', $end_date);
+                
+            $diff = (($year2 - $year1) * 12) + ($month2 - $month1);
+        }
+        return view('backend.payment.entry.approve', compact('entry', 'diff'));
+    }
+    
+    public function approve_submit(Request $request, $uuid)
+    {
+        if(PaymentEntryService::_approve($request,$uuid)){
+            return redirect()->route('payment.entry.index')->with('success', 'The payment entry is approved.');
+        }
+        return back()->withInput()->with('error', 'Sorry, could not approve the payment entry.');
     }
 }

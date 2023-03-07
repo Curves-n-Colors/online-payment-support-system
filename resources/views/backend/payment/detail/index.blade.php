@@ -10,38 +10,9 @@ $status_payment = config('app.addons.status_payment');
 <div class="container-fluid">
     <div class="row m-t-30">
         <div class="col-sm-12 col-md-12 col-lg-12">
-            <ul class="nav nav-tabs nav-tabs-fillup">
-	            <li class="">
-                    {{-- <a href="{{ route('client.index') }}" class="">
-                        Clients
-                    </a> --}}
-                </li>
-	            <li class="">
-                    <a href="{{ route('payment.setup.index') }}" class="">
-                        Payment Setups
-                    </a>
-                </li>
-	            <li class="">
-                    <a href="{{ route('payment.entry.index') }}" class="">
-                        Payment Records
-                    </a>
-                </li>
-                {{-- <li class="">
-                    <a href="{{ route('payment.expired')}}" class="">
-                        Expired Payments
-                    </a>
-                </li> --}}
-                <li class="active">
-                    <a href="javascript:;" class="active">
-                        Payment History
-                    </a>
-                </li>
-                <li class="">
-                    <a href="{{ route('email.index') }}" class="">
-                        Email Notifications
-                    </a>
-                </li>
-	        </ul>
+
+            @include('backend.includes.nav')
+            
 	        <div class="tab-content no-padding m-b-30">
 	            <div class="tab-pane slide-right active">
                     <div class="card m-b-0">

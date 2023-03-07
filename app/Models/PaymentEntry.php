@@ -22,4 +22,9 @@ class PaymentEntry extends Model
         return $this->belongsTo('App\Models\PaymentSetup', 'payment_setup_id')->withTrashed();
     }
 
+    public function subscription()
+    {
+        return $this->belongsTo('App\Models\PaymentHasClient', 'subscription_id', 'id');
+    }
+
 }

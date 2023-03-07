@@ -25,13 +25,10 @@ class PaymentSetupUpdate extends FormRequest
     {
         return [
             'title'    => 'required|unique:payment_setups,title,'.$this->uuid.',uuid',
-            'client'   => 'required',
             'contents' => 'required',
             'total'    => 'required',
             'currency' => 'required',
             'payment_options' => 'required',
-            'recurring_type'  => 'required',
-            'reference_date'  => 'required'
         ];
     }
 }

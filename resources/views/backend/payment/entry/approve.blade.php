@@ -7,276 +7,165 @@
 $currency_codes = config('app.addons.currency_code');
 $payment_options = config('app.addons.payment_options');
 $recurring_types = config('app.addons.recurring_type');
+$contents = ($entry->contents != '') ? json_decode($entry->contents) : '';
 @endphp
+<style>
+    .white-bg{
+        background-color: #fff;
+    }
+    .bg-contrast-low {
+    background-color: #f4f4f4 !important;
+    }
+</style>
 <div class="container-fluid p-t-15 p-b-30">
-    <form id="payment-setup-form" role="form" method="POST" action="{{ route('payment.setup.store') }}">
-        @csrf
-        <input type="hidden" id="setup_option" name="payment_option" value="0">
-        <div class="row">
-            <div class="col-sm-12 col-md-12 col-lg-6 col-xlg-6">
-                <h5>Approve Pending Payment</h5>
-                <div class="form-group form-group-default">
-                    <label>Payment Setup Title</label>
-                    <div class="controls">
-                        <textarea class="form-control" name="title" placeholder="Payment Setup Title"
-                            style="height: 45px" readonly>{{ $entry->title }}</textarea>
-                    </div>
-                    @error('title')
-                    <label class="error">{{ $message }}</label>
-                    @enderror
-                </div>
-                {{-- <div
-                    class="form-group required form-group-default form-group-default-select2 @error('client') has-error @enderror">
-                    <label>Client</label>
-                    <select name="client[]" multiple data-init-plugin="select2"
-                        class="full-width select-client form-control @error('client') error @enderror"
-                        data-placeholder="" required>
-                        @forelse ($clients as $key => $client)
-                        <option value="{{ $client->id }}" data-email="{{ $client->email }}">{{ $client->name }}</option>
-                        @empty
-                        @endforelse
-                    </select>
-                    @error('client')
-                    <label class="error">{{ $message }}</label>
-                    @enderror
-                </div> --}}
-                {{-- <div class="form-group required form-group-default @error('email') has-error @enderror">
-                    <label>Email</label>
-                    <div class="controls">
-                        <input type="email" class="form-control email-client @error('email') error @enderror"
-                            name="email" placeholder="Email" required autocomplete="off" value="{{ old('email') }}">
-                        @error('email')
-                        <label class="error">{{ $message }}</label>
-                        @enderror
-                    </div>
-                </div> --}}
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div
-                            class="form-group required form-group-default input-group @error('currency') has-error @enderror">
-                            <div class="form-input-group">
-                                <label>Currency</label>
-                                <select name="currency"
-                                    class="full-width form-control select-currency @error('currency') error @enderror"
-                                    required>
-                                    @foreach ($currency_codes as $ccode)
-                                    <option value="{{ $ccode }}" @if($ccode=='USD' ) selected @endif>{{ $ccode }}
-                                    </option>
-                                    @endforeach
-                                </select>
-                                @error('currency')
-                                <label class="error">{{ $message }}</label>
-                                @enderror
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group required form-group-default @error('total') has-error @enderror">
-                            <label>Total Amount</label>
-                            <div class="controls">
-                                <input type="text" class="form-control total-amt @error('total') error @enderror"
-                                    name="total" placeholder="Total Amount" required readonly autocomplete="off"
-                                    value="{{ old('total') }}" style="color: rgb(75 75 75);">
-                                @error('total')
-                                <label class="error">{{ $message }}</label>
-                                @enderror
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-4">
-                        <div
-                            class="form-group required form-group-default input-group @error('recurring_type') has-error @enderror">
-                            <div class="form-input-group">
-                                <label>Payment Recurrence Type</label>
-                                <select name="recurring_type"
-                                    class="full-width form-control select-recurrence @error('recurring_type') error @enderror"
-                                    data-placeholder="" required>
-                                    @foreach ($recurring_types as $key => $rctype)
-                                    <option value="{{ $key }}" @if($key==2) selected @endif>{{ $rctype }}</option>
-                                    @endforeach
-                                </select>
-                                @error('recurring_type')
-                                <label class="error">{{ $message }}</label>
-                                @enderror
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div
-                            class="form-group required form-group-default @error('no_of_payments') has-error @enderror">
-                            <label>No. of Payments (Installments) </label>
-                            <div class="controls">
-                                <input type="number" class="form-control @error('no_of_payments') error @enderror"
-                                    name="no_of_payments" placeholder="No of  Payment"
-                                    value="{{ old('no_of_payments')}}" autocomplete="off">
-                                @error('no_of_payments')
-                                <label class="error">{{ $message }}</label>
-                                @enderror
-                            </div>
-                        </div>
-                    </div>
+   <div class="row row-same-height white-bg" >
+    <div class="col-md-8 b-r b-dashed b-grey ">
+        <div class="padding-30 sm-padding-5 sm-m-t-15 m-t-50">
+            <h2 class="title">{{ $entry->title }}</h2>
+            <p>Payment Details for <strong>{{ $entry->subscription->client->name  }}</strong></p>
+            <table class="table table-condensed">
+                @forelse ($contents as $content)
+                <tr>
+                    <td class=" col-md-9">
+                        <span class="m-l-10 font-montserrat fs-11 all-caps">{{ $content->title }}</span>
+                        <span class="m-l-10 ">{{ $content->description }}</span>
+                    </td>
+                    <td class="col-md-3 text-right">
+                        <span>{{ $entry->currency }} {{ $content->amount }}</span>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <span class="m-l-10 font-montserrat fs-11 all-caps">No details available.</span>
+                </tr>
+                @endforelse
 
-                    <div class="col-4">
-                        <div class="form-group required form-group-default @error('extended_days') has-error @enderror">
-                            <label>No of Extended Days</label>
-                            <div class="controls">
-                                <input type="number" class="form-control  @error('extended_days') error @enderror"
-                                    name="extended_days" placeholder="No Of  Extended Days" autocomplete="off"
-                                    value="{{ old('extended_days') }}">
-                                @error('extended_days')
-                                <label class="error">{{ $message }}</label>
-                                @enderror
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div
-                            class="form-group required form-group-default @error('reference_date') has-error @enderror">
-                            <label>Payment Reference Date</label>
-                            <div class="controls">
-                                <input type="text"
-                                    class="form-control datepicker @error('reference_date') error @enderror"
-                                    name="reference_date" placeholder="Start Date" required autocomplete="off"
-                                    value="{{ date('Y-m-d') }}">
-                                @error('reference_date')
-                                <label class="error">{{ $message }}</label>
-                                @enderror
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="form-group required form-group-default @error('expire_date') has-error @enderror">
-                            <label> Expire Date </label>
-                            <div class="controls">
-                                <input type="text" class="form-control datepicker @error('expire_date') error @enderror"
-                                    name="expire_date" placeholder="Expiry Date" autocomplete="off">
-                                @error('expire_date')
-                                <label class="error">{{ $message }}</label>
-                                @enderror
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group form-group-default">
-                    <label>Remarks</label>
-                    <div class="controls">
-                        <textarea class="form-control" name="remarks" placeholder="Remarks"
-                            style="height: 90px">{{ old('remarks') }}</textarea>
-                    </div>
-                </div>
-                <!-- <div class="row">
-                    <div class="col-sm-12 col-md-12">
-                        <div class="form-check info">
-                            <input type="checkbox" name="is_advance" value="10" id="checkbox-advance" checked>
-                            <label for="checkbox-advance">Advance Payment ?</label>
-                        </div>
-                    </div>
-                </div> -->
-                <div class="row">
-                    <div class="col-sm-12 col-md-12">
-                        <div class="form-check info">
-                            <input type="checkbox" name="is_active" value="10" id="checkbox-active" checked>
-                            <label for="checkbox-active">Active ?</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-12 col-md-12">
-                        <h5>Payment Options</h5>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-12 col-md-12">
-                        @forelse ($payment_options as $pay_opt)
-                        <div class="form-check danger">
-                            <input type="checkbox" name="payment_options[]" value="{{ $pay_opt['code'] }}"
-                                id="payment-option-{{ $pay_opt['code'] }}" checked
-                                class="payment-option @foreach($pay_opt['currency'] as $curr => $curr_id){{ $curr . ' '}}@endforeach">
-                            <label for="payment-option-{{ $pay_opt['code'] }}">{{ $pay_opt['title'] }}</label>
-                        </div>
-                        @empty
-                        <strong>No payment option available.</strong>
-                        @endforelse
-                        @error('payment_options')
-                        <label class="error">{{ $message }}</label>
-                        @enderror
-                    </div>
-                </div>
-                <input type="hidden" id="submit-data-value" name="dataType" value="">
-                <div class="row">
-                    <div class="col-sm-12 col-md-12 col-lg-12">
-                        <button class="btn btn-complete m-t-15 payment-create" type="submit">CREATE PAYMENT
-                            SETUP</button>
-                        <button class="btn btn-success m-t-15 btn-proceed-init create-and-send-payment"
-                            type="button">CREATE & SEND PAYMENT</button>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-12 col-md-12 col-lg-12">
-                        <a href="{{ route('payment.setup.index') }}" class="btn btn-default m-t-10">GO BACK</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-12 col-md-12 col-lg-6 col-xlg-6">
-                <div class="payment-container m-t-45">
-                    <div class="form-group-attached payment-content m-b-10">
-                        <div class="row">
-                            <div class="col-md-8">
-                                <div class="form-group form-group-default">
-                                    <div class="form-input-group">
-                                        <label>Title</label>
-                                        <input type="text" class="form-control" name="contents[1][title]"
-                                            placeholder="Title" required>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group form-group-default input-group">
-                                    <div class="form-input-group">
-                                        <label>Amount</label>
-                                        <input type="text" data-a-dec="." data-a-sep=","
-                                            class="autonumeric form-control calc-amt" placeholder="Amount"
-                                            name="contents[1][amount]" required>
-                                    </div>
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">
-                                            <button type="button" class="btn btn-complete btn-add">+</button>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group form-group-default">
-                            <label>Description</label>
-                            <textarea name="contents[1][description]" class="form-control" placeholder="Description"
-                                style="height: 100px;"></textarea>
-                        </div>
-                        <div class="row clearfix">
-                            <div class="col-md-6">
-                                <div class="form-group form-group-default">
-                                    <label>Link Title</label>
-                                    <input type="text" class="form-control" name="contents[1][link_title]"
-                                        placeholder="Link Title">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group form-group-default">
-                                    <label>Link URL</label>
-                                    <input type="url" class="form-control" name="contents[1][link_url]"
-                                        placeholder="Link URL">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="clearfix"></div>
-            </div>
+                <tr class="advance_payment">
+                    <td class=" col-md-9">
+                        <span class="m-l-10 font-montserrat fs-11 all-caps">Advance Payment</span>
+                    </td>
+                    <td class="col-md-3 text-right">
+                        <span>x <span id="no_months">2</span> MONTHS</span></span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="2" class=" col-md-3 text-right">
+                        <h4 class="text-primary no-margin font-montserrat">{{ $entry->currency }} <span id="amount">{{ number_format($entry->total, 2) }}</span></h4>
+                    </td>
+                </tr>
+            </table>
+            {{-- <p class="small">Invoice are issued on the date of despatch. Payment terms: Pre-orders: within 10 days of
+                invoice date with 4% discount, from the 11th to the 30th day net. Re-orders: non-reduced stock items are
+                payable net after 20 days. </p>
+            <p class="small">By pressing Pay Now You will Agree to the Payment <a href="#">Terms &amp; Conditions</a>
+            </p> --}}
         </div>
-    </form>
-</div>
-@endsection
+    </div>
+    <div class="col-md-4">
+        <div class="padding-30 sm-padding-5">
+            <form role="form" action="{{ route('payment.entry.approve.submit',[$entry->uuid]) }}" method="POST">
+                @csrf
+                <div class="bg-contrast-low padding-30 b-rad-lg">
+                    <h4>Payment Options</h4>
+                    <p class="m-t-10 m-b-10">Select the method to approve the payment.</p>
+                    <div class="col-lg-5 col-md-6 m-b-20">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-default active">
+                                <input type="radio" name="payment_type" id="option1" checked value="Cash"> <span class="fs-16">Cash</span>
+                            </label>
+                            <label class="btn btn-default">
+                                <input type="radio" name="payment_type" id="option2" value="Cheque"> <span class="fs-16">Cheque</span>
+                            </label>
+                        </div>
+                    </div>
+                    @if(isset($diff) and $diff>1)
+                    <div class="advance">
+                        <div class="form-check complete">
+                            <input type="checkbox" id="is_advance" name="is_advance" value="1" autocomplete="off">
+                            <label for="is_advance">Do you want to advance pay?</label>
+                        </div>
 
+                        <p>Select no. of months for the advance pay. </p>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group required form-group-default input-group" id="advance_month">
+                                    <div class="form-input-group">
+                                        <select name="selected_month" data-init-plugin="select2" class="full-width select-client form-control" id="selected_month">
+                                           @for($i=2; $i<=$diff; $i++)
+                                           <option value={{ $i }}>{{ $i.' MONTHS' }}</option>
+                                           @endfor
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <button class="btn btn-success m-t-15" type="submit">APPROVE</button>
+                            {{-- <button class="btn btn-success m-t-15 btn-proceed-init create-and-send-payment" type="button">CREATE
+                                & SEND PAYMENT</button> --}}
+                        </div>
+                    </div>
+
+                    <div class="clearfix"></div>
+                
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+
+@endsection
+@section('page-specific-script')
+<script>
+    var amount = {!!json_encode(($entry->total)) !!};
+    var title = {!!json_encode($entry->title) !!};
+    var subTitle = title.indexOf('(');
+    
+    var paymentTitle = title.substring(0, subTitle)
+    
+    var startDate = {!!json_encode($entry->start_date) !!};
+
+    $(document).ready(function() {
+        $('#advance_month').hide();
+        $('.advance_payment').hide();
+        $('#is_advance').click(function(){
+            if($(this).is(':checked')){
+                $('#advance_month').show();
+            }else{
+                $('#advance_month').hide();
+                $('.advance_payment').hide();
+                $('#amount').text(amount);
+                $('h2.title').text(title);
+        }
+        });
+    });
+
+    $('#selected_month').change(function(){
+        var value = $(this).val();
+        var advanceAmount = parseFloat(value * parseFloat(amount) ).toFixed(2);
+        console.log(amount);
+        if(value>0){
+            $('.advance_payment').show();
+            $("#no_months").text(value);
+            $('#amount').text(advanceAmount);
+            //ADD DATE IN STARTING DATE ONLY WHEN MONTH IS SELECTED
+            const date = new Date(startDate);
+            date.setMonth(date.getMonth() + parseInt(value));
+            var endDate=date.toISOString().slice(0, 10);
+            var newTitle = `${paymentTitle} ( ${startDate} TO ${endDate})`;
+            $('h2.title').text(newTitle);
+            console.log(newTitle);
+            }else{
+                $('.advance_payment').hide();
+            }
+            console.log(advanceAmount);
+        });
+</script>
+@endsection
 {{-- @include('backend.payment.setup.asset_index') --}}
 @include('backend.payment.setup.asset_form')

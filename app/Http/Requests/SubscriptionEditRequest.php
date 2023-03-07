@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PaymentSetupStore extends FormRequest
+class SubscriptionEditRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +13,7 @@ class PaymentSetupStore extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return false;
     }
 
     /**
@@ -24,13 +24,7 @@ class PaymentSetupStore extends FormRequest
     public function rules()
     {
         return [
-            'title'    => 'required|unique:payment_setups,title',
-            'contents' => 'required',
-            'total'    => 'required',
-            'currency' => 'required',
-            'payment_options' => 'required',
-            'recurring_type'  => 'required',
-            'master_password' => 'required|sometimes'
+            //
         ];
     }
 }

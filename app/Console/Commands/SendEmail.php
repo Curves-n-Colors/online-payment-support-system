@@ -19,7 +19,7 @@ class SendEmail extends Command
      *
      * @var string
      */
-    protected $signature = 'email:daily';
+    protected $signature = 'email:daily {--type=}';
 
     /**
      * The console command description.
@@ -45,20 +45,28 @@ class SendEmail extends Command
      */
     public function handle()
     {
-        $extended_day = system_extended_day();
-        $email_day = system_email_send_day();
-
-        $email_collection = PaymentEntry::where('is_expired', 0)
+        $type_name = $this->option('type');
+        $get_settings = auto_email_settings($type_name);
+        $recurring_type = $get_settings->recurring_type;
+        $email_collection = PaymentEntry::with('subscription', 'setup', 'client')
+                                        ->whereHas('setup', function($query) use ($recurring_type){
+                                            $query->where('recurring_type',$recurring_type);
+                                        })
+                                        ->where('is_expired', 0)
                                         ->where('is_active',10)
                                         ->where('is_completed',0)
-                                        ->get();
-
+                                        ->get();   
+                                        
         if(count($email_collection)>0)
         {
             foreach($email_collection as $entry)
             {
-                $timing = ' - '.$email_day.' day';
-                $extend_time = ' + '.$extended_day.' day';
+                $extend = isset($entry->setup->extended_days)?$entry->setup->extended_days:0;
+
+                $timing = ' - '.$get_settings->email_day.' day';
+                $email_interval = ' + '.$get_settings->days_between_mail .' day';
+                $extend_time = ' + '.$extend.' day';
+                $email_interval_extended = ' + '.$get_settings->days_between_extended_mail  .' day';
 
                 $notify = [
                 'client_id' => $entry->client->id,
@@ -70,23 +78,31 @@ class SendEmail extends Command
                 'entry'     => $entry->title,
                 'uuid'      => $entry->uuid
                 ];
-                
+            
+              
                 if(date('Y-m-d') >= (date('Y-m-d', strtotime($entry->start_date . $timing))) and date('Y-m-d') <= $entry->start_date){
-                    //SEND PAYMENT LINK
-                    echo('SEND PAYMENT LINK');
-                    Notification::route('mail', $notify['email'])->notify(new SendPaymentLink($notify));
-                    LogsService::_set('Payment Entry - ' . $entry->title . ' has been sent for setup E-mail '.$entry->client->email.' - ' . $entry->setup->title, 'payment-entry');
-
+                    if(is_null($entry->email_sent_date) or (date('Y-m-d')=== date('Y-m-d', strtotime($entry->email_sent_date . $email_interval)) )){
+                        //SEND PAYMENT LINK
+                        echo('SEND PAYMENT LINK');
+                        Notification::route('mail', $notify['email'])->notify(new SendPaymentLink($notify));
+                        LogsService::_set('Payment Entry - ' . $entry->title . ' has been sent for setup E-mail '.$entry->client->email.' - ' . $entry->setup->title, 'payment-entry');
+                        $entry->email_sent_date = date('Y-m-d');
+                        $entry->update();
+                    }
                 }elseif( date('Y-m-d') >= $entry->start_date and date('Y-m-d') <= (date('Y-m-d', strtotime($entry->start_date . $extend_time)))){
+                    dd('EXTEND');
                     //ENTENDED 
-                    echo('SEND PAYMENT LINK AND EXTEND MESSAGE');
-                    $entry->is_expired = 10;
-                    $entry->update();
+                    if(is_null($entry->email_sent_date) or (date('Y-m-d')=== date('Y-m-d', strtotime($entry->email_sent_date . $email_interval)) )){
+                        echo('SEND PAYMENT LINK AND EXTEND MESSAGE');
+                        $entry->is_expired = 10;
+                        $entry->email_sent_date = date('Y-m-d');
+                        $entry->update();
 
-                    Notification::route('mail', $notify['email'])->notify(new SendPaymentLinkExtended($notify));
-                    LogsService::_set('Payment Entry (EXTENDED) - ' . $entry->title . ' has been sent for setup E-mail '.$entry->client->email.' - ' . $entry->setup->title, 'payment-entry');
-
+                        Notification::route('mail', $notify['email'])->notify(new SendPaymentLinkExtended($notify));
+                        LogsService::_set('Payment Entry (EXTENDED) - ' . $entry->title . ' has been sent for setup E-mail '.$entry->client->email.' - ' . $entry->setup->title, 'payment-entry');
+                    }
                 }elseif(date('Y-m-d') > $entry->start_date){
+                    dd('EXPIRED');
                     //EXPIRED;
                     echo('EXPIRE');
                     $entry->is_expired = 10;

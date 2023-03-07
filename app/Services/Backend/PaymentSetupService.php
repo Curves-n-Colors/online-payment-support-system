@@ -38,15 +38,15 @@ class PaymentSetupService{
         DB::beginTransaction();
         try{
             $model = new PaymentSetup();
-            $model->title      = $req->title;
-            $model->uuid       = Str::uuid()->toString();
-            $model->total      = (float) $req->total;
-            $model->currency   = $req->currency;
-            $model->remarks    = $req->remarks;
-            $model->contents   = $req->has('contents') ? json_encode($req->contents) : '';
-            $model->is_active  = $req->has('is_active') ? 10 : 0;
-            $model->is_advance = $req->has('is_advance') ? 10 : 0;
-            $model->user_id    = auth()->user()->id;
+            $model->title           = $req->title;
+            $model->uuid            = Str::uuid()->toString();
+            $model->total           = (float) $req->total;
+            $model->currency        = $req->currency;
+            $model->remarks         = $req->remarks;
+            $model->contents        = $req->has('contents') ? json_encode($req->contents) : '';
+            $model->is_active       = $req->has('is_active') ? 10 : 0;
+            $model->is_advance      = $req->has('is_advance') ? 10 : 0;
+            $model->user_id         = auth()->user()->id;
             $model->payment_options = $req->has('payment_options') ? json_encode($req->payment_options) : '';
             $model->reference_date  = date('Y-m-d', strtotime($req->reference_date));
             $model->expire_date     = $req->expire_date ? date('Y-m-d', strtotime($req->expire_date)) : null;
@@ -56,14 +56,14 @@ class PaymentSetupService{
             $model->save();
 
 
-            foreach($req->client as $key => $value){
+            // foreach($req->client as $key => $value){
 
-                $client = new PaymentHasClient();
-                $client->payment_setup_id = $model->id;
-                $client->client_id = $value;
-                $client->save();
-                // LogsService::_set('Payment Setup - ' . $client->id . ' has been created', 'payment-setup');
-            }
+            //     $client = new PaymentHasClient();
+            //     $client->payment_setup_id = $model->id;
+            //     $client->client_id = $value;
+            //     $client->save();
+            //     // LogsService::_set('Payment Setup - ' . $client->id . ' has been created', 'payment-setup');
+            // }
 
         }catch (Exception $e)
         {
@@ -101,25 +101,25 @@ class PaymentSetupService{
             $model->currency   = $req->currency;
             $model->remarks    = $req->remarks;
             $model->contents   = $req->has('contents') ? json_encode($req->contents) : '';
-            $model->is_advance      = 10; // $req->has('is_advance') ? 10 : 0;
+            // $model->is_advance      = 10; // $req->has('is_advance') ? 10 : 0;
             $model->payment_options = $req->has('payment_options') ? json_encode($req->payment_options) : '';
-            $model->reference_date  = date('Y-m-d', strtotime($req->reference_date));
+            // $model->reference_date  = date('Y-m-d', strtotime($req->reference_date));
             $model->recurring_type  = $req->recurring_type;
-            $model->expire_date     = $req->expire_date  ? date('Y-m-d', strtotime($req->expire_date)) : null;
-            $model->no_of_payments  = $req->no_of_payments;
+            // $model->expire_date     = $req->expire_date  ? date('Y-m-d', strtotime($req->expire_date)) : null;
+            // $model->no_of_payments  = $req->no_of_payments;
             $model->extended_days   = $req->extended_days;
             $model->update();
 
-            $model->clients->each->delete();
+            // $model->clients->each->delete();
 
-            foreach($req->client as $key => $value){
+            // foreach($req->client as $key => $value){
 
-                $client = new PaymentHasClient();
-                $client->payment_setup_id = $model->id;
-                $client->client_id = $value;
-                $client->save();
-                // LogsService::_set('Payment Setup - ' . $client->id . ' has been created', 'payment-setup');
-            }
+            //     $client = new PaymentHasClient();
+            //     $client->payment_setup_id = $model->id;
+            //     $client->client_id = $value;
+            //     $client->save();
+            //     // LogsService::_set('Payment Setup - ' . $client->id . ' has been created', 'payment-setup');
+            // }
 
         }
         catch (Exception $e)

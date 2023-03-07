@@ -28,11 +28,11 @@ $payment_opts = ($entry->payment_options != '') ? json_decode($entry->payment_op
 						<span class="price">{{ $entry->currency }} {{ $content->amount }}</span>
 						<div class="item-name">{{ $content->title }}</div>
 						<div class="item-description">{{ $content->description }}</div>
-						@if ($content->link_url != '')
+						{{-- @if ($content->link_url != '')
 						<a href="{{ $content->link_url }}" class="item-description">
 							{{ $content->link_title ?? 'Click Here' }}
 						</a>
-						@endif
+						@endif --}}
 					</div>
 					@empty
 					<div class="item">
@@ -40,7 +40,7 @@ $payment_opts = ($entry->payment_options != '') ? json_decode($entry->payment_op
 					</div>
 					@endforelse
 					<div class="advance_payment">
-						<div class="total">Advance Payment <span class="price">x <span id="no_months">2</span> MONTHS</div>
+						<div class="total">Advance Payment <span class="price">x <span id="no_months">2</span> MONTHS</span></div>
 					</div>
 					<div class="total">Total<span class="price">{{ $entry->currency }} <span id="amount">{{ number_format($entry->total, 2) }}</span></span></div>
 				</div>

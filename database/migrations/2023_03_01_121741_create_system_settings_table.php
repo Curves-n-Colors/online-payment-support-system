@@ -15,9 +15,10 @@ class CreateSystemSettingsTable extends Migration
     {
         Schema::create('system_settings', function (Blueprint $table) {
             $table->id();
-            $table->integer('extend_day')->default(0);
+            $table->integer('recurring_type')->default(0);
             $table->integer('email_day')->default(0);
-            $table->time('email_send_time')->nullable();
+            $table->integer('days_between_mail')->default(0);
+            $table->time('send_email_time')->nullable();
             $table->timestamps();
         });
     }

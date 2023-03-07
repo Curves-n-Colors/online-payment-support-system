@@ -1,5 +1,6 @@
 @section('page-specific-modal')
-<div class="modal fade stick-up show" id="master-auth-modal" data-backdrop="static" data-keyboard="false" style="padding: 0 !important;">
+<div class="modal fade stick-up show" id="master-auth-modal" data-backdrop="static" data-keyboard="false"
+    style="padding: 0 !important;">
     <div class="modal-dialog modal-sm" style="max-width: 500px; margin: 0 auto;">
         <div class="modal-content">
             <div class="modal-header clearfix text-left">
@@ -19,16 +20,19 @@
                         <div class="col-md-12">
                             <div class="form-group form-group-default">
                                 <label>Enter Your Master PIN</label>
-                                <input type="password" class="form-control" required autofocus placeholder="Password" autocomplete="off" name="master_password" id="master-auth-password">
+                                <input type="password" class="form-control" required autofocus placeholder="Password"
+                                    autocomplete="off" name="master_password" id="master-auth-password">
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
-                            <button type="submit" id="payment-send-proceed-btn" data-random="" class="btn btn-lg btn-primary btn-block m-t-5 btn-proceed">Proceed</button>
+                            <button type="submit" id="payment-send-proceed-btn" data-random=""
+                                class="btn btn-lg btn-primary btn-block m-t-5 btn-proceed">Proceed</button>
                         </div>
                         <div class="col-md-6">
-                            <button type="button" class="btn btn-lg btn-danger btn-block m-t-5" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-lg btn-danger btn-block m-t-5"
+                                data-dismiss="modal">Cancel</button>
                         </div>
                     </div>
                 </form>
@@ -36,7 +40,8 @@
         </div>
     </div>
 </div>
-<div class="modal fade stick-up show" id="master-auth-refund-modal" data-backdrop="static" data-keyboard="false" style="padding: 0 !important;">
+<div class="modal fade stick-up show" id="master-auth-refund-modal" data-backdrop="static" data-keyboard="false"
+    style="padding: 0 !important;">
     <div class="modal-dialog modal-sm" style="max-width: 425px; margin: 0 auto;">
         <div class="modal-content">
             <div class="modal-header clearfix text-left">
@@ -78,7 +83,7 @@
                             <div class="form-group form-group-default form-check-group">
                                 <div class="form-check switch switch-lg danger full-width right m-b-15 m-t-15">
                                     <input type="checkbox" name="is_full" value="10" id="refund-full" checked>
-                                <label for="refund-full">Full Refund ?</label>
+                                    <label for="refund-full">Full Refund ?</label>
                                 </div>
                             </div>
                         </div>
@@ -91,7 +96,8 @@
                                 </div>
                                 <div class="form-input-group">
                                     <label>Refund Amount</label>
-                                    <input type="text" class="form-control" required placeholder="Refund Amount" autocomplete="off" name="refund_amount" id="refund-amount" disabled>
+                                    <input type="text" class="form-control" required placeholder="Refund Amount"
+                                        autocomplete="off" name="refund_amount" id="refund-amount" disabled>
                                 </div>
                             </div>
                         </div>
@@ -100,16 +106,19 @@
                         <div class="col-md-12">
                             <div class="form-group form-group-default">
                                 <label>Enter Your Master PIN</label>
-                                <input type="password" class="form-control" required autofocus placeholder="Password" autocomplete="off" name="master_password" id="master-auth-refund-password">
+                                <input type="password" class="form-control" required autofocus placeholder="Password"
+                                    autocomplete="off" name="master_password" id="master-auth-refund-password">
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
-                            <button type="submit" class="btn btn-lg btn-primary btn-block m-t-5 btn-proceed-refund">Proceed</button>
+                            <button type="submit"
+                                class="btn btn-lg btn-primary btn-block m-t-5 btn-proceed-refund">Proceed</button>
                         </div>
                         <div class="col-md-6">
-                            <button type="button" class="btn btn-lg btn-danger btn-block m-t-5" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-lg btn-danger btn-block m-t-5"
+                                data-dismiss="modal">Cancel</button>
                         </div>
                     </div>
                 </form>
@@ -118,7 +127,8 @@
     </div>
 </div>
 
-<div class="modal fade stick-up show" id="reactivate-modal" data-backdrop="static" data-keyboard="false" style="padding: 0 !important;">
+<div class="modal fade stick-up show" id="reactivate-modal" data-backdrop="static" data-keyboard="false"
+    style="padding: 0 !important;">
     <div class="modal-dialog modal-sm" style="max-width: 500px; margin: 0 auto;">
         <div class="modal-content">
             <div class="modal-header clearfix text-left">
@@ -139,7 +149,8 @@
                         <div class="col-md-12">
                             <div class="form-group form-group-default">
                                 <label> Select Reactivation Date </label>
-                                <input type="date" class="form-control" required autofocus placeholder="Remark" autocomplete="off"  name="reactivate_date">
+                                <input type="date" class="form-control" required autofocus placeholder="Remark"
+                                    autocomplete="off" name="reactivate_date">
                             </div>
                         </div>
                     </div>
@@ -148,7 +159,8 @@
                         <div class="col-md-12">
                             <div class="form-group form-group-default">
                                 <label> Enter Reactivation Remark </label>
-                                <input type="text" class="form-control" required autofocus placeholder="Remark" autocomplete="off"  name="deactivate_remark">
+                                <input type="text" class="form-control" required autofocus placeholder="Remark"
+                                    autocomplete="off" name="deactivate_remark">
                             </div>
                         </div>
                     </div>
@@ -156,16 +168,19 @@
                         <div class="col-md-12">
                             <div class="form-group form-group-default">
                                 <label>Enter Your Master PIN</label>
-                                <input type="password" class="form-control" required autofocus placeholder="Password" autocomplete="off" name="master_password" id="master-auth-password-reactivate">
+                                <input type="password" class="form-control" required autofocus placeholder="Password"
+                                    autocomplete="off" name="master_password" id="master-auth-password-reactivate">
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
-                            <button type="submit" id="payment-send-proceed-btn" data-random="" class="btn btn-lg btn-primary btn-block m-t-5 btn-proceed-reactivate">Proceed</button>
+                            <button type="submit" id="payment-send-proceed-btn" data-random=""
+                                class="btn btn-lg btn-primary btn-block m-t-5 btn-proceed-reactivate">Proceed</button>
                         </div>
                         <div class="col-md-6">
-                            <button type="button" class="btn btn-lg btn-danger btn-block m-t-5" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-lg btn-danger btn-block m-t-5"
+                                data-dismiss="modal">Cancel</button>
                         </div>
                     </div>
                 </form>
@@ -182,7 +197,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-12">
-                            <h5>Payment Detail:</h5>
+                            <h5>Subscription Detail:</h5>
                             <pre class="m-t-0" id="payment-detail"></pre>
                         </div>
                     </div>
@@ -194,13 +209,14 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <h5>Payment Items:</h5>
+                            <h5>Subscription Items:</h5>
                             <pre class="m-t-0" id="payment-contents"></pre>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <button type="button" class="btn btn-lg btn-danger m-t-5 pull-right" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-lg btn-danger m-t-5 pull-right"
+                                data-dismiss="modal">Close</button>
                         </div>
                     </div>
                 </div>
@@ -212,7 +228,7 @@
 
 @section('page-specific-style')
 <link rel="stylesheet" href="{{ asset('assets/plugins/sweetalert2/sweetalert2.min.css') }}">
-<link rel="stylesheet" href="{{ asset('assets/plugins/select2/select2.min.css') }}"/>
+<link rel="stylesheet" href="{{ asset('assets/plugins/select2/select2.min.css') }}" />
 <link rel="stylesheet" href="{{ asset('assets/plugins/bootstrap-datepicker/bootstrap-datepicker.min.css') }}">
 <link href="{{ asset('assets/plugins/table/css/dataTables.bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
 <link href="{{ asset('assets/plugins/table/css/buttons.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
@@ -232,7 +248,7 @@
 <script src="{{ asset('assets/js/table.js') }}" type="text/javascript"></script>
 <script src="{{ asset('assets/js/master.auth.min.js') }}" type="text/javascript"></script>
 <script>
-$('[data-init-plugin=select2]').select2();
+    $('[data-init-plugin=select2]').select2();
 $('.datepicker').datepicker({
     keyboardNavigation : false,
     forceParse : false,
@@ -251,6 +267,7 @@ $(document).on('click', '.btn-view-more', function (e) {
         detail[$(this).data('title')] = $(this).val();
     });
 
+    console.log($list_item.find('.contents').val());
     var contents = JSON.parse($list_item.find('.contents').val());
     document.querySelector('#payment-detail').innerHTML = JSON.stringify(detail, null, 3);
     document.querySelector('#payment-contents').innerHTML = JSON.stringify(contents, null, 3);
@@ -275,7 +292,6 @@ $(document).on('click', '.btn-get-entires', function (e) {
         success: function (response) {
             var content = '';
             if (response.status) {
-                console.log(response);
                 if (response.entries) {
                     Object.entries(response.entries).forEach(([key, value]) => {
                         content += '<div class="form-group form-group-default form-check-group d-flex align-items-center p-t-10 p-b-10">'+

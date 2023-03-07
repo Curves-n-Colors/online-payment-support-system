@@ -38,18 +38,19 @@ class PaymentEntryService
         return false;
     }
 
-    public static function _storing($data, $title, $client, $date)
+    public static function _storing($data, $title, $client, $date, $subscription_id)
     {
         $model = new PaymentEntry();
         $model->payment_setup_id = $data->id;
         $model->title            = $title;
-        $model->client_id        = $client->client_id;
-        $model->email            = $client->client->email;
+        $model->client_id        = $client->id;
+        $model->email            = $client->email;
         $model->uuid             = Str::uuid()->toString();
         $model->total            = $data->total;
         $model->currency         = $data->currency;
         $model->contents         = $data->contents;
         $model->is_active        = 10;
+        $model->subscription_id  = $subscription_id;
         $model->user_id          = auth()->check() ? auth()->user()->id : 0;
         $model->payment_options  = $data->payment_options;
         $model->payment_date     = NULL;//date('Y-m-d', strtotime($date));
@@ -228,10 +229,12 @@ class PaymentEntryService
     public static function _update_new_entry($uuid)
     {
         if ($model = self::_find($uuid)) {
-            $payment_setup_model = $model->setup;
+            $time = self::_entry_timing($model->setup->recurring_type);
+
+            $payment_setup_model = $model->subscription;
 
             $new_start_date = $model->end_date;
-            $new_end_date = date('Y-m-d', strtotime($new_start_date . ' + 1 month'));
+            $new_end_date = date('Y-m-d', strtotime($new_start_date . $time));
 
             if($new_end_date > $payment_setup_model->expire_date){
                 $model->is_expired   = 10;
@@ -248,6 +251,7 @@ class PaymentEntryService
                 $model->end_date = $new_end_date;
                 $model->uuid     = Str::uuid()->toString();
                 $model->title   = $new_title;
+                $model->total   = $model->setup->total;
             }
             $model->update();
 
@@ -256,6 +260,24 @@ class PaymentEntryService
            //dd($model->setup); PAYMENT SETUP DETAILS
         }
         return false;
+    }
+
+    public static function _entry_timing($reccuring_type)
+    {
+        $rctype = config('app.addons.recurring_type.' . $reccuring_type);
+        if ($rctype == 'YEARLY') {
+            $timing = ' + 1 year';
+        } else if ($rctype == 'MONTHLY') {
+            $timing = ' + 1 month';
+        } else if ($rctype == 'QUARTERLY') {
+            $timing = ' + 4 month';
+        } else if ($rctype == 'WEEKLY') {
+            $timing = ' + 7 day';
+        }
+        else {
+            $timing = ' + 1 day';
+        }
+        return $timing;
     }
 
     public static function _reactivate_request_mail($entry)
@@ -312,6 +334,41 @@ class PaymentEntryService
             return true;
         }
 
+        return false;
+    }
+
+    public static function _approve($req, $uuid)
+    {
+        if($model = self::_find($uuid)){
+            $detail = [
+                'type'   => strtoupper($req->payment_type),
+                'status' => 10
+            ];
+
+            if($req->has('is_advance')){
+                $detail['advance_month'] = $req->selected_month;
+                
+                $end_date = date('Y-m-d', strtotime($model->start_date . ' + '.$detail['advance_month'].' month'));
+
+                $amount = $model->total*$detail['advance_month'];
+
+                $title = $model->title;
+                $index = strpos($title,"(");
+                $type= substr($title,0,$index);
+
+                $title = $type.'('.$model->start_date.' TO '.$end_date.')';
+                $model->title       = $title;
+                $model->end_date    = $end_date;
+                $model->total       = $amount;
+                $model->update();
+               
+            }
+
+            PaymentDetailService::_storing($model, $detail);
+            PaymentEntryService::_update_new_entry($model->uuid);
+
+            return true;
+        }
         return false;
     }
 

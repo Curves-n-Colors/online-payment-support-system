@@ -9,38 +9,9 @@ $recurring_types = config('app.addons.recurring_type');
 <div class="container-fluid">
     <div class="row m-t-30">
         <div class="col-sm-12 col-md-12 col-lg-12">
-            <ul class="nav nav-tabs nav-tabs-fillup">
-                <li class="">
-                    {{-- <a href="{{ route('client.index') }}" class="">
-                        Clients
-                    </a> --}}
-                </li>
-                <li class="">
-                    <a href="{{ route('payment.setup.index') }}" class="">
-                        Payment Setups
-                    </a>
-                </li>
-                <li class="active">
-                    <a href="javascript:;" class="active">
-                        Payment Records
-                    </a>
-                </li>
-                {{-- <li class="">
-                    <a href="{{ route('payment.expired')}}" class="">
-                        Expired Payments
-                    </a>
-                </li> --}}
-                <li class="">
-                    <a href="{{ route('payment.detail.index') }}" class="">
-                        Payment History
-                    </a>
-                </li>
-                <li class="">
-                    <a href="{{ route('email.index') }}" class="">
-                        Email Notifications
-                    </a>
-                </li>
-            </ul>
+
+            @include('backend.includes.nav')
+            
             <div class="tab-content no-padding m-b-30">
                 <div class="tab-pane slide-right active">
                     <div class="card m-b-0">
@@ -97,11 +68,23 @@ $recurring_types = config('app.addons.recurring_type');
                                         <td>{{ $row->start_date }}</td>
                                         <td>{{ $row->end_date }}</td>
                                         <td>
-                                            @if ($row->is_active == 10)
-                                            <strong class="text-success">ACTIVE</strong>
-                                            @else
-                                            <strong class="text-danger">INACTIVE</strong>
-                                            @endif
+                                        @if ($row->is_expired == 10)
+                                        <strong class="text-success">
+                                            @if($row->is_extended == 10 && $row->is_active)
+                                            EXTENDED 
+                                            @elseif($row->is_extended == 10 && $row->is_active == 0)
+                                            SUSPENDED 
+                                            @else EXPIRED 
+                                            @endif 
+                                        </strong>
+                                       @endif
+                                        
+                                        @if($row->is_completed)
+                                        <br>
+                                        <strong class="text-warning">COMPLETED</strong>
+                                        @else
+                                        <strong class="text-warning">PENDING</strong>
+                                        @endif
                                         </td>
                                         <td class="list-item">
                                             <button class="btn btn-primary m-b-5 btn-view-more" type="button">VIEW</button>
@@ -117,13 +100,12 @@ $recurring_types = config('app.addons.recurring_type');
                                             <button class="btn btn-complete m-b-5 btn-proceed-init"
                                                 data-url="{{ route('payment.entry.copy', [$row->uuid]) }}" type="button">COPY</button>
                                             @endif
-                            
+                                            
                                             <button class="btn {{ $row->is_active == 10 ? 'btn-danger' : 'btn-success' }} m-b-5 btn-change-status"
                                                 type="button" data-index="{{ $i }}">
                                                 <span>{{ $row->is_active == 10 ? 'DEACTIVATE' :
                                                     'ACTIVATE' }}</span>
                                             </button>
-                                            <a href="{{ route('payment.entry.approve',[$row->uuid] ) }}" class="btn btn-success m-b-5">APPROVE PAYMENT</a>
                                             <form action="{{ route('payment.entry.change.status', [$row->uuid]) }}" method="POST"
                                                 class="change-status-form-{{ $i }}" style="display: none;">@csrf @method('PUT')</form>
                             
@@ -142,6 +124,7 @@ $recurring_types = config('app.addons.recurring_type');
                                                 class="payment-item">
                                             <input type="hidden" data-title="created_at" value='{{ $row->created_at }}' class="payment-item">
                                             <input type="hidden" value='{{ $row->contents }}' class="contents">
+                                            <a href="{{ route('payment.entry.approve', [$row->uuid]) }}" class="btn btn-success">APPROVE PAYMENT</a>
                                         </td>
                                     </tr>
                                     @endforeach

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Update Payment Setup')
+@section('title', 'Update Subscription Plan')
 
 @section('content')
 @php
@@ -16,30 +16,17 @@ $payment_opts = ($data->payment_options != '') ? json_decode($data->payment_opti
         @method('PUT')
         <div class="row">
             <div class="col-sm-12 col-md-12 col-lg-6 col-xlg-6">
-                <h5>Update Payment Setup</h5>
+                <h5>Update Subscription Plan</h5>
                 <div class="form-group form-group-default">
-                    <label>Payment Setup Title</label>
+                    <label>Subscription Title</label>
                     <div class="controls">
-                        <textarea class="form-control" name="title" placeholder="Payment Setup Title" style="height: 45px">{{ $data->title ?? old('title') }}</textarea>
+                        <textarea class="form-control" name="title" placeholder="Subscription Title" style="height: 45px">{{ $data->title ?? old('title') }}</textarea>
                     </div>
                     @error('title')
                         <label class="error">{{ $message }}</label>
                     @enderror
                 </div>
-                <div class="form-group required form-group-default form-group-default-select2 @error('email') has-error @enderror">
-                    <label>Client</label>
-                    <select name="client[]" multiple data-init-plugin="select2" class="full-width select-client form-control @error('email') error @enderror" data-placeholder="" required>
-                        <option value="">Select a client</option>
-                        @forelse ($clients as $key => $client)
 
-                            <option value="{{ $client->id }}" data-email="{{ $client->email }}" @if(in_array($client->id, $data->clients->pluck('client_id')->toArray())) selected @endif>{{ $client->name }}</option>
-                        @empty
-                        @endforelse
-                    </select>
-                    @error('client')
-                        <label class="error">{{ $message }}</label>
-                    @enderror
-                </div>
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group required form-group-default input-group @error('currency') has-error @enderror">
@@ -69,7 +56,7 @@ $payment_opts = ($data->payment_options != '') ? json_decode($data->payment_opti
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-4">
+                    <div class="col-6">
                         <div class="form-group required form-group-default input-group @error('recurring_type') has-error @enderror">
                             <div class="form-input-group">
                                 <label>Payment Recurrence Type</label>
@@ -84,56 +71,15 @@ $payment_opts = ($data->payment_options != '') ? json_decode($data->payment_opti
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-4">
-                        <div class="form-group required form-group-default @error('no_of_payments') has-error @enderror">
-                            <label>No. of Payments (Installments) </label>
-                            <div class="controls">
-                                <input type="number" class="form-control @error('no_of_payments') error @enderror" name="no_of_payments"  placeholder="No of  Payment" value="{{ $data->no_of_payments ?? old('no_of_payments') }}"  autocomplete="off">
-                                @error('no_of_payments')
-                                    <label class="error">{{ $message }}</label>
-                                @enderror
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-4">
-                        <div class="form-group required form-group-default @error('extended_days') has-error @enderror">
-                            <label>No of Extended Days</label>
-                            <div class="controls">
-                                <input type="number" class="form-control  @error('extended_days') error @enderror" name="extended_days"  placeholder="No Of  Extended Days"  autocomplete="off" value="{{ $data->extended_days ?? old('extended_days') }}">
-                                @error('extended_days')
-                                    <label class="error">{{ $message }}</label>
-                                @enderror
-                            </div>
-                        </div>
-                    </div>
-
-
                     <div class="col-6">
-                        <div class="form-group required form-group-default @error('reference_date') has-error @enderror">
-                            <label>Payment Reference Date</label>
+                        <div class="form-group form-group-default">
+                            <label>No. of Extended Day</label>
                             <div class="controls">
-                                <input type="text" class="form-control datepicker @error('reference_date') error @enderror" name="reference_date" placeholder="Expiry Date" required autocomplete="off" value="{{ $data->reference_date ?? old('reference_date') }}">
-                                @error('reference_date')
-                                    <label class="error">{{ $message }}</label>
-                                @enderror
+                                <input type="text" class="form-control" name="extended_days" placeholder="No. of Extended Day"
+                                    autocomplete="off" value="{{ $data->extended_days??old('extended_days') }}">
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-6">
-                        <div class="form-group required form-group-default @error('expire_date') has-error @enderror">
-                            <label> Expire Date </label>
-                            <div class="controls">
-                                <input type="text" class="form-control datepicker @error('expire_date') error @enderror" name="expire_date" placeholder="Expiry Date"  autocomplete="off" value="{{ $data->expire_date }}">
-                                @error('expire_date')
-                                    <label class="error">{{ $message }}</label>
-                                @enderror
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
                 <div class="form-group form-group-default">
                     <label>Remarks</label>
@@ -141,22 +87,8 @@ $payment_opts = ($data->payment_options != '') ? json_decode($data->payment_opti
                         <textarea class="form-control" name="remarks" placeholder="Remarks" style="height: 90px">{{ $data->remarks ?? old('remarks') }}</textarea>
                     </div>
                 </div>
-                <!-- <div class="row">
-                    <div class="col-sm-12 col-md-12">
-                        <div class="form-check info">
-                            <input type="checkbox" name="is_advance" value="10" id="checkbox-advance" @if($data->is_advance == 10) checked @endif>
-                            <label for="checkbox-advance">Advance Payment ?</label>
-                        </div>
-                    </div>
-                </div> -->
-                <div class="row" style="display:none;">
-                    <div class="col-sm-12 col-md-12">
-                        <div class="form-check info">
-                            <input type="checkbox" value="10" id="checkbox-active" @if($data->is_active == 10) checked @endif>
-                            <label for="checkbox-active">Active ?</label>
-                        </div>
-                    </div>
-                </div>
+
+
                 <div class="row">
                     <div class="col-sm-12 col-md-12">
                         <h5>Payment Options</h5>
@@ -179,7 +111,7 @@ $payment_opts = ($data->payment_options != '') ? json_decode($data->payment_opti
                 </div>
                 <div class="row">
                     <div class="col-sm-12 col-md-12 col-lg-12">
-                        <button class="btn btn-complete m-t-15" type="submit">UPDATE PAYMENT SETUP</button>
+                        <button class="btn btn-complete m-t-15" type="submit">UPDATE SUBSCRIPTION PLAN</button>
                     </div>
                 </div>
                 <div class="row">
@@ -224,20 +156,6 @@ $payment_opts = ($data->payment_options != '') ? json_decode($data->payment_opti
                         <div class="form-group form-group-default">
                             <label>Description</label>
                             <textarea name="contents[{{$idx}}][description]" class="form-control" placeholder="Description" style="height: 100px;">{{ $content->description }}</textarea>
-                        </div>
-                        <div class="row clearfix">
-                            <div class="col-md-6">
-                                <div class="form-group form-group-default">
-                                    <label>Link Title</label>
-                                    <input type="text" class="form-control" name="contents[{{$idx}}][link_title]" placeholder="Link Title" value="{{ $content->link_title }}">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group form-group-default">
-                                    <label>Link URL</label>
-                                    <input type="url" class="form-control" name="contents[{{$idx}}][link_url]" placeholder="Link URL" value="{{ $content->link_url }}">
-                                </div>
-                            </div>
                         </div>
                     </div>
                     @empty

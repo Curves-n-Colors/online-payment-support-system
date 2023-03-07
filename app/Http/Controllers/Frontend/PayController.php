@@ -40,9 +40,10 @@ class PayController extends Controller
 
             //FOR NO OF MONTHS FOR ADVANCE PAY
             $diff = 0;
-            if(isset($entry->start_date) and isset($entry->setup->expire_date)){
+            
+            if(isset($entry->start_date) and isset($entry->subscription->expire_date)){
                 $start_date = strtotime($entry->start_date);
-                $end_date = strtotime($entry->setup->expire_date);
+                $end_date = strtotime($entry->subscription->expire_date);
                 $year1 = date('Y', $start_date);
                 $year2 = date('Y', $end_date);
                 

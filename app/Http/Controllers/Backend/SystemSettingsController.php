@@ -14,29 +14,37 @@ class SystemSettingsController extends Controller
     public function __construct()
     {
         $this->middleware('super.admin');
-        $this->setting = SystemSetting::first();
+        $this->setting = SystemSetting::get();
     }
 
     public function index()
     {
-        $extend_day = 0;
-        $email_day = 0;
-        $email_send_time = NULL;
+        $send_email_time = [];
+        $days_between_mail = [];
+        $email_day = [];
+        $days_between_extended_mail=[];
         $setting= $this->setting;
-        if(!is_null($setting)){
-            $extend_day       = $setting->extend_day;
-            $email_day        = $setting->email_day;
-            $email_send_time  = $setting->email_send_time;
+        if(count($setting)>0){
+           foreach($setting as $set){
+            array_push($email_day, $email_day[$set->recurring_type]=$set->email_day);
+            array_push($days_between_mail, $days_between_mail[$set->recurring_type]=$set->days_between_mail);
+            array_push($send_email_time, $send_email_time[$set->recurring_type]=$set->send_email_time);
+            array_push($days_between_extended_mail, $days_between_extended_mail[$set->recurring_type]=$set->days_between_extended_mail);
+           }
         }
-       return view('backend.settings.form', compact('extend_day', 'email_day','email_send_time'));
+       return view('backend.settings.form', compact('send_email_time', 'days_between_mail','email_day', 'days_between_extended_mail'));
     }
 
-    public function store(SystemSettingRequest $request)
+    public function store(Request $request)
     {
+       
         $setting= $this->setting;
-        if(!is_null($setting)){
-            $setting->delete();
+        if(count($setting)>0){
+            foreach($setting as $set){
+                $set->delete();
+            }
         }
+        
         if (SystemSettingService::_storing($request)) {
             return redirect()->route('system.settings')->with('success', 'The settings is saved.');
         }

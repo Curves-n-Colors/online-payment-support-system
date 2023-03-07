@@ -63,6 +63,8 @@ Route::namespace('Backend')->middleware('auth')->group(function () {
     Route::put('/payment/entry/{uuid}/change-status', 'PaymentEntryController@change_status')->name('payment.entry.change.status');
     Route::put('/payment/entry/{uuid}/send', 'PaymentEntryController@send')->name('payment.entry.send');
     Route::put('/payment/entry/{uuid}/copy', 'PaymentEntryController@copy')->name('payment.entry.copy');
+    Route::get('/payment/entry/{uuid}/approve', 'PaymentEntryController@approve')->name('payment.entry.approve');
+    Route::post('/payment/entry/{uuid}/approve', 'PaymentEntryController@approve_submit')->name('payment.entry.approve.submit');
 
     Route::get('/payment/expired','PaymentExpiredController@payment_expired')->name('payment.expired');
     Route::put('/payment/entry/{uuid}/suspend-status', 'PaymentExpiredController@suspend_status')->name('payment.entry.suspend');
@@ -71,7 +73,11 @@ Route::namespace('Backend')->middleware('auth')->group(function () {
     Route::put('payment/{uuid}/extend','PaymentExpiredController@extend')->name('payment.entry.extend');
     Route::put('payment/{uuid}/reactivate-link','PaymentExpiredController@reactivate_link')->name('payment.entry.send.reactivate.link');
 
-
+    Route::get('/subscription/index', 'SubscriptionController@index')->name('subscription.index');
+    Route::get('/subscription/create', 'SubscriptionController@create')->name('subscription.create');
+    Route::post('/subscription/store', 'SubscriptionController@store')->name('subscription.store');
+    Route::get('/subscription/{uuid}/edit', 'SubscriptionController@edit')->name('subscription.edit');
+    Route::put('/subscription/{uuid}/send', 'SubscriptionController@send')->name('subscription.send');
 
     Route::get('/payment/details', 'PaymentDetailController@index')->name('payment.detail.index');
     Route::put('/payment/detail/{uuid}/refund', 'PaymentDetailController@refund')->name('payment.detail.refund');
