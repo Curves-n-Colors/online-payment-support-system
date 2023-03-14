@@ -31,6 +31,7 @@ class PaymentDetailService{
         $model->client_id        = $data->client_id;
         $model->email            = $data->email??NULL;
         $model->uuid             = $data->uuid;
+        $model->min_uuid         = $data->min_uuid;
         $model->total            = $data->total;
         $model->currency         = $data->currency;
         $model->contents         = $data->contents;

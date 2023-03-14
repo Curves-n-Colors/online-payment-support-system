@@ -15,15 +15,17 @@ class PaymentSetupController extends Controller
 {
     public function index(Request $request)
     {
+        $filter = null;
+        $data = null;
         if ($request->has('client')) {
             $client = Client::where('uuid', filter_var($request->client, FILTER_SANITIZE_STRING))->first();
-            $data = $client->payment_setups ?? null;
+            $filter = $client->subscription ?? null;
         } else {
             $data = PaymentSetupService::_get();
         }
 
         $clients = Client::select('uuid', 'name')->get();
-        return view('backend.payment.setup.index', compact('data', 'clients'));
+        return view('backend.payment.setup.index', compact('data', 'clients', 'filter'));
     }
 
     public function create()

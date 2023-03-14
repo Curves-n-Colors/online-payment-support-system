@@ -49,6 +49,7 @@ class ResultController extends Controller
 
     public function failed(Request $request)
     {
+        dd($request->all());
         echo $this->response;
         return view('frontend.result.failed');
     }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use DB;
+use Exception;
 use Carbon\Carbon;
 
 use App\Models\Logs;
@@ -12,18 +13,23 @@ use App\Models\PaymentHBL;
 use App\Models\PaymentNibl;
 use Illuminate\Support\Str;
 use App\Models\PaymentEntry;
+use App\Models\PaymentEsewa;
 use App\Models\PaymentSetup;
-use Illuminate\Http\Request;
 
+use Illuminate\Http\Request;
 use App\Models\PaymentDetail;
 use App\Models\PaymentKhalti;
+use App\Models\PaymentFonepay;
 use App\Http\Requests\PayRequest;
 use App\Http\Requests\NiblRequest;
 use App\Models\HblPaymentResponse;
 use App\Helpers\HBLPayment\Payment;
 use App\Http\Controllers\Controller;
+use App\Services\Backend\PaymentDetailService;
+use App\Services\Backend\PaymentEntryService;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use App\Services\Backend\PaymentFonepayService;
 use App\Services\Backend\TempAdvanceDetailsService;
 
 
@@ -74,6 +80,10 @@ class PayController extends Controller
                     return $this->khalti_pay($entry, $encrypt, $request);
                 } else if ($request->payment_type == 'HBL') {
                     return $this->hbl_pay($entry, $encrypt, $request);
+                } else if ($request->payment_type == 'ESEWA') {
+                    return $this->esewa($entry, $encrypt, $request);
+                } else if ($request->payment_type == 'FONEPAY') {
+                    return $this->fonepay($entry, $encrypt, $request);
                 }
             }
         }
@@ -157,6 +167,54 @@ class PayController extends Controller
         return redirect()->route('result.failed');
     }
 
+    public function fonepay($entry, $encrypt, $request)
+    {
+        $fonepay_config = config('app.addons.payment_options.fonepay');
+        $fonepay = [
+            'MD' =>  $fonepay_config['MD'],
+            'AMT' => $entry['total'],
+            'CRN' => $entry['currency'],
+            'DT' => date('m/d/Y'),
+            'R1' => 'test 123',
+            'R2' => 'test 1222',
+            'PRN' => $entry['min_uuid'],
+            'PID' => $fonepay_config['PID'],
+            'RU'     => route('fonepay.verify'),
+            'request_url' => $fonepay_config['request_url'],
+        ];
+        
+        $fonepay['DV'] = hash_hmac('sha512', $fonepay['PID'] . ',' . $fonepay['MD'] . ',' . $fonepay['PRN'] . ',' . $fonepay['AMT'] . ',' . $fonepay['CRN'] . ',' . $fonepay['DT'] . ',' . $fonepay['R1'] . ',' . $fonepay['R2'] . ',' . $fonepay['RU'], $fonepay_config['sharedSecretKey']);
+
+        return view('frontend.pay.fonepay_init', compact('fonepay'));
+    }
+
+    public function fonepay_verify(Request $request)
+    {
+        try {
+            $result      = PaymentFonepayService::_check($request);
+            $save_result = PaymentFonepayService::_create($result, $request);
+
+            if ($result['status'] == 200 && $save_result->status==10) {
+                $model = PaymentEntryService::_find_min_uuid($save_result->prn);
+                $detail = [
+                    'type'   => 'FONEPAY',
+                    'status' => $save_result->status
+                ];
+
+                PaymentDetailService::_storing($model, $detail);
+                PaymentEntryService::_update_new_entry($model->uuid);
+
+                return redirect()->route('result.success', [PaymentSetup::_encrypting($model->setup->uuid, $model->uuid)]);
+
+            } else {
+                return redirect()->route('result.failed');
+            }
+        } catch (Exception $e) {
+            dd($e);
+            dd(['status' => 'failed', 'msg' => 'Something went Wrong, Try Again']);
+        }
+    }
+
     public function hbl_pay($entry, $encrypt, $request)
     {
        
@@ -202,6 +260,16 @@ class PayController extends Controller
         return  $response;
         return redirect($response['data']['paymentPage']['paymentPageURL']);
 
+    }
+
+    public function esewa($entry, $encrypt, $request)
+    {
+        $esewa = config('app.addons.payment_options.esewa');
+        return view('frontend.pay.esewa_init', compact('esewa', 'entry', 'encrypt'));
+    }
+
+    public function esewa_success(Request $request){
+        dd($request);
     }
 
     public function proceedHbl($encrypt)//OLD HBL FUNCTION

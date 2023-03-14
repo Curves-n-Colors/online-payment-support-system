@@ -5,6 +5,9 @@
 @section('content')
 @php
 $recurring_types = config('app.addons.recurring_type');
+if(!is_null($filter)){
+    $data = $filter;
+}
 @endphp
 <div class="container-fluid">
     <div class="row m-t-30">
@@ -30,7 +33,7 @@ $recurring_types = config('app.addons.recurring_type');
                                         <th width="50">Setup Title</th>
                                         <th width="50">Client</th>
                                         <th width="50">Amount</th>
-                                        <th width="50">Ref Date</th>
+                                        {{-- <th width="50">Ref Date</th> --}}
                                         <th width="50">Type</th>
                                         <th width="50">Status</th>
                                         <th width="100">Option</th>
@@ -40,7 +43,13 @@ $recurring_types = config('app.addons.recurring_type');
                                     @if ($data != null)
                                         @php $i = 0; @endphp
                                         @foreach ($data as $row)
-                                        @php $i++; $random = Illuminate\Support\Str::random(40). $i; @endphp
+                                        @php 
+                                        $i++; 
+                                        $random = Illuminate\Support\Str::random(40). $i; 
+                                        if(!is_null($filter)){
+                                            $row = $row->details;
+                                        }
+                                        @endphp
                                         <tr id="setup-{{$random}}" style="">
                                             <td>{{ $i }}</td>
                                             <td>{{ $row->title }}</td>
@@ -58,7 +67,7 @@ $recurring_types = config('app.addons.recurring_type');
                                             </td>
                                             {{-- <td>{{ $row->client->name }}<br/>{{ $row->client->email }}</td> --}}
                                             <td>{{ $row->currency . ' ' . number_format($row->total, 2) }}</td>
-                                            <td>{{ $row->reference_date }}</td>
+                                            {{-- <td>{{ $row->reference_date }}</td> --}}
                                             <td>{{ isset($recurring_types[$row->recurring_type]) ? $recurring_types[$row->recurring_type] : 'N/A' }}</td>
                                             <td>
                                                 @if ($row->is_active == 10)
@@ -71,7 +80,7 @@ $recurring_types = config('app.addons.recurring_type');
                                                 <button class="btn btn-primary m-b-5 btn-view-more" type="button">VIEW</button>
 
                                                 @if ($row->is_active == 10)
-                                                <button class="btn btn-complete m-b-5 btn-proceed-init btn-get-entires" data-action="{{ route('payment.setup.entry', [$row->uuid]) }}" data-random="{{ $random }}" data-url="{{ route('payment.setup.send', [$row->uuid]) }}" type="button">SEND</button>
+                                                {{-- <button class="btn btn-complete m-b-5 btn-proceed-init btn-get-entires" data-action="{{ route('payment.setup.entry', [$row->uuid]) }}" data-random="{{ $random }}" data-url="{{ route('payment.setup.send', [$row->uuid]) }}" type="button">SEND</button> --}}
                                                 <a href="{{ route('payment.setup.edit', [$row->uuid]) }}" class="btn btn-info m-b-5">EDIT</a>
                                                 @endif
                                                 {{-- BUTTON TO TEST SENN EMAIL --}}

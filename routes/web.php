@@ -86,6 +86,13 @@ Route::namespace('Backend')->middleware('auth')->group(function () {
     Route::get('/system-settings', 'SystemSettingsController@index')->name('system.settings');
     Route::post('/system-settings', 'SystemSettingsController@store')->name('system.settings.save');
     Route::put('/system-settings', 'SystemSettingsController@update')->name('system.settings.update');
+
+    Route::get('payment-settings', 'PaymentSettingsController@index')->name('payment.settings');
+    Route::get('payment-settings/create', 'PaymentSettingsController@create')->name('payment.settings.create');
+    Route::post('payment-settings/store', 'PaymentSettingsController@store')->name('payment.settings.store');
+    Route::get('payment-settings/{uuid}/edit', 'PaymentSettingsController@edit')->name('payment.settings.edit');
+    Route::put('payment-settings/{uuid}/update', 'PaymentSettingsController@update')->name('payment.settings.update');
+    Route::put('payment-settings/{uuid}/status', 'PaymentSettingsController@change_status')->name('payment.settings.change.status');
 });
 
 Route::namespace('Frontend')->middleware("throttle:1000,15")->group(function () {
@@ -95,6 +102,9 @@ Route::namespace('Frontend')->middleware("throttle:1000,15")->group(function () 
     Route::any('/pay-hbl', 'PayController@hblBackendResponse')->name('pay.hbl.proceed');
     Route::post('/pay/nibl/confirm', 'PayController@nibl_confirm')->name('pay.nibl.confirm');
 
+    Route::get('/fonepay/verify', 'PayController@fonepay_verify')->name('fonepay.verify');
+    Route::get('/esewa/success', 'PayController@esewa_success')->name('esewa.success');
+
     Route::post(config('app.addons.payment_options.hbl.frontend_response_uri'), 'PayController@hblFrontendResponse');
     Route::any(config('app.addons.payment_options.hbl.backend_response_uri'), 'PayController@hblBackendResponse');
 
@@ -102,7 +112,7 @@ Route::namespace('Frontend')->middleware("throttle:1000,15")->group(function () 
     Route::any('/result/error/{code}', 'ResultController@error')->name('result.error');
     Route::any('/result/failed', 'ResultController@failed')->name('result.failed');
     Route::any('/result/cancellation', 'ResultController@cancellation')->name('result.cancellation');
-    Route::get('/result/backend', 'ResultController@test')->name('result.backend');
+    Route::get('/result/backend', 'ResultController@test')->name('result.backend'); 
 });
 
 Route::namespace('CronJob')->middleware("throttle:100,15")->group(function () {

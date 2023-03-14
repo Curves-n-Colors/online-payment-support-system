@@ -24,7 +24,7 @@ class PayRequest extends FormRequest
     public function rules()
     {
         return [
-            'payment_type' => 'required|in:NIBL,KHALTI,HBL' // ,HBL,ESEWA
+            'payment_type' => 'required|in:NIBL,KHALTI,HBL,ESEWA,FONEPAY' // ,HBL,ESEWA
         ];
     }
 }

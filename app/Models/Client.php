@@ -25,4 +25,9 @@ class Client extends Model
     {
         return $this->hasMany('App\Models\PaymentDetail', 'client_id');
     }
+
+    public function subscription()
+    {
+        return $this->hasMany('App\Models\PaymentHasClient', 'client_id');
+    }
 }

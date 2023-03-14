@@ -44,7 +44,7 @@ class PaymentSetupService{
             $model->currency        = $req->currency;
             $model->remarks         = $req->remarks;
             $model->contents        = $req->has('contents') ? json_encode($req->contents) : '';
-            $model->is_active       = $req->has('is_active') ? 10 : 0;
+            $model->is_active       = 10;
             $model->is_advance      = $req->has('is_advance') ? 10 : 0;
             $model->user_id         = auth()->user()->id;
             $model->payment_options = $req->has('payment_options') ? json_encode($req->payment_options) : '';
@@ -302,7 +302,6 @@ class PaymentSetupService{
 
         $detail = null;
         $entry = PaymentEntry::where('uuid', $params[2])->where('is_expired',0)->first();
-
         if (!$entry) {
             $detail = PaymentDetailService::_find($params[2]);
             if (!$detail) {

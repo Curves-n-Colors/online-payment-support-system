@@ -19,6 +19,11 @@ class PaymentEntryService
         return PaymentEntry::where('uuid', $uuid)->firstOrFail();
     }
 
+    public static function _find_min_uuid($min_uuid)
+    {
+        return PaymentEntry::where('min_uuid', $min_uuid)->firstOrFail();
+    }
+
     public static function _get($group_id = null)
     {
         return PaymentEntry::orderBy('created_at', 'DESC');
@@ -241,6 +246,7 @@ class PaymentEntryService
                 $model->is_active    = 0;
                 $model->is_completed = 10;
             }else{
+                $uuid = Str::uuid()->toString();
                 $old_title  = $model->title;
                 $index = strpos($old_title,"(");
                 $sub_text = substr($old_title,0,$index);
@@ -249,7 +255,8 @@ class PaymentEntryService
 
                 $model->start_date = $new_start_date;
                 $model->end_date = $new_end_date;
-                $model->uuid     = Str::uuid()->toString();
+                $model->uuid     = $uuid;
+                $model->min_uuid = last(explode('-',$uuid));
                 $model->title   = $new_title;
                 $model->total   = $model->setup->total;
             }

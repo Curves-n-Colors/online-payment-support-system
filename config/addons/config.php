@@ -84,7 +84,8 @@ return [
 			'title' 			=> 'Credit Card - HBL',
 			'non_secure'        => 'N',
 			// 'merchant_id'       => '9103338075',
-			'merchant_id'       => '9103332177',
+			//'merchant_id'       => '9103332177',//DEMO
+			'merchant_id'       => '9102634367',//PRODUCTION
 			'merchant_name'     => 'CLIMBALAYA_TREKS_AND_EXPEDITION_ECOM_NPL',
 			'secret_key'        => 'U9LABZ33POUA3WMG6BWNZ8DVBGTNSKXR',
 			'request_url'       => 'https://hblpgw.2c2p.com/HBLPGW/Payment/Payment/Payment',
@@ -240,6 +241,47 @@ return [
 				],
 			],
 		],
+
+		'fonepay' => [
+			'code'  			=> 'FONEPAY',
+			'name'  			=> 'F1 - Payment Gateway',
+			'title' 			=> 'Payment Gateway - Fone Pay',
+			'currency' => [
+				'NPR' 	=> 'NPR',
+			],
+			'MD' 	           => 'P',
+			'PID'	           => 'NBQM',
+			'CRN'	           => 'NPR',
+			'sharedSecretKey'  => 'a7e3512f5032480a83137793cb2021dc',
+			'request_url'      => 'https://dev-clientapi.fonepay.com/api/merchantRequest', // 'https://clientapi.fonepay.com/api/merchantRequest'
+			'verification_url' => 'https://dev-clientapi.fonepay.com/api/merchantRequest/verificationMerchant'
+		],
+
+		'esewa' => [
+			'code'  			=> 'ESEWA',
+			'name'  			=> 'Esewa - Payment Gateway',
+			'title' 			=> 'Digital Wallet - Esewa',
+			'currency' => [
+				'NPR' 	=> 'NPR',
+			],
+        	'merchant_id'      => 'EPAYTEST',
+        	'request_url'      => 'https://uat.esewa.com.np/epay/main',
+        	'verification_url' => 'https://uat.esewa.com.np/epay/transrec'
+		],
+
+		'KHALTI' => [
+			'code'  			=> 'KHALTI',
+			'name'  			=> 'Khalti - Digital Wallet',
+			'title' 			=> 'Digital Wallet - Khalti',
+			'currency' => [
+				'NPR' 	=> 'NPR',
+			],
+        	'public_key'       => 'test_public_key_d35e3b0996b045ce990cc0aa003a6780',
+        	'secret_key'       => 'test_secret_key_64ed721ea35047ad84e5e8e53a9e8526',
+        	'request_url'      => 'https://khalti.com/api/v2/payment/verify/',
+        	'status_check_url' => 'https://khalti.com/api/v2/payment/status/?',
+        	'script'           => 'https://unpkg.com/khalti-checkout-web@latest/dist/khalti-checkout.iffe.js'
+    	],
 
 	],
 

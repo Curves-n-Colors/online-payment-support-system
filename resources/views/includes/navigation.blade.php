@@ -51,6 +51,11 @@
                     <strong>System Settings</strong>
                 </div>
             </a>
+            <a href="{{ route('payment.settings') }}" class="text-info">
+                <div class="padding-10">
+                    <strong>Payment Settings</strong>
+                </div>
+            </a>
         </div>
     </div>
 </div>
