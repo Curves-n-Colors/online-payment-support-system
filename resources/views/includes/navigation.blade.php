@@ -56,6 +56,11 @@
                     <strong>Payment Settings</strong>
                 </div>
             </a>
+            <a href="{{ route('categories.index') }}" class="text-info">
+                <div class="padding-10">
+                    <strong>Categories</strong>
+                </div>
+            </a>
         </div>
     </div>
 </div>

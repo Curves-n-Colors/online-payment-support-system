@@ -93,6 +93,11 @@ Route::namespace('Backend')->middleware('auth')->group(function () {
     Route::get('payment-settings/{uuid}/edit', 'PaymentSettingsController@edit')->name('payment.settings.edit');
     Route::put('payment-settings/{uuid}/update', 'PaymentSettingsController@update')->name('payment.settings.update');
     Route::put('payment-settings/{uuid}/status', 'PaymentSettingsController@change_status')->name('payment.settings.change.status');
+
+    Route::get('/category', 'CategoriesController@index')->name('categories.index');
+    Route::post('/category/store', 'CategoriesController@store')->name('categories.store');
+    Route::put('/category/{id}/update', 'CategoriesController@update')->name('categories.update');
+    Route::put('/category/{id}/status', 'CategoriesController@change_status')->name('categories.change_status');
 });
 
 Route::namespace('Frontend')->middleware("throttle:1000,15")->group(function () {
