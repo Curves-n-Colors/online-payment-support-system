@@ -168,4 +168,3 @@ $contents = ($entry->contents != '') ? json_decode($entry->contents) : '';
 </script>
 @endsection
 {{-- @include('backend.payment.setup.asset_index') --}}
-@include('backend.payment.setup.asset_form')

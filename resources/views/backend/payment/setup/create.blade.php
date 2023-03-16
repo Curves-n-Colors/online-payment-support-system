@@ -173,9 +173,20 @@ $recurring_types = config('app.addons.recurring_type');
                             <div class="col-md-8">
                                 <div class="form-group form-group-default">
                                     <div class="form-input-group">
+                                        <label>Select Items</label>
+                                        <select name="contents[1][title]" data-init-plugin="select2"
+                                            class="full-width form-control" data-placeholder="">
+                                            @forelse ($items as  $s)
+                                            <option value="{{ $s->name.'^'.$s->id }}">{{ $s->name }}</option>
+                                            @empty
+                                            <option>List no available</option>
+                                            @endforelse
+                                        </select>
+                                    </div>
+                                    {{-- <div class="form-input-group">
                                         <label>Title</label>
                                         <input type="text" class="form-control" name="contents[1][title]" placeholder="Title" required>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                             <div class="col-md-4">

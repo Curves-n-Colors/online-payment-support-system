@@ -20,25 +20,30 @@ $payment_opts = ($data->payment_options != '') ? json_decode($data->payment_opti
                 <div class="form-group form-group-default">
                     <label>Subscription Title</label>
                     <div class="controls">
-                        <textarea class="form-control" name="title" placeholder="Subscription Title" style="height: 45px">{{ $data->title ?? old('title') }}</textarea>
+                        <textarea class="form-control" name="title" placeholder="Subscription Title"
+                            style="height: 45px">{{ $data->title ?? old('title') }}</textarea>
                     </div>
                     @error('title')
-                        <label class="error">{{ $message }}</label>
+                    <label class="error">{{ $message }}</label>
                     @enderror
                 </div>
 
                 <div class="row">
                     <div class="col-sm-6">
-                        <div class="form-group required form-group-default input-group @error('currency') has-error @enderror">
+                        <div
+                            class="form-group required form-group-default input-group @error('currency') has-error @enderror">
                             <div class="form-input-group">
                                 <label>Currency</label>
-                                <select name="currency" class="full-width form-control select-currency @error('currency') error @enderror" required>
+                                <select name="currency"
+                                    class="full-width form-control select-currency @error('currency') error @enderror"
+                                    required>
                                     @foreach ($currency_codes as $ccode)
-                                    <option value="{{ $ccode }}" @if($ccode == $data->currency) selected @endif>{{ $ccode }}</option>
+                                    <option value="{{ $ccode }}" @if($ccode==$data->currency) selected @endif>{{ $ccode
+                                        }}</option>
                                     @endforeach
                                 </select>
                                 @error('currency')
-                                    <label class="error">{{ $message }}</label>
+                                <label class="error">{{ $message }}</label>
                                 @enderror
                             </div>
                         </div>
@@ -47,9 +52,11 @@ $payment_opts = ($data->payment_options != '') ? json_decode($data->payment_opti
                         <div class="form-group required form-group-default @error('total') has-error @enderror">
                             <label>Total Amount</label>
                             <div class="controls">
-                                <input type="text" class="form-control total-amt @error('total') error @enderror" name="total" placeholder="Total Amount" required readonly autocomplete="off" value="{{ $data->total ?? old('total') }}" style="color: rgb(75 75 75);">
+                                <input type="text" class="form-control total-amt @error('total') error @enderror"
+                                    name="total" placeholder="Total Amount" required readonly autocomplete="off"
+                                    value="{{ $data->total ?? old('total') }}" style="color: rgb(75 75 75);">
                                 @error('total')
-                                    <label class="error">{{ $message }}</label>
+                                <label class="error">{{ $message }}</label>
                                 @enderror
                             </div>
                         </div>
@@ -57,16 +64,20 @@ $payment_opts = ($data->payment_options != '') ? json_decode($data->payment_opti
                 </div>
                 <div class="row">
                     <div class="col-6">
-                        <div class="form-group required form-group-default input-group @error('recurring_type') has-error @enderror">
+                        <div
+                            class="form-group required form-group-default input-group @error('recurring_type') has-error @enderror">
                             <div class="form-input-group">
                                 <label>Payment Recurrence Type</label>
-                                <select name="recurring_type" class="full-width form-control select-recurrence @error('recurring_type') error @enderror" data-placeholder="" required>
+                                <select name="recurring_type"
+                                    class="full-width form-control select-recurrence @error('recurring_type') error @enderror"
+                                    data-placeholder="" required>
                                     @foreach ($recurring_types as $key => $rctype)
-                                    <option value="{{ $key }}" @if($key == $data->recurring_type) selected @endif>{{ $rctype }}</option>
+                                    <option value="{{ $key }}" @if($key==$data->recurring_type) selected @endif>{{
+                                        $rctype }}</option>
                                     @endforeach
                                 </select>
                                 @error('recurring_type')
-                                    <label class="error">{{ $message }}</label>
+                                <label class="error">{{ $message }}</label>
                                 @enderror
                             </div>
                         </div>
@@ -75,8 +86,9 @@ $payment_opts = ($data->payment_options != '') ? json_decode($data->payment_opti
                         <div class="form-group form-group-default">
                             <label>No. of Extended Day</label>
                             <div class="controls">
-                                <input type="text" class="form-control" name="extended_days" placeholder="No. of Extended Day"
-                                    autocomplete="off" value="{{ $data->extended_days??old('extended_days') }}">
+                                <input type="text" class="form-control" name="extended_days"
+                                    placeholder="No. of Extended Day" autocomplete="off"
+                                    value="{{ $data->extended_days??old('extended_days') }}">
                             </div>
                         </div>
                     </div>
@@ -84,7 +96,8 @@ $payment_opts = ($data->payment_options != '') ? json_decode($data->payment_opti
                 <div class="form-group form-group-default">
                     <label>Remarks</label>
                     <div class="controls">
-                        <textarea class="form-control" name="remarks" placeholder="Remarks" style="height: 90px">{{ $data->remarks ?? old('remarks') }}</textarea>
+                        <textarea class="form-control" name="remarks" placeholder="Remarks"
+                            style="height: 90px">{{ $data->remarks ?? old('remarks') }}</textarea>
                     </div>
                 </div>
 
@@ -98,14 +111,18 @@ $payment_opts = ($data->payment_options != '') ? json_decode($data->payment_opti
                     <div class="col-sm-12 col-md-12">
                         @forelse ($payment_options as $pay_opt)
                         <div class="form-check danger">
-                            <input type="checkbox" name="payment_options[]" value="{{ $pay_opt['code'] }}" id="payment-option-{{ $pay_opt['code'] }}" @if($payment_opts && in_array($pay_opt['code'], $payment_opts)) checked @endif class="payment-option @foreach($pay_opt['currency'] as $curr => $curr_id){{ $curr . ' '}}@endforeach" @if(!in_array($data->currency, array_flip($pay_opt['currency']))) disabled @endif>
+                            <input type="checkbox" name="payment_options[]" value="{{ $pay_opt['code'] }}"
+                                id="payment-option-{{ $pay_opt['code'] }}" @if($payment_opts &&
+                                in_array($pay_opt['code'], $payment_opts)) checked @endif
+                                class="payment-option @foreach($pay_opt['currency'] as $curr => $curr_id){{ $curr . ' '}}@endforeach"
+                                @if(!in_array($data->currency, array_flip($pay_opt['currency']))) disabled @endif>
                             <label for="payment-option-{{ $pay_opt['code'] }}">{{ $pay_opt['title'] }}</label>
                         </div>
                         @empty
                         <strong>No payment option available.</strong>
                         @endforelse
                         @error('payment_options')
-                            <label class="error">{{ $message }}</label>
+                        <label class="error">{{ $message }}</label>
                         @enderror
                     </div>
                 </div>
@@ -130,8 +147,15 @@ $payment_opts = ($data->payment_options != '') ? json_decode($data->payment_opti
                             <div class="col-md-8">
                                 <div class="form-group form-group-default">
                                     <div class="form-input-group">
-                                        <label>Title</label>
-                                        <input type="text" class="form-control" name="contents[{{$idx}}][title]" placeholder="Title" required value="{{ $content->title }}">
+                                        <label>Select Items</label>
+                                        <select name="contents[{{$idx}}][title]" data-init-plugin="select2"
+                                            class="full-width form-control" data-placeholder="">
+                                            @forelse ($items as $s)
+                                            <option value="{{ $s->name.'^'.$s->id }}" @if($content->id==$s->id) selected  @endif>{{ $s->name }}</option>
+                                            @empty
+                                            <option>List no available</option>
+                                            @endforelse
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -139,7 +163,9 @@ $payment_opts = ($data->payment_options != '') ? json_decode($data->payment_opti
                                 <div class="form-group form-group-default input-group">
                                     <div class="form-input-group">
                                         <label>Amount</label>
-                                        <input type="text" data-a-dec="." data-a-sep="," class="autonumeric form-control calc-amt" placeholder="Amount" name="contents[{{$idx}}][amount]" required value="{{ $content->amount }}">
+                                        <input type="text" data-a-dec="." data-a-sep=","
+                                            class="autonumeric form-control calc-amt" placeholder="Amount"
+                                            name="contents[{{$idx}}][amount]" required value="{{ $content->amount }}">
                                     </div>
                                     <div class="input-group-append">
                                         <span class="input-group-text">
@@ -155,7 +181,8 @@ $payment_opts = ($data->payment_options != '') ? json_decode($data->payment_opti
                         </div>
                         <div class="form-group form-group-default">
                             <label>Description</label>
-                            <textarea name="contents[{{$idx}}][description]" class="form-control" placeholder="Description" style="height: 100px;">{{ $content->description }}</textarea>
+                            <textarea name="contents[{{$idx}}][description]" class="form-control"
+                                placeholder="Description" style="height: 100px;">{{ $content->description }}</textarea>
                         </div>
                     </div>
                     @empty
@@ -165,7 +192,8 @@ $payment_opts = ($data->payment_options != '') ? json_decode($data->payment_opti
                                 <div class="form-group form-group-default">
                                     <div class="form-input-group">
                                         <label>Title</label>
-                                        <input type="text" class="form-control" name="contents[1][title]" placeholder="Title" required>
+                                        <input type="text" class="form-control" name="contents[1][title]"
+                                            placeholder="Title" required>
                                     </div>
                                 </div>
                             </div>
@@ -173,7 +201,9 @@ $payment_opts = ($data->payment_options != '') ? json_decode($data->payment_opti
                                 <div class="form-group form-group-default input-group">
                                     <div class="form-input-group">
                                         <label>Amount</label>
-                                        <input type="text" data-a-dec="." data-a-sep="," class="autonumeric form-control calc-amt" placeholder="Amount" name="contents[1][amount]" required>
+                                        <input type="text" data-a-dec="." data-a-sep=","
+                                            class="autonumeric form-control calc-amt" placeholder="Amount"
+                                            name="contents[1][amount]" required>
                                     </div>
                                     <div class="input-group-append">
                                         <span class="input-group-text">
@@ -185,19 +215,22 @@ $payment_opts = ($data->payment_options != '') ? json_decode($data->payment_opti
                         </div>
                         <div class="form-group form-group-default">
                             <label>Description</label>
-                            <textarea name="contents[1][description]" class="form-control" placeholder="Description" style="height: 67px;"></textarea>
+                            <textarea name="contents[1][description]" class="form-control" placeholder="Description"
+                                style="height: 67px;"></textarea>
                         </div>
                         <div class="row clearfix">
                             <div class="col-md-6">
                                 <div class="form-group form-group-default">
                                     <label>Link Title</label>
-                                    <input type="text" class="form-control" name="contents[1][link_title]" placeholder="Link Title">
+                                    <input type="text" class="form-control" name="contents[1][link_title]"
+                                        placeholder="Link Title">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group form-group-default">
                                     <label>Link URL</label>
-                                    <input type="url" class="form-control" name="contents[1][link_url]" placeholder="Link URL">
+                                    <input type="url" class="form-control" name="contents[1][link_url]"
+                                        placeholder="Link URL">
                                 </div>
                             </div>
                         </div>

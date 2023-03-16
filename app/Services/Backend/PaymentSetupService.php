@@ -8,6 +8,7 @@ use App\Models\PaymentEntry;
 use App\Models\PaymentSetup;
 use App\Models\PaymentHasClient;
 use Illuminate\Support\Facades\DB;
+use App\Models\PaymentSetupCategory;
 use App\Services\Backend\LogsService;
 use App\Notifications\SendPaymentLink;
 use App\Notifications\SendPaymentNotify;
@@ -56,20 +57,21 @@ class PaymentSetupService{
             $model->save();
 
 
-            // foreach($req->client as $key => $value){
+            foreach($req->contents as $c){
 
-            //     $client = new PaymentHasClient();
-            //     $client->payment_setup_id = $model->id;
-            //     $client->client_id = $value;
-            //     $client->save();
-            //     // LogsService::_set('Payment Setup - ' . $client->id . ' has been created', 'payment-setup');
-            // }
+                $category = new PaymentSetupCategory();
+                $category->payment_setup_id = $model->id;
+                $category->category_id  = $c['id'];
+                $category->total   = str_replace(",", "", $c['amount']);
+                $category->save();
+            }
 
         }catch (Exception $e)
         {
             DB::rollBack();
             return $e;
         }
+        LogsService::_set('Payment Setup - ' . $model->id . ' has been created', 'payment-setup');
         DB::commit();
         return $model->uuid;
 
@@ -95,39 +97,36 @@ class PaymentSetupService{
 
         DB::beginTransaction();
         try{
-
+            
             $model->title      = $req->title;
             $model->total      = (float) $req->total;
             $model->currency   = $req->currency;
             $model->remarks    = $req->remarks;
             $model->contents   = $req->has('contents') ? json_encode($req->contents) : '';
-            // $model->is_advance      = 10; // $req->has('is_advance') ? 10 : 0;
             $model->payment_options = $req->has('payment_options') ? json_encode($req->payment_options) : '';
-            // $model->reference_date  = date('Y-m-d', strtotime($req->reference_date));
             $model->recurring_type  = $req->recurring_type;
-            // $model->expire_date     = $req->expire_date  ? date('Y-m-d', strtotime($req->expire_date)) : null;
-            // $model->no_of_payments  = $req->no_of_payments;
             $model->extended_days   = $req->extended_days;
             $model->update();
 
-            // $model->clients->each->delete();
+            $model->categories()->delete();
 
-            // foreach($req->client as $key => $value){
-
-            //     $client = new PaymentHasClient();
-            //     $client->payment_setup_id = $model->id;
-            //     $client->client_id = $value;
-            //     $client->save();
-            //     // LogsService::_set('Payment Setup - ' . $client->id . ' has been created', 'payment-setup');
-            // }
+            foreach ($req->contents as $c) {
+                $category = new PaymentSetupCategory();
+                $category->payment_setup_id = $model->id;
+                $category->category_id  = $c['id'];
+                $category->total    = str_replace(",", "", $c['amount']);
+                $category->save();
+            }
 
         }
         catch (Exception $e)
         {
             DB::rollBack();
+            dd($e);
             return $e;
         }
         DB::commit();
+        LogsService::_set('Payment Setup - ' . $model->id . ' has been updated', 'payment-setup');
         return true;
     }
 

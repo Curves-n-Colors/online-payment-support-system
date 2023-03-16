@@ -31,4 +31,9 @@ class PaymentDetail extends Model
         return $this->hasOne('App\Models\PaymentKhalti', 'uuid', 'uuid');
     }
 
+    public function categories()
+    {
+        return $this->hasMany('App\Models\PaymentDetailsCategory', 'payment_detail_id');
+    }
+
 }

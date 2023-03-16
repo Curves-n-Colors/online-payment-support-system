@@ -5,6 +5,7 @@ use App\User;
 use Illuminate\Support\Str;
 use App\Models\PaymentEntry;
 use App\Models\PaymentSetup;
+use App\Models\PaymentEntryCategory;
 use App\Notifications\SendExtendMail;
 use App\Notifications\SendPaymentLink;
 use App\Notifications\SendSuspendMail;
@@ -45,12 +46,14 @@ class PaymentEntryService
 
     public static function _storing($data, $title, $client, $date, $subscription_id)
     {
+        $uuid = Str::uuid()->toString();
         $model = new PaymentEntry();
         $model->payment_setup_id = $data->id;
         $model->title            = $title;
         $model->client_id        = $client->id;
         $model->email            = $client->email;
-        $model->uuid             = Str::uuid()->toString();
+        $model->uuid             = $uuid;
+        $model->min_uuid         = last(explode('-', $uuid));
         $model->total            = $data->total;
         $model->currency         = $data->currency;
         $model->contents         = $data->contents;
@@ -61,6 +64,16 @@ class PaymentEntryService
         $model->payment_date     = NULL;//date('Y-m-d', strtotime($date));
         $model->start_date       = date('Y-m-d', strtotime($date['old_payment_date']));
         $model->end_date         = date('Y-m-d', strtotime($date['new_payment_date']));
+
+        if (count($model->details->categories) > 0) {
+            foreach ($model->details->categories as $c) {
+                $category = new PaymentEntryCategory();
+                $category->payment_entry_id = $model->id;
+                $category->category_id  = $c->category_id;
+                $category->total   = $c->total;
+                $category->save();
+            }
+        }
 
         if ($model->save()) {
             LogsService::_set('Payment Entry - ' . $model->title . ' has been created for Setup - ' . $data->title, 'payment-entry');

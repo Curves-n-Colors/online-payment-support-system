@@ -4,8 +4,12 @@ namespace App\Services\Backend;
 
 use App\Models\PayNibl;
 
+
+use Exception;
+use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade as PDF;
 use App\Models\PaymentDetail;
+use App\Models\PaymentDetailsCategory;
 use App\Services\Backend\LogsService;
 use App\Notifications\SendPaymentStatus;
 use Illuminate\Support\Facades\Notification;
@@ -22,35 +26,52 @@ class PaymentDetailService{
     {
         return PaymentDetail::orderBy('created_at', 'DESC');
     }
+    
 
     public static function _storing($data, $detail)
     {
-        $model = new PaymentDetail();
-        $model->payment_setup_id = $data->payment_setup_id;
-        $model->title            = $data->title;
-        $model->client_id        = $data->client_id;
-        $model->email            = $data->email??NULL;
-        $model->uuid             = $data->uuid;
-        $model->min_uuid         = $data->min_uuid;
-        $model->total            = $data->total;
-        $model->currency         = $data->currency;
-        $model->contents         = $data->contents;
-        $model->payment_date     = date('Y-m-d', strtotime($data->payment_date));
-        $model->payment_status   = $detail['status'];
-        $model->payment_type     = $detail['type'];
-        $model->is_advance       = isset($detail['advance_month'])??0;
-        $model->advance_months   = isset($detail['advance_month'])?$detail['advance_month']:0;
+        DB::beginTransaction();
+        try {
+            $model = new PaymentDetail();
+            $model->payment_setup_id = $data->payment_setup_id;
+            $model->title            = $data->title;
+            $model->client_id        = $data->client_id;
+            $model->email            = $data->email ?? NULL;
+            $model->uuid             = $data->uuid;
+            $model->min_uuid         = $data->min_uuid;
+            $model->total            = $data->total;
+            $model->currency         = $data->currency;
+            $model->contents         = $data->contents;
+            $model->payment_date     = date('Y-m-d', strtotime($data->payment_date));
+            $model->payment_status   = $detail['status'];
+            $model->payment_type     = $detail['type'];
+            $model->is_advance       = isset($detail['advance_month']) ?? 0;
+            $model->advance_months   = isset($detail['advance_month']) ? $detail['advance_month'] : 0;
 
-        if ($model->save()) {
-            $model->ref_code = config('app.addons.ref_code_prefix') . '-' . $model->id;
-            $model->update();
+            if ($model->save()) {
+                $model->ref_code = config('app.addons.ref_code_prefix') . '-' . $model->id;
+                $model->update();
 
-            Notification::route('mail', $model->email)->notify(new SendPaymentStatus($model));
-            LogsService::_set('Payment Detail - ' . $model->title . ' has been created for Setup - ' . $data->setup->title, 'payment-detail');
-            return true;
+                if (count($data->categories) > 0) {
+                    foreach ($data->categories as $c) {
+                        $category = new PaymentDetailsCategory();
+                        $category->payment_detail_id = $model->id;
+                        $category->category_id  = $c->category_id;
+                        $category->total   = $c->total;
+                        $category->save();
+                    }
+                }
+                Notification::route('mail', $model->email)->notify(new SendPaymentStatus($model));
+                LogsService::_set('Payment Detail - ' . $model->title . ' has been created for Setup - ' . $data->setup->title, 'payment-detail');
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return false;
         }
-        return false;
+        DB::commit();
+        return true;
     }
+
 
     public static function _refunding($req, $uuid)
     {

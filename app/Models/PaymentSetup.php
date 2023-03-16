@@ -41,6 +41,11 @@ class PaymentSetup extends Model
         return $this->hasMany('App\Models\PaymentHasClient', 'payment_setup_id');
     }
 
+    public function categories()
+    {
+        return $this->hasMany('App\Models\PaymentSetupCategory', 'payment_setup_id');
+    }
+
     public function entries()
     {
         return $this->hasMany('App\Models\PaymentEntry', 'payment_setup_id')->orderBy('id', 'DESC');

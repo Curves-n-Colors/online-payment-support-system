@@ -151,4 +151,26 @@
 @endsection
 
 {{-- @include('backend.payment.setup.asset_index') --}}
-@include('backend.payment.setup.asset_form')
+@section('page-specific-style')
+<link rel="stylesheet" href="{{ asset('assets/plugins/select2/select2.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('assets/plugins/bootstrap-datepicker/bootstrap-datepicker.min.css') }}">
+@endsection
+
+@section('page-specific-script')
+<script src="{{ asset('assets/plugins/select2/select2.full.min.js') }}" type="text/javascript"></script>
+<script src="{{ asset('assets/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
+<script src="{{ asset('assets/plugins/jquery-autonumeric/autoNumeric.js') }}"></script>
+<script>
+    $('[data-init-plugin=select2]').select2();
+    $('.autonumeric').autoNumeric('init');
+    $('.datepicker').datepicker({
+    keyboardNavigation : false,
+    forceParse : false,
+    calendarWeeks : false,
+    autoclose : true,
+    format: 'yyyy-mm-dd',
+    todayHighlight: true
+    });
+    
+</script>
+@endsection

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PaymentSetupStore;
 use App\Http\Requests\PaymentSetupUpdate;
+use App\Models\Category;
 use Illuminate\Support\Facades\Validator;
 use App\Services\Backend\PaymentSetupService;
 use App\Services\Backend\UserService;
@@ -31,11 +32,27 @@ class PaymentSetupController extends Controller
     public function create()
     {
         $clients = Client::select('id', 'name', 'email')->where('is_active', 10)->get();
-        return view('backend.payment.setup.create', compact('clients'));
+        $items = Category::select('id', 'name')->where('is_active',10)->get();
+        return view('backend.payment.setup.create', compact('clients', 'items'));
     }
 
     public function store(PaymentSetupStore $request)
     {
+       
+        $new_array = [];
+        foreach($request->contents as $c){
+           
+            $detals = explode('^',$c['title']);
+            array_push($new_array, [
+                'id' => $detals[1],
+                'title'=>$detals[0],
+                'amount' => $c['amount'],
+                'description' => $c['description']
+            ]);
+            
+        }
+        $request->contents = $new_array;
+        // dd($request->contents);
         if ($request->payment_option == 1) {
             dd(1);
             if (PaymentSetupService::_storensend($request)) {
@@ -53,14 +70,26 @@ class PaymentSetupController extends Controller
     {
         if ($data = PaymentSetupService::_find($uuid)) {
             $clients = Client::select('id', 'name', 'email')->where('is_active', 10)->get();
-            return view('backend.payment.setup.edit', compact('data', 'clients'));
+            $items = Category::select('id', 'name')->where('is_active', 10)->get();
+            return view('backend.payment.setup.edit', compact('data', 'clients', 'items'));
         }
         return back()->with('warning', 'The payment setup you want to edit does not exist.');
     }
 
     public function update(PaymentSetupUpdate $request, $uuid)
     {
+        $new_array = [];
+        foreach ($request->contents as $c) {
+            $detals = explode('^', $c['title']);
+            array_push($new_array, [
+                'id' => $detals[1],
+                'title' => $detals[0],
+                'amount' => $c['amount'],
+                'description' => $c['description']
+            ]);
+        }
 
+        $request->contents = $new_array;
         $update = PaymentSetupService::_updating($request, $uuid);
         if ($update) {
             return redirect()->route('payment.setup.index')->with('success', 'The payment setup has been updated.');

@@ -27,4 +27,9 @@ class PaymentEntry extends Model
         return $this->belongsTo('App\Models\PaymentHasClient', 'subscription_id', 'id');
     }
 
+    public function categories()
+    {
+        return $this->hasMany('App\Models\PaymentEntryCategory', 'payment_entry_id');
+    }
+
 }
