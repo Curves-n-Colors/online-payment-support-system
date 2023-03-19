@@ -42,7 +42,8 @@ $payment_opts = ($entry->payment_options != '') ? json_decode($entry->payment_op
 					<div class="advance_payment">
 						<div class="total">Advance Payment <span class="price">x <span id="no_months">2</span> MONTHS</span></div>
 					</div>
-					<div class="total">Total<span class="price">{{ $entry->currency }} <span id="amount">{{ number_format($entry->total, 2) }}</span></span></div>
+					<div class="total">VAT<span class="price">{{ $entry->currency }}<span id="amount">{{ number_format($entry->vat, 2) }}</span></span></div>
+					<div class="total">Total<span class="price">{{ $entry->currency }}<span id="amount">{{ number_format($entry->total, 2) }}</span></span></div>
 				</div>
 				<div class="card-details">
 					<h3 class="title">Payment Option</h3>

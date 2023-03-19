@@ -38,7 +38,7 @@ class SubscriptionService
                     $model->save();
 
                     if(isset($req->send_email)){
-                        self::_sending(null,$model->uuid);
+                        self::_sending($model->uuid);
                     }
                 }
             }
@@ -132,7 +132,7 @@ class SubscriptionService
 
             $notify = [
                 'currency'  => $model->currency,
-                'total'     => number_format($model->total, 2),
+               
                 'encrypt'   => '',
                 'entry'     => '',
                 'uuid'      => ''
@@ -149,6 +149,7 @@ class SubscriptionService
                 foreach ($selected_entries as $ent) {
                     $notify['uuid']  = $ent['uuid'];
                     $notify['client_id']  = $client->id;
+                    $notify['total']     = number_format($ent['total'], 2);
                     $notify['client']  = $client->name;
                     $notify['entry'] = $ent['title'];
                     $notify['email'] = $client->email;
@@ -167,6 +168,7 @@ class SubscriptionService
                     if ($entry = PaymentEntryService::_storing($model, $title, $client, $new,  $subscription->id)) {
                         $notify['uuid']  = $entry->uuid;
                         $notify['client_id']  = $client->id;
+                        $notify['total']     = number_format($entry->total, 2);
                         $notify['client']  = $client->name;
                         $notify['entry'] = $entry->title;
                         $notify['email'] = $client->email;

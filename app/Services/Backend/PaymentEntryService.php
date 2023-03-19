@@ -46,6 +46,7 @@ class PaymentEntryService
 
     public static function _storing($data, $title, $client, $date, $subscription_id)
     {
+        $vat =(13/100) * $data->total;
         $uuid = Str::uuid()->toString();
         $model = new PaymentEntry();
         $model->payment_setup_id = $data->id;
@@ -54,7 +55,9 @@ class PaymentEntryService
         $model->email            = $client->email;
         $model->uuid             = $uuid;
         $model->min_uuid         = last(explode('-', $uuid));
-        $model->total            = $data->total;
+        $model->sub_total        = $data->total;
+        $model->vat              = $vat;
+        $model->total            = $vat + $data->total;
         $model->currency         = $data->currency;
         $model->contents         = $data->contents;
         $model->is_active        = 10;
@@ -64,18 +67,18 @@ class PaymentEntryService
         $model->payment_date     = NULL;//date('Y-m-d', strtotime($date));
         $model->start_date       = date('Y-m-d', strtotime($date['old_payment_date']));
         $model->end_date         = date('Y-m-d', strtotime($date['new_payment_date']));
-
-        if (count($model->details->categories) > 0) {
-            foreach ($model->details->categories as $c) {
-                $category = new PaymentEntryCategory();
-                $category->payment_entry_id = $model->id;
-                $category->category_id  = $c->category_id;
-                $category->total   = $c->total;
-                $category->save();
-            }
-        }
-
+        
         if ($model->save()) {
+            if (count($model->setup->categories) > 0) {
+                foreach ($model->setup->categories as $c) {
+                    $category = new PaymentEntryCategory();
+                    $category->payment_entry_id = $model->id;
+                    $category->category_id  = $c->category_id;
+                    $category->total   = $c->total;
+                    $category->save();
+                }
+            }
+
             LogsService::_set('Payment Entry - ' . $model->title . ' has been created for Setup - ' . $data->title, 'payment-entry');
             return $model;
         }
