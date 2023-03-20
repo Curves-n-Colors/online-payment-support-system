@@ -31,7 +31,7 @@ $status_payment = config('app.addons.status_payment');
                                         <th width="50">Setup Title</th>
                                         <th width="50">Client</th>
                                         <th width="50">Amount</th>
-                                        <th width="50">Payment Date</th>
+                                        {{-- <th width="50">Payment Date</th> --}}
                                         <th width="50">Paid Date</th>
                                         <th width="50">Status</th>
                                         <th width="50">Advance</th>
@@ -50,7 +50,7 @@ $status_payment = config('app.addons.status_payment');
                                             <td>{{ $row->setup->title }}</td>
                                             <td>{{ $row->client->name }}<br/>{{ $row->email }}</td>
                                             <td>{{ $row->currency . ' ' . number_format($row->total, 2) }}</td>
-                                            <td>{{ $row->payment_date }}</td>
+                                            {{-- <td>{{ $row->payment_date }}</td> --}}
                                             <td>{{ $row->created_at }}</td>
                                             <td>
                                                 @if ($row->payment_type != null)

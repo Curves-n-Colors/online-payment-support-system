@@ -25,10 +25,11 @@ use App\Http\Requests\NiblRequest;
 use App\Models\HblPaymentResponse;
 use App\Helpers\HBLPayment\Payment;
 use App\Http\Controllers\Controller;
-use App\Services\Backend\PaymentDetailService;
-use App\Services\Backend\PaymentEntryService;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use App\Services\Backend\PaymentEntryService;
+use App\Services\Backend\PaymentEsewaService;
+use App\Services\Backend\PaymentDetailService;
 use App\Services\Backend\PaymentFonepayService;
 use App\Services\Backend\TempAdvanceDetailsService;
 
@@ -269,7 +270,25 @@ class PayController extends Controller
     }
 
     public function esewa_success(Request $request){
-        dd($request);
+        try {
+            $result  = PaymentEsewaService::_check($request);
+            if ($result['status']) {
+                $save_result = PaymentEsewaService::_create($request);
+                $model = PaymentEntryService::_find_min_uuid($request->oid);
+                $detail = [
+                    'type'   => 'ESEWA',
+                    'status' => $save_result->status
+                ];
+                PaymentDetailService::_storing($model, $detail);
+                PaymentEntryService::_update_new_entry($model->uuid);
+
+                return redirect()->route('result.success', [PaymentSetup::_encrypting($model->setup->uuid, $model->uuid)]);
+            } 
+        
+        } catch (Exception $e) {
+            dd($e);
+        }
+        return redirect()->route('result.failed');
     }
 
     public function proceedHbl($encrypt)//OLD HBL FUNCTION
