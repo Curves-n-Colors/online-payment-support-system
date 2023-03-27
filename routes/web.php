@@ -98,6 +98,9 @@ Route::namespace('Backend')->middleware('auth')->group(function () {
     Route::post('/category/store', 'CategoriesController@store')->name('categories.store');
     Route::put('/category/{id}/update', 'CategoriesController@update')->name('categories.update');
     Route::put('/category/{id}/status', 'CategoriesController@change_status')->name('categories.change_status');
+
+    Route::get('/settings', 'SettingController@index')->name('settings.index');
+    Route::post('/settings', 'SettingController@store')->name('settings.store');
 });
 
 Route::namespace('Frontend')->middleware("throttle:1000,15")->group(function () {

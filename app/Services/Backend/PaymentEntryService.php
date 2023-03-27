@@ -46,7 +46,8 @@ class PaymentEntryService
 
     public static function _storing($data, $title, $client, $date, $subscription_id)
     {
-        $vat =(13/100) * $data->total;
+        $vat_rate = vat_rate();
+        $vat =($vat_rate/100) * $data->total;
         $uuid = Str::uuid()->toString();
         $model = new PaymentEntry();
         $model->payment_setup_id = $data->id;

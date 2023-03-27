@@ -47,7 +47,7 @@ class SendEmail extends Command
     {
         $type_name = $this->option('type');
         $get_settings = auto_email_settings($type_name);
-        $recurring_type = $get_settings->recurring_type;
+        $recurring_type = $get_settings['recurring_type'];
         $email_collection = PaymentEntry::with('subscription', 'setup', 'client')
                                         ->whereHas('setup', function($query) use ($recurring_type){
                                             $query->where('recurring_type',$recurring_type);
@@ -56,6 +56,7 @@ class SendEmail extends Command
                                         ->where('is_active',10)
                                         ->where('is_completed',0)
                                         ->get();   
+        dd($email_collection);
                                         
         if(count($email_collection)>0)
         {
@@ -63,10 +64,10 @@ class SendEmail extends Command
             {
                 $extend = isset($entry->setup->extended_days)?$entry->setup->extended_days:0;
 
-                $timing = ' - '.$get_settings->email_day.' day';
-                $email_interval = ' + '.$get_settings->days_between_mail .' day';
+                $timing = ' - '.$get_settings['email_day'].' day';
+                $email_interval = ' + '.$get_settings['days_between_mail'] .' day';
                 $extend_time = ' + '.$extend.' day';
-                $email_interval_extended = ' + '.$get_settings->days_between_extended_mail  .' day';
+                $email_interval_extended = ' + '.$get_settings['days_between_extended_mail']  .' day';
 
                 $notify = [
                 'client_id' => $entry->client->id,

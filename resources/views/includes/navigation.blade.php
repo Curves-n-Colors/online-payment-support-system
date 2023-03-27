@@ -46,9 +46,9 @@
                     <strong>Email Notifications</strong>
                 </div>
             </a>
-            <a href="{{ route('system.settings') }}" class="text-info">
+            <a href="{{ route('settings.index') }}" class="text-info">
                 <div class="padding-10">
-                    <strong>System Settings</strong>
+                    <strong>Settings</strong>
                 </div>
             </a>
             <a href="{{ route('payment.settings') }}" class="text-info">
