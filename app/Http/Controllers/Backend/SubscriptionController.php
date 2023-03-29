@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Models\Client;
+use App\Models\Category;
 use App\Models\PaymentSetup;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -13,12 +14,36 @@ use App\Http\Requests\SubscriptionEditRequest;
 
 class SubscriptionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $subscription = SubscriptionService::_get();
+        if ($request->has('client') and isset($request->client)) {
+            $client = Client::select('id')->where('uuid', $request->client)->first();
+            $subscription = $subscription->where('client_id', $client->id);
+        }
+
+        if ($request->has('type') and isset($request->type)) {
+            $type = $request->type;
+            $subscription = $subscription->whereHas('details', function ($query) use ($type) {
+                $query->where('recurring_type', $type);
+            });
+        }
+
+        if ($request->has('category') and isset($request->category)) {
+            $category = Category::where('id', filter_var($request->category, FILTER_SANITIZE_STRING))->first();
+            $id = $category->id;
+            $subscription = $subscription->whereHas('details', function ($query) use ($id) {
+                $category_id = $id;
+                $query->with('categories')->whereHas('categories', function ($query) use ($category_id){
+                    $query->where('category_id', $category_id);
+                });
+            });
+        }
         $data = $subscription->get();
-        $clients = Client::select('id', 'name')->where('is_active', 10)->get();
-        return view('backend.payment.subscription.index', compact('data', 'clients'));
+
+        $clients = Client::select('uuid', 'name')->where('is_active', 10)->get();
+        $categories = Category::select('id', 'name')->get();
+        return view('backend.payment.subscription.index', compact('data', 'clients', 'categories'));
     }
 
     public function create()

@@ -17,4 +17,9 @@ class PaymentSetupCategory extends Model
     {
         return $this->belongsTo('App\Models\Category', 'category_id');
     }
+
+    public function details()
+    {
+        return $this->belongsTo('App\Models\PaymentSetup', 'payment_setup_id');
+    }
 }

@@ -26,7 +26,7 @@ class PaymentSetupService{
 
     public static function _get($group_id = null)
     {
-        return PaymentSetup::orderBy('created_at', 'ASC')->get();
+        return PaymentSetup::with('clients', 'categories')->orderBy('created_at', 'ASC');
     }
 
     public static function _find_with_trashed($uuid)

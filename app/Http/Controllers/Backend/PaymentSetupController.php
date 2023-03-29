@@ -3,30 +3,50 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Models\Client;
+use App\Models\Category;
+use App\Models\PaymentSetup;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Services\Backend\UserService;
 use App\Http\Requests\PaymentSetupStore;
 use App\Http\Requests\PaymentSetupUpdate;
-use App\Models\Category;
 use Illuminate\Support\Facades\Validator;
 use App\Services\Backend\PaymentSetupService;
-use App\Services\Backend\UserService;
 
 class PaymentSetupController extends Controller
 {
     public function index(Request $request)
     {
-        $filter = null;
-        $data = null;
-        if ($request->has('client')) {
-            $client = Client::where('uuid', filter_var($request->client, FILTER_SANITIZE_STRING))->first();
-            $filter = $client->subscription ?? null;
-        } else {
-            $data = PaymentSetupService::_get();
+        $id = 1;
+        $data = PaymentSetupService::_get();
+
+        if($request->has('category') and isset($request->category)){
+            $category = Category::where('id', filter_var($request->category, FILTER_SANITIZE_STRING))->first();
+            $id = $category->id;
+            $data = $data->whereHas('categories', function ($query) use ($id) {
+                    $query->where('category_id', $id);
+                });
+
         }
 
+        if ($request->has('type') and isset($request->type)) {
+           $type = $request->type;
+           $data = $data->where('recurring_type', $type);
+        }
+
+        if ($request->has('client') and isset($request->client)) {
+            $client = Client::select('id')->where('uuid', filter_var($request->client, FILTER_SANITIZE_STRING))->first();
+            $id = $client->id;
+            $data = $data->whereHas('clients', function ($query) use ($id) {
+                    $query->where('client_id', $id);
+                    });
+         }
+
+        $data = $data->get();
+      
         $clients = Client::select('uuid', 'name')->get();
-        return view('backend.payment.setup.index', compact('data', 'clients', 'filter'));
+        $categories = Category::select('id', 'name')->get();
+        return view('backend.payment.setup.index', compact('data', 'clients', 'categories'));
     }
 
     public function create()

@@ -148,6 +148,7 @@ $payment_opts = ($data->payment_options != '') ? json_decode($data->payment_opti
                                 <div class="form-group form-group-default">
                                     <div class="form-input-group">
                                         <label>Select Items</label>
+                                      
                                         <select name="contents[{{$idx}}][title]" data-init-plugin="select2"
                                             class="full-width form-control" data-placeholder="">
                                             @forelse ($items as $s)
