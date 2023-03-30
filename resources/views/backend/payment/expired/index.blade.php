@@ -49,7 +49,7 @@ $recurring_types = config('app.addons.recurring_type');
                                 <ul class="nav nav-tabs nav-tabs-simple" role="tablist"
                                     data-init-reponsive-tabs="dropdownfx">
                                     <li class="nav-item">
-                                        <a  href="{{ route('payment.entry.index') }}">All Payments</a>
+                                        <a href="{{ route('payment.entry.index') }}">All Payments</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="{{ isset(request()['pending'])?'active':'' }}"
@@ -62,12 +62,60 @@ $recurring_types = config('app.addons.recurring_type');
                                             Payments</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="active"
-                                            href="{{ route('payment.expired') }}">Expired Payments</a>
+                                        <a class="active" href="{{ route('payment.expired') }}">Expired Payments</a>
                                     </li>
                                 </ul>
 
                             </div>
+                            <form action="{{ route('payment.expired') }}" method="GET">
+                                <div class="m-t-15 m-b-15">
+                                    <div class="row">
+                                        <label class="col-md-2 control-label overline"><strong>Filter
+                                                By:</strong></label>
+                                        <div class="col-md-10 form-group-attached">
+                                            <div class="row">
+                                                <div class="col-sm-12 col-md-3 col-lg-2 offset-lg-3">
+                                                    <div class="form-group form-group-default">
+                                                        <div class="controls">
+                                                            <input type="text" class="form-control datepicker"
+                                                                name="from" placeholder="From Date" autocomplete="off"
+                                                                value="{{ request()->from }}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12 col-md-3 col-lg-2">
+                                                    <div class="form-group form-group-default">
+                                                        <div class="controls">
+                                                            <input type="text" class="form-control datepicker" name="to"
+                                                                placeholder="To Date" autocomplete="off"
+                                                                value="{{ request()->to }}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12 col-md-4 col-lg-4">
+                                                    <div class="form-group form-group-default no-padding">
+                                                        <select name="client" data-init-plugin="select2"
+                                                            class="full-width select-client form-control">
+                                                            <option value="">Search by client</option>
+                                                            @forelse ($clients as $key => $client)
+                                                            <option value="{{ $client->uuid }}" @if(request()->
+                                                                client ==
+                                                                $client->uuid) selected @endif>{{
+                                                                $client->name }}</option>
+                                                            @empty
+                                                            @endforelse
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12 col-md-2 col-lg-1">
+                                                    <button type="submit"
+                                                        class="btn btn-lg btn-block btn-primary">FILTER</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
                             <table class="table table-hover table-responsive-block dataTable with-export custom-table">
                                 <thead>
                                     <tr>
@@ -75,6 +123,7 @@ $recurring_types = config('app.addons.recurring_type');
                                         <th width="50">Entry Title</th>
                                         <th width="50">Setup Title</th>
                                         <th width="50">Client</th>
+                                        <th width="50">Currency</th>
                                         <th width="50">Amount</th>
                                         <th width="50">Payment Ending</th>
                                         <th width="50">Status</th>
@@ -91,7 +140,8 @@ $recurring_types = config('app.addons.recurring_type');
                                         <td>{{ $row->title }}</td>
                                         <td>{{ $row->setup->title }}</td>
                                         <td>{{ $row->client->name }}<br />{{ $row->client->email }}</td>
-                                        <td>{{ $row->currency . ' ' . number_format($row->total, 2) }}</td>
+                                        <td>{{ $row->currency }}</td>
+                                        <td>{{ number_format($row->total, 2) }}</td>
                                         <td>{{ $row->end_date }}</td>
                                         <td>
                                             @if ($row->is_expired == 10)
@@ -170,49 +220,7 @@ $recurring_types = config('app.addons.recurring_type');
                                     @endif
                                 </tbody>
                             </table>
-
-
-                            <form action="{{ route('payment.entry.index') }}" method="GET">
-                                <div class="form-group-attached m-t-15">
-                                    <div class="row">
-                                        <div class="col-sm-12 col-md-3 col-lg-2 offset-lg-3">
-                                            <div class="form-group form-group-default">
-                                                <div class="controls">
-                                                    <input type="text" class="form-control datepicker" name="from"
-                                                        placeholder="From Date" autocomplete="off"
-                                                        value="{{ request()->from }}">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-12 col-md-3 col-lg-2">
-                                            <div class="form-group form-group-default">
-                                                <div class="controls">
-                                                    <input type="text" class="form-control datepicker" name="to"
-                                                        placeholder="To Date" autocomplete="off"
-                                                        value="{{ request()->to }}">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-12 col-md-4 col-lg-4">
-                                            <div class="form-group form-group-default no-padding">
-                                                <select name="client" data-init-plugin="select2"
-                                                    class="full-width select-client form-control">
-                                                    <option value="">Filter by client</option>
-                                                    @forelse ($clients as $key => $client)
-                                                    <option value="{{ $client->uuid }}" @if(request()->client ==
-                                                        $client->uuid) selected @endif>{{ $client->name }}</option>
-                                                    @empty
-                                                    @endforelse
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-12 col-md-2 col-lg-1">
-                                            <button type="submit"
-                                                class="btn btn-lg btn-block btn-primary">SEARCH</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
+                            
                         </div>
                     </div>
                 </div>
