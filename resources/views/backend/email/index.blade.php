@@ -167,7 +167,7 @@
     </div>
 </div>
 
-//MODAL
+{{-- MODAL START --}}
 <div class="modal fade slide-right show" id="show-details-modal" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-sm" style="max-width: 800px; margin: 0 auto;">
         <div class="modal-content-wrapper">
@@ -196,6 +196,7 @@
         </div>
     </div>
 </div>
+{{-- MODAL END --}}
 
 @endsection
 {{-- @include('backend.payment.setup.asset_index') --}}
