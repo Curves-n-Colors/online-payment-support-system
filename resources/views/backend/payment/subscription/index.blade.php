@@ -177,19 +177,9 @@ $recurring_types = config('app.addons.recurring_type');
                                         </td>
                                     </tr>
                                     @endforeach
-                                    @else
-                                    <tr>
-                                        No list Available.
-                                    </tr>
                                     @endif
-                                    <tr>
-                                    </tr>
                                 </tbody>
-
-
                             </table>
-
-
                         </div>
                     </div>
                 </div>

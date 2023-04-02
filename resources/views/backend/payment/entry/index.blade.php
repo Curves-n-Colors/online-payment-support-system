@@ -178,11 +178,9 @@ $recurring_types = config('app.addons.recurring_type');
                                                 class="payment-item">
                                             <input type="hidden" data-title="email" value='{{ $row->email }}'
                                                 class="payment-item">
-                                            <input type="hidden" data-title="total_amount"
-                                                value="{{ $row->currency . ' ' . number_format($row->total, 2) }}"
-                                                class="payment-item">
-                                            <input type="hidden" data-title="payment_date"
-                                                value='{{ $row->payment_date }}' class="payment-item">
+                                            <input type="hidden" data-title="sub_amount" value="{{ $row->currency . ' ' . number_format($row->sub_total, 2) }}" class="payment-item">
+                                            <input type="hidden" data-title="vat_amount" value="{{ $row->currency . ' ' . number_format($row->vat, 2) }}" class="payment-item">
+                                            <input type="hidden" data-title="total_amount" value="{{ $row->currency . ' ' . number_format($row->total, 2) }}" class="payment-item">
                                             <input type="hidden" data-title="payment_options"
                                                 value='{{ $row->payment_options }}' class="payment-item">
                                             <input type="hidden" data-title="status"

@@ -47,16 +47,20 @@ class SendEmail extends Command
     {
         $type_name = $this->option('type');
         $get_settings = auto_email_settings($type_name);
+
+        //If the setting is not found
+        if(!is_array($get_settings)){
+            return $this->info($get_settings);
+        }
+
         $recurring_type = $get_settings['recurring_type'];
         $email_collection = PaymentEntry::with('subscription', 'setup', 'client')
                                         ->whereHas('setup', function($query) use ($recurring_type){
                                             $query->where('recurring_type',$recurring_type);
                                         })
-                                        ->where('is_expired', 0)
                                         ->where('is_active',10)
                                         ->where('is_completed',0)
                                         ->get();   
-        dd($email_collection);
                                         
         if(count($email_collection)>0)
         {
@@ -91,9 +95,9 @@ class SendEmail extends Command
                         $entry->update();
                     }
                 }elseif( date('Y-m-d') >= $entry->start_date and date('Y-m-d') <= (date('Y-m-d', strtotime($entry->start_date . $extend_time)))){
-                    dd('EXTEND');
+                    echo('EXTEND');
                     //ENTENDED 
-                    if(is_null($entry->email_sent_date) or (date('Y-m-d')=== date('Y-m-d', strtotime($entry->email_sent_date . $email_interval)) )){
+                    if(is_null($entry->email_sent_date) or (date('Y-m-d')=== date('Y-m-d', strtotime($entry->email_sent_date . $email_interval_extended)) )){
                         echo('SEND PAYMENT LINK AND EXTEND MESSAGE');
                         $entry->is_expired = 10;
                         $entry->email_sent_date = date('Y-m-d');
@@ -103,7 +107,6 @@ class SendEmail extends Command
                         LogsService::_set('Payment Entry (EXTENDED) - ' . $entry->title . ' has been sent for setup E-mail '.$entry->client->email.' - ' . $entry->setup->title, 'payment-entry');
                     }
                 }elseif(date('Y-m-d') > $entry->start_date){
-                    dd('EXPIRED');
                     //EXPIRED;
                     echo('EXPIRE');
                     $entry->is_expired = 10;

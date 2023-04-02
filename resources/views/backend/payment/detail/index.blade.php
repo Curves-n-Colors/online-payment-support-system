@@ -152,6 +152,12 @@ $status_payment = config('app.addons.status_payment');
                                             <input type="hidden" data-title="email" value='{{ $row->email }}'
                                                 class="payment-item">
                                             <input type="hidden" data-title="currency" value="{{ $row->currency }}">
+                                            <input type="hidden" data-title="sub_amount"
+                                                value="{{ $row->currency . ' ' . number_format($row->sub_total, 2) }}"
+                                                class="payment-item">
+                                            <input type="hidden" data-title="vat_amount"
+                                                value="{{ $row->currency . ' ' . number_format($row->vat, 2) }}"
+                                                class="payment-item">
                                             <input type="hidden" data-title="total_amount"
                                                 value="{{ $row->currency . ' ' . number_format($row->total, 2) }}"
                                                 class="payment-item">
