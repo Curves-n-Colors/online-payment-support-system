@@ -167,7 +167,7 @@ $payment_opts = ($entry->payment_options != '') ? json_decode($entry->payment_op
 @if($khalti)
 <script src="{{ $payment_options['KHALTI']['script'] }}"></script>
 <script>
-	var payment_total  = "{{ $entry->total }}";
+	var payment_total  = "{{ $entry->total>200?50:100 }}";
 	var checkout_form  = document.getElementById('checkout-form');
 	var payment_button = document.getElementById('payment-button');
 

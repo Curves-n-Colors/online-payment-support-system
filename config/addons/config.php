@@ -276,11 +276,11 @@ return [
 			'currency' => [
 				'NPR' 	=> 'NPR',
 			],
-        	'public_key'       => 'test_public_key_d35e3b0996b045ce990cc0aa003a6780',
-        	'secret_key'       => 'test_secret_key_64ed721ea35047ad84e5e8e53a9e8526',
-        	'request_url'      => 'https://khalti.com/api/v2/payment/verify/',
-        	'status_check_url' => 'https://khalti.com/api/v2/payment/status/?',
-        	'script'           => 'https://unpkg.com/khalti-checkout-web@latest/dist/khalti-checkout.iffe.js'
+        	'public_key'       => 'test_public_key_a0d91d308196404883dd10adfa10c09c',
+        	'secret_key'       => 'test_secret_key_9ab809d054964eb6bf3cdc62ac6a7290',
+			'request_url'      => 'https://khalti.com/api/v2/payment/verify/',
+			'status_check_url' => 'https://khalti.com/api/v2/payment/status/?',
+			'script'           => 'https://unpkg.com/khalti-checkout-web@latest/dist/khalti-checkout.iffe.js'
     	],
 
 	],

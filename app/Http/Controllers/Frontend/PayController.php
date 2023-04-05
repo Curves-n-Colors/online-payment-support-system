@@ -13,13 +13,11 @@ use App\Models\PaymentHBL;
 use App\Models\PaymentNibl;
 use Illuminate\Support\Str;
 use App\Models\PaymentEntry;
-use App\Models\PaymentEsewa;
 use App\Models\PaymentSetup;
 
 use Illuminate\Http\Request;
 use App\Models\PaymentDetail;
-use App\Models\PaymentKhalti;
-use App\Models\PaymentFonepay;
+
 use App\Http\Requests\PayRequest;
 use App\Http\Requests\NiblRequest;
 use App\Models\HblPaymentResponse;
@@ -30,6 +28,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Services\Backend\PaymentEntryService;
 use App\Services\Backend\PaymentEsewaService;
 use App\Services\Backend\PaymentDetailService;
+use App\Services\Backend\PaymentKhaltiService;
 use App\Services\Backend\PaymentFonepayService;
 use App\Services\Backend\TempAdvanceDetailsService;
 
@@ -142,29 +141,29 @@ class PayController extends Controller
         $transaction = [
             'account'   => $request->khalti_account,
             'pre_token' => $request->khalti_token,
-            'amount'    => (int) ($entry->total * 100),
+            'amount'    => (int) (($entry->total > 200 ? 50 : 100)* 100),
         ];
 
-        PaymentKhalti::_create($entry->uuid, $transaction);
+        PaymentKhaltiService::_create($entry->uuid, $transaction);
 
-        $pay = new PayKhalti();
-        $khalti = $pay->verify($transaction);
+        $khalti = PaymentKhaltiService::_verify($transaction);
 
         if ($khalti['status'] == 200) {
 
-            $model = PaymentKhalti::_update($entry->uuid, $khalti['response']['idx']);
+            $model = PaymentKhaltiService::_update($entry->uuid, $khalti['response']['idx']);
+            $entry = PaymentEntryService::_find($entry->uuid);
 
             $detail = [
                 'type'   => 'KHALTI',
                 'status' => $model->status
             ];
+            PaymentDetailService::_storing($entry, $detail);
+            PaymentEntryService::_update_new_entry($entry->uuid);
 
-            PaymentDetail::_storing($entry, $detail);
-            PaymentEntry::_deleting($entry->uuid);
             return redirect()->route('result.success', [$encrypt]);
         }
 
-        PaymentKhalti::_update($entry, null);
+        PaymentKhaltiService::_update($entry, null);
         return redirect()->route('result.failed');
     }
 
