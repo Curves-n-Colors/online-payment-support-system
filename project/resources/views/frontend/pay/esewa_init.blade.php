@@ -1,6 +1,6 @@
 <form action="{{ $esewa['request_url'] }}" id="esewa-payment-request" method="POST">
-    <input value="{{ $entry->total }}" name="tAmt" type="hidden">
-    <input value="{{ $entry->total }}" name="amt" type="hidden">
+    <input value="{{ $amount }}" name="tAmt" type="hidden">
+    <input value="{{ $amount }}" name="amt" type="hidden">
     <input value="0" name="txAmt" type="hidden">
     <input value="0" name="psc" type="hidden">
     <input value="0" name="pdc" type="hidden">

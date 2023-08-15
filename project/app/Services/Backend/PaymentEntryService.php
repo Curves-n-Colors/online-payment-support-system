@@ -275,7 +275,7 @@ class PaymentEntryService
                 $model->uuid     = $uuid;
                 $model->min_uuid = last(explode('-',$uuid));
                 $model->title   = $new_title;
-                //$model->total   = $model->setup->total;
+                $model->total   = $model->sub_total + $model->vat;
             }
             $model->update();
 

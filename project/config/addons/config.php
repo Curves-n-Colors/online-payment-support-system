@@ -84,8 +84,8 @@ return [
 			'title' 			=> 'Credit Card - HBL',
 			'non_secure'        => 'N',
 			// 'merchant_id'       => '9103338075',
-			//'merchant_id'       => '9103332177',//DEMO
-			'merchant_id'       => '9102634367',//PRODUCTION
+			'merchant_id'       => '9103332177',//DEMO
+			//'merchant_id'       => '9102634367',//PRODUCTION
 			'merchant_name'     => 'CLIMBALAYA_TREKS_AND_EXPEDITION_ECOM_NPL',
 			'secret_key'        => 'U9LABZ33POUA3WMG6BWNZ8DVBGTNSKXR',
 			'request_url'       => 'https://hblpgw.2c2p.com/HBLPGW/Payment/Payment/Payment',

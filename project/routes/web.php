@@ -112,6 +112,8 @@ Route::namespace('Frontend')->middleware("throttle:1000,15")->group(function () 
 
     Route::get('/fonepay/verify', 'PayController@fonepay_verify')->name('fonepay.verify');
     Route::get('/esewa/success', 'PayController@esewa_success')->name('esewa.success');
+    
+    Route::get('/connectips/verify', 'PayController@connectips_verify')->name('connectips.verify');
 
     Route::post(config('app.addons.payment_options.hbl.frontend_response_uri'), 'PayController@hblFrontendResponse');
     Route::any(config('app.addons.payment_options.hbl.backend_response_uri'), 'PayController@hblBackendResponse');

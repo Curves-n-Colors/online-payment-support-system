@@ -129,8 +129,8 @@ $recurring_types = config('app.addons.recurring_type');
                                         <td class="list-item">
                                             <button class="btn btn-primary m-b-5 btn-view-more"
                                                 type="button">VIEW</button>
-                                            <a href="{{ route('subscription.edit', [$row->uuid]) }}"
-                                                class="btn btn-info m-b-5">EDIT</a>
+                                            {{-- <a href="{{ route('subscription.edit', [$row->uuid]) }}"
+                                                class="btn btn-info m-b-5">EDIT</a> --}}
                                             {{-- <form action="{{ route('subscription.send', [$row->uuid]) }}"
                                                 method="POST">
                                                 @csrf @method('PUT')

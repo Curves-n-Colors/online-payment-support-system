@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Frontend;
 use DB;
 use Exception;
 use Carbon\Carbon;
-
+use GuzzleHttp\Client;
 use App\Models\Logs;
 use App\Models\PayNibl;
 use App\Models\PayKhalti;
@@ -30,6 +30,7 @@ use App\Services\Backend\PaymentEsewaService;
 use App\Services\Backend\PaymentDetailService;
 use App\Services\Backend\PaymentKhaltiService;
 use App\Services\Backend\PaymentFonepayService;
+use App\Services\Backend\PaymentConnectIpsService;
 use App\Services\Backend\TempAdvanceDetailsService;
 
 
@@ -84,6 +85,8 @@ class PayController extends Controller
                     return $this->esewa($entry, $encrypt, $request);
                 } else if ($request->payment_type == 'FONEPAY') {
                     return $this->fonepay($entry, $encrypt, $request);
+                } else if ($request->payment_type == 'CONNECT_IPS'){
+                    return $this->connect_ips($entry, $encrypt, $request);
                 }
             }
         }
@@ -169,10 +172,20 @@ class PayController extends Controller
 
     public function fonepay($entry, $encrypt, $request)
     {
+        $amount = $entry['total'];
+
+        if (isset($request->is_advance)) {
+            //GENERATE NEW END DATE
+            $advance = $this->advance_payment($entry, $request);
+            $amount = $advance['amount'];
+            $title = $advance['title'];
+
+            TempAdvanceDetailsService::_store_transaction($entry['uuid'], $request->selected_month, $title, 'FONEPAY');
+        }
         $fonepay_config = config('app.addons.payment_options.fonepay');
         $fonepay = [
             'MD' =>  $fonepay_config['MD'],
-            'AMT' => $entry['total'],
+            'AMT' => $amount,
             'CRN' => $entry['currency'],
             'DT' => date('m/d/Y'),
             'R1' => 'test 123',
@@ -201,6 +214,17 @@ class PayController extends Controller
                     'status' => $save_result->status
                 ];
 
+                $has_advance = TempAdvanceDetailsService:: _find_advance($model->uuid, $detail['type']);
+
+                if ($has_advance) {
+                    $model->title       = $has_advance->title;
+                    $model->start_date  = $has_advance->start_date;
+                    $model->end_date    = $has_advance->end_date;
+                    $model->total       = $has_advance->amount;
+                    $model->update();
+                    $detail['advance_month'] = $has_advance->months;
+                }
+
                 PaymentDetailService::_storing($model, $detail);
                 PaymentEntryService::_update_new_entry($model->uuid);
 
@@ -217,24 +241,15 @@ class PayController extends Controller
 
     public function hbl_pay($entry, $encrypt, $request)
     {
-       
         $invoiceNo = str_pad(Carbon::now()->timestamp, 20, 0, STR_PAD_LEFT);
+        $amount = $entry['total'];
+        $title = $entry['title'];
         if(isset($request->is_advance)){
             //GENERATE NEW END DATE
-            $end_date = date('Y-m-d', strtotime($entry->start_date . ' + '.$request->selected_month.' month'));
-
-            $amount = $entry['total']*$request->selected_month;
-
-            $title = $entry->title;
-            $index = strpos($title,"(");
-            $type= substr($title,0,$index);
-            
-            $title = $type.'('.$entry->start_date.' TO '.$end_date.')';
-        }else{
-            $amount = $entry['total'];
-            $title = $entry['title'];
+            $advance = $this->advance_payment($entry, $request);
+            $amount = $advance['amount'];
+            $title = $advance['title'];
         }
-        // dd($request->all());
 
         $pay = new Payment(
             $orderNo = $invoiceNo,
@@ -262,10 +277,36 @@ class PayController extends Controller
 
     }
 
+    public function advance_payment($entry, $request){
+        $end_date = date('Y-m-d', strtotime($entry->start_date . ' + ' . $request->selected_month . ' month'));
+
+        $amount = $entry['total'] * $request->selected_month;
+
+        $title = $entry->title;
+        $index = strpos($title, "(");
+        $type = substr($title, 0, $index);
+        $title = $type . '(' . $entry->start_date . ' TO ' . $end_date . ')';
+        return [
+            'title' => $title,
+            'amount' => $amount,
+        ];
+    }
+
     public function esewa($entry, $encrypt, $request)
     {
+        $amount = $entry['total'];
+
+        if (isset($request->is_advance)) {
+            //GENERATE NEW END DATE
+            $advance = $this->advance_payment($entry, $request);
+            $amount = $advance['amount'];
+            $title = $advance['title'];
+
+            TempAdvanceDetailsService::_store_transaction($entry['uuid'], $request->selected_month, $title, 'ESEWA');
+        }
+        
         $esewa = config('app.addons.payment_options.esewa');
-        return view('frontend.pay.esewa_init', compact('esewa', 'entry', 'encrypt'));
+        return view('frontend.pay.esewa_init', compact('esewa', 'entry', 'encrypt', 'amount'));
     }
 
     public function esewa_success(Request $request){
@@ -278,6 +319,18 @@ class PayController extends Controller
                     'type'   => 'ESEWA',
                     'status' => $save_result->status
                 ];
+
+                $has_advance = TempAdvanceDetailsService::_find_advance($model->uuid, $detail['type']);
+
+                if ($has_advance) {
+                    $model->title       = $has_advance->title;
+                    $model->start_date  = $has_advance->start_date;
+                    $model->end_date    = $has_advance->end_date;
+                    $model->total       = $has_advance->amount;
+                    $model->update();
+                    $detail['advance_month'] = $has_advance->months;
+                }
+
                 PaymentDetailService::_storing($model, $detail);
                 PaymentEntryService::_update_new_entry($model->uuid);
 
@@ -379,5 +432,127 @@ class PayController extends Controller
 
         Storage::disk('local')->put('file.txt', json_encode($request->all()));
         
+    }
+
+    public function connect_ips($entry, $encrypt, $request){
+        $connectips_config = config('app.addons.payment_options.IPS');
+        $TXNID = $entry->uuid;
+        $url = $connectips_config['gateway'];
+        $txn_amount = ($entry->total*100);
+
+        $data = [
+            'MERCHANTID' => $connectips_config['merchant_id'],
+            'APPID' => $connectips_config['app_id'],
+            'APPNAME' => $connectips_config['app_name'],
+            'TXNID' => $TXNID,
+            'TXNDATE' => date("d-m-Y"),
+            'TXNCRNCY' => $entry->currency,
+            'TXNAMT' => $txn_amount,
+            'REFERENCEID' => 'RMKS_'.$TXNID,
+            'REMARKS' => 'RMKS_' . $TXNID,
+            'PARTICULARS' => 'PART_' . $TXNID,
+            'TOKEN' => 'TOKEN'
+        ];
+
+        $message = '';
+        foreach ($data as $key => $v) {
+            $message .= $key . '=' . $v . ',';
+        }
+        $token = $this->generateHash(substr($message, 0, -1), $connectips_config['password_creditor']);
+        $data['TOKEN'] = $token;
+        return view('frontend.pay.connect_ips', compact('data', 'url'));
+    }
+
+    public function connectips_verify(Request $request){
+        try {
+            $merchant_id = $request->merchantId;
+            $app_id = $request->appId;
+            $reference_id = $request->referenceId;
+            $txn_amt = $request->txnAmt;
+            $status = $request->status;
+            $status_desc = $request->statusDesc;
+
+            $requestData = [
+                'merchant_id' => $merchant_id,
+                'app_id' => $app_id,
+                'reference_id' => $reference_id,
+                'txn_amt' => $txn_amt
+            ];
+
+            $result = $this->check($requestData);
+            $store = PaymentConnectIpsService::_create($requestData);
+            if ($result['status'] == 'SUCCESS') {
+                $entry = PaymentEntryService::_find($store->uuid);
+
+                $detail = [
+                    'type'   => 'IPS',
+                    'status' => $store->status
+                ];
+                PaymentDetailService::_storing($entry, $detail);
+                PaymentEntryService::_update_new_entry($entry->uuid);
+
+                return redirect()->route('result.success', [PaymentSetup::_encrypting($entry->setup->uuid, $entry->uuid)]);
+            }
+        } catch (Exception $e) {
+            return redirect()->route('result.failed')->with('error', 'Something went Wrong, Try Again');
+        }
+        return redirect()->route('result.failed');
+    }
+
+    public  function check($requestData)
+    {
+        $connectips_config = config('app.addons.payment_options.IPS');
+
+        $password = $connectips_config['password'];
+        $amount = $requestData['txn_amt'];
+        $referenceId = $requestData['reference_id'];
+        $token = 'token';
+        $data = [
+            'MERCHANTID' =>  $requestData['merchant_id'],
+            'APPID' =>  $requestData['app_id'],
+            'REFERENCEID' =>  $requestData['reference_id'],
+            'TXNAMT' => $amount . '00'
+        ];
+        $message = '';
+        foreach ($data as $key => $v) {
+            $message .= $key . '=' . $v . ',';
+        }
+        $token = $this->generateHash(substr($message, 0, -1), $connectips_config['password_creditor']);
+        $requestData = [
+            'MERCHANTID' => $requestData['merchant_id'],
+            'APPID' =>  $requestData['app_id'],
+            'REFERENCEID' => $requestData['reference_id'],
+            'TXNAMT' => $amount . '00',
+            'token' => $token
+        ];
+        $requestData['token'] = $token;
+        $client = new Client();
+        $response = $client->request(
+            'POST',
+            $connectips_config['validation_url'],
+            [
+                'headers' => ['Content-Type' => 'application/json', 'Accept' => 'application/json'],
+                'auth' => [$requestData['app_id'], $password],
+                'body' => json_encode($requestData)
+
+            ]
+        );
+        $result =   json_encode(json_decode($response->getBody()));
+        return $result;
+    }
+
+    public function generateHash($string, $password)
+    {
+        $token = null;
+        $certificate = file_get_contents(base_path("CREDITOR.pfx"));
+
+        if (openssl_pkcs12_read($certificate, $cert_info, $password)) {
+            $private_key = openssl_pkey_get_private($cert_info['pkey']);
+            if (openssl_sign($string, $signature, $private_key, 'sha256WithRSAEncryption')) {
+                $token = base64_encode($signature);
+            }
+        }
+
+        return $token;
     }
 }
