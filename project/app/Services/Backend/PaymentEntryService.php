@@ -44,25 +44,41 @@ class PaymentEntryService
         return false;
     }
 
-    public static function _storing($data, $title, $client, $date, $subscription_id)
+    public static function _storing($data, $title, $client, $date, $subscription)
     {
         $vat_rate = vat_rate();
+        $apply_disocunt= false;
+
+        if(isset($subscription->discount_type)){
+            if ((!$subscription->is_continuous_discount) && ($subscription->no_disount > 0)) {
+                $subscription->decrement('no_disount',1);
+                $apply_disocunt = true;
+            }
+            if($subscription->is_continuous_discount){
+                $apply_disocunt = true;
+            }
+        }
+
+        $discount = discount_details($subscription->discount_type, $subscription->discount, $data->total, $apply_disocunt);
+
         $vat =($vat_rate/100) * $data->total;
         $uuid = Str::uuid()->toString();
         $model = new PaymentEntry();
         $model->payment_setup_id = $data->id;
         $model->title            = $title;
         $model->client_id        = $client->id;
-        $model->email            = $client->email;
+        $model->email            = $client->email;  
         $model->uuid             = $uuid;
         $model->min_uuid         = last(explode('-', $uuid));
         $model->sub_total        = $data->total;
+        $model->discount_rate    = $discount['discount_rate'];
+        $model->discount_amount  = $discount['discount_amount'];
         $model->vat              = $vat;
-        $model->total            = $vat + $data->total;
+        $model->total            = $vat + ($data->total - $discount['discount_amount']);
         $model->currency         = $data->currency;
         $model->contents         = $data->contents;
         $model->is_active        = 10;
-        $model->subscription_id  = $subscription_id;
+        $model->subscription_id  = $subscription->id;
         $model->user_id          = auth()->check() ? auth()->user()->id : 0;
         $model->payment_options  = $data->payment_options;
         $model->payment_date     = NULL;//date('Y-m-d', strtotime($date));

@@ -80,6 +80,7 @@ $status_payment = config('app.addons.status_payment');
                                         <th width="50">Setup Title</th>
                                         <th width="50">Client</th>
                                         <th width="50">Currency</th>
+                                        <th width="50">Discount Amount</th>
                                         <th width="50">Amount</th>
                                         {{-- <th width="50">Payment Date</th> --}}
                                         <th width="50">Paid Date</th>
@@ -100,6 +101,7 @@ $status_payment = config('app.addons.status_payment');
                                         <td>{{ $row->setup->title }}</td>
                                         <td>{{ $row->client->name }}<br />{{ $row->email }}</td>
                                         <td>{{ $row->currency }}</td>
+                                        <td>{{ number_format($row->discount_amount, 2) }}</td>
                                         <td>{{ number_format($row->total, 2) }}</td>
                                         {{-- <td>{{ $row->payment_date }}</td> --}}
                                         <td>{{ $row->created_at }}</td>
@@ -154,6 +156,9 @@ $status_payment = config('app.addons.status_payment');
                                             <input type="hidden" data-title="currency" value="{{ $row->currency }}">
                                             <input type="hidden" data-title="sub_amount"
                                                 value="{{ $row->currency . ' ' . number_format($row->sub_total, 2) }}"
+                                                class="payment-item">
+                                            <input type="hidden" data-title="discount_amount"
+                                                value="{{ $row->currency . ' ' . number_format($row->discount_amount, 2) }}"
                                                 class="payment-item">
                                             <input type="hidden" data-title="vat_amount"
                                                 value="{{ $row->currency . ' ' . number_format($row->vat, 2) }}"

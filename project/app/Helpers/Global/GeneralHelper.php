@@ -36,4 +36,29 @@ if (!function_exists('vat_rate')) {
     }
 }
 
+if(!function_exists('discount_details')){
+    function discount_details($type, $discount, $amount, $apply_disocunt):array
+    {
+        if($apply_disocunt){
+            if($type==1){
+                return [
+                    'discount_rate' => $discount,
+                    'discount_amount' => $amount * ($discount/100)
+                ];
+            }
+
+            if($type==10){
+                return [
+                    'discount_rate' => 0,
+                    'discount_amount' => $discount
+                ];
+            }
+        }
+        
+        return [
+            'discount_rate' => 0,
+            'discount_amount' => 0
+        ];
+    }
+}
 

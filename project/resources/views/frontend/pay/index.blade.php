@@ -40,7 +40,12 @@ $payment_opts = ($entry->payment_options != '') ? json_decode($entry->payment_op
 					</div>
 					@endforelse
 					<div class="total">Sub-Total<span class="price">{{ $entry->currency }}<span>{{ number_format($entry->sub_total, 2) }}</span></span></div>
+					@if($entry->discount_amount)
+					<div class="total" style="color: red">Discount Amount<span class="price">{{ $entry->currency }}<span>{{ number_format($entry->discount_amount	, 2) }}</span></span></div>
+					@endif
+					@if($entry->vat)
 					<div class="total">VAT<span class="price">{{ $entry->currency }}<span>{{ number_format($entry->vat, 2) }}</span></span></div>
+					@endif
 					<div class="advance_payment">
 						<div class="total">Advance Payment <span class="price">x <span id="no_months">2</span> MONTHS</span></div>
 					</div>

@@ -97,6 +97,7 @@ $recurring_types = config('app.addons.recurring_type');
                                         <th width="50">Setup Title</th>
                                         <th width="50">Client</th>
                                         <th width="50">Currency</th>
+                                        <th width="50">Discount Amount</th>
                                         <th width="50">Amount</th>
                                         <th width="50">Payment Starting</th>
                                         <th width="50">Payment Ending</th>
@@ -117,6 +118,9 @@ $recurring_types = config('app.addons.recurring_type');
                                         <td>{{ $row->client->name }}<br />{{ $row->client->email }}
                                         </td>
                                         <td>{{ $row->currency }}</td>
+                                        <td>
+                                            {{ number_format($row->discount_amount, 2)}} <br>
+                                        </td>
                                         <td>
                                             {{ number_format($row->total, 2)}} <br>
                                         </td>
@@ -179,6 +183,7 @@ $recurring_types = config('app.addons.recurring_type');
                                             <input type="hidden" data-title="email" value='{{ $row->email }}'
                                                 class="payment-item">
                                             <input type="hidden" data-title="sub_amount" value="{{ $row->currency . ' ' . number_format($row->sub_total, 2) }}" class="payment-item">
+                                            <input type="hidden" data-title="discount_amount" value="{{ $row->currency . ' ' . number_format($row->discount_amount, 2) }}" class="payment-item">
                                             <input type="hidden" data-title="vat_amount" value="{{ $row->currency . ' ' . number_format($row->vat, 2) }}" class="payment-item">
                                             <input type="hidden" data-title="total_amount" value="{{ $row->currency . ' ' . number_format($row->total, 2) }}" class="payment-item">
                                             <input type="hidden" data-title="payment_options"

@@ -24,14 +24,19 @@ class SubscriptionService
 
     public static function _storing($req)
     {
+        //dd($req->all());
         DB::beginTransaction();
         try{
-            if(count($req->client)>0){
-                foreach($req->client as $client){
+            if(count($req->client_id)>0){
+                foreach($req->client_id as $client){
                     $model                   = new PaymentHasClient();
                     $model->payment_setup_id = $req->subscription_id;
                     $model->client_id        = $client;
                     $model->uuid             = Str::uuid()->toString();
+                    $model->discount_type    = isset($req->discount_type)?$req->discount_type:NULL;
+                    $model->discount             = isset($req->discount)?$req->discount:0;
+                    $model->no_disount          = isset($req->no_disount)?$req->no_disount:0;
+                    $model->is_continuous_discount          = isset($req->is_continuous_discount)?$req->is_continuous_discount:0;
                     $model->reference_date   = $req->reference_date ? date('Y-m-d', strtotime($req->reference_date)) : null;
                     $model->expire_date      = $req->expire_date ? date('Y-m-d', strtotime($req->expire_date)) : null;
                     $model->is_active        = $req->has('is_active') ? 10 : 0;
@@ -47,7 +52,7 @@ class SubscriptionService
         }catch (Exception $e)
         {
             DB::rollBack();
-            return false;
+           dd($e);
         }
         DB::commit();
         return true;
@@ -165,7 +170,7 @@ class SubscriptionService
                     
                     // dd($new);
                     // foreach($model->clients as $client){
-                    if ($entry = PaymentEntryService::_storing($model, $title, $client, $new,  $subscription->id)) {
+                    if ($entry = PaymentEntryService::_storing($model, $title, $client, $new,  $subscription)) {
                         $notify['uuid']  = $entry->uuid;
                         $notify['client_id']  = $client->id;
                         $notify['total']     = number_format($entry->total, 2);
