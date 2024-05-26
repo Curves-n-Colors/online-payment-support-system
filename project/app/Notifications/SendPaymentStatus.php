@@ -2,7 +2,7 @@
 
 namespace App\Notifications;
 
-use Barryvdh\DomPDF\Facade as PDF;
+use PDF;
 use Illuminate\Bus\Queueable;
 use App\Models\EmailNotification;
 use Illuminate\Notifications\Notification;
@@ -49,10 +49,9 @@ class SendPaymentStatus extends Notification
     {
         if ($this->detail->payment_status == config('app.addons.status_payment.COMPLETED')) {
             
-            $logo = 'https://climbalaya.com/images/logo/logo.png';
+            $logo = asset('assets/img/cnc-logo.jpg');
             $pdf = PDF::setOptions(['dpi' => 150, 'isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true]); // , 'defaultFont' => 'sans-serif', 'images' => true
             $pdf->loadView('pdf.invoice', ['logo' => $logo, 'data' => $this->detail]);
-
             return (new MailMessage)
                         ->subject('Payment Success')
                         ->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'))

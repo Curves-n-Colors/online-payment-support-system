@@ -7,7 +7,7 @@ use App\Models\PayNibl;
 
 use Exception;
 use Illuminate\Support\Facades\DB;
-use Barryvdh\DomPDF\Facade as PDF;
+use PDF;
 use App\Models\PaymentDetail;
 use App\Models\PaymentDetailsCategory;
 use App\Services\Backend\LogsService;
