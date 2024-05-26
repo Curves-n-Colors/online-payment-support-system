@@ -6,6 +6,7 @@ use App\Models\Client;
 use App\Models\Category;
 use App\Models\PaymentSetup;
 use Illuminate\Http\Request;
+use App\Models\PaymentHasClient;
 use Illuminate\Routing\Controller;
 use App\Services\Backend\UserService;
 use App\Http\Requests\SubscriptionRequest;
@@ -84,5 +85,22 @@ class SubscriptionController extends Controller
             }
         }
         return response()->json(['status' => false, 'msg' => 'Invalid Master Password']);
+    }
+
+    public function validate(){
+        $client = request('client_id');
+        $package = request('subscription_id');
+        if($details = PaymentHasClient::where('payment_setup_id', $package)->where('client_id',$client)->first()){
+            return response()->json([
+                'message' => $details->client->name." alreadys has the package",
+                'alert' => 'error',
+                'code' => 405,
+            ], 405);
+        }
+        return response()->json([
+            'message' => "The client has no package",
+            'alert' => 'OK',
+            'code' => 200,
+        ], 200);
     }
 }

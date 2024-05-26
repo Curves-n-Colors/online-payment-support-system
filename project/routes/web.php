@@ -78,6 +78,7 @@ Route::namespace('Backend')->middleware('auth')->group(function () {
     Route::post('/subscription/store', 'SubscriptionController@store')->name('subscription.store');
     Route::get('/subscription/{uuid}/edit', 'SubscriptionController@edit')->name('subscription.edit');
     Route::put('/subscription/{uuid}/send', 'SubscriptionController@send')->name('subscription.send');
+    Route::get('/subscription/validate', 'SubscriptionController@validate')->name('subscription.validate');
 
     Route::get('/payment/details', 'PaymentDetailController@index')->name('payment.detail.index');
     Route::put('/payment/detail/{uuid}/refund', 'PaymentDetailController@refund')->name('payment.detail.refund');

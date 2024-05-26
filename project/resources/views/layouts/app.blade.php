@@ -10,6 +10,7 @@
     <link href="{{ asset('assets/img/favicon.ico') }}" rel="icon" type="image/x-icon" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="{{ asset('assets/plugins/bootstrap/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
+    <script defer src="{{ asset('assets/js/alpinejs.min.js') }}"></script>
 
     @yield('page-specific-style')
 
